@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>미국 유동성 대시보드 — 자산제곱</title>
 <meta name="description" content="SOFR, 지급준비금, 역레포, TGA, MMF 등 미국 유동성 핵심 지표를 실시간으로 확인하세요.">
 
@@ -33,7 +33,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 /* HEADER */
 header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);}
-.hdr{max-width:1360px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}
+.hdr{max-width:1360px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:60px;}
 .brand{display:flex;align-items:center;gap:10px;}
 .brand-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#38bdf8,#c084fc);display:flex;align-items:center;justify-content:center;font-size:17px;}
 .brand-name{font-size:1rem;font-weight:700;}
@@ -48,7 +48,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bott
 .wrap{max-width:1360px;margin:0 auto;padding:1.75rem 2rem;}
 
 /* HERO */
-.hero{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.hero{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
 .hc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.4rem;position:relative;overflow:hidden;transition:border-color .2s;}
 .hc:hover{border-color:rgba(56,189,248,.3);}
 .hc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0;}
@@ -81,7 +81,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bott
 
 /* CARD */
 .cc{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.cc-h{padding:1rem 1.4rem .85rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.cc-h{padding:1rem 1.4rem .85rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;min-width:0;}
 .cc-t{font-size:.86rem;font-weight:600;}
 .cc-s{font-size:.65rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 .cc-b{padding:1.1rem 1.4rem;}
@@ -89,7 +89,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bott
 .pbs{display:flex;gap:3px;}
 .pb{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:5px;padding:2px 8px;font-size:.62rem;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;}
 .pb:hover,.pb.on{background:var(--c1);border-color:var(--c1);color:#000;font-weight:700;}
-.leg{display:flex;gap:12px;flex-wrap:wrap;}
+.leg{display:flex;gap:8px;flex-wrap:wrap;min-width:0;}
 .li{display:flex;align-items:center;gap:5px;font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--dim);}
 .ll{width:18px;height:2px;border-radius:2px;}
 
@@ -125,8 +125,20 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bott
 .hdr-btn-tg:hover{background:rgba(39,167,214,.18);}
 .hdr-btn-nv{border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.08);color:#03c75a;}
 .hdr-btn-nv:hover{background:rgba(3,199,90,.18);}
-@media(max-width:768px){.hdr-btn span,.hdr-btn{font-size:.6rem;padding:3px 7px;}.hdr-links{gap:4px;}}
-@media(max-width:520px){.hdr-btn{padding:4px 6px;font-size:0;width:28px;height:28px;justify-content:center;border-radius:50%;}}
+@media(max-width:768px){
+  .hdr-btn{font-size:.6rem;padding:3px 7px;}
+  .hdr-links{gap:4px;}
+}
+@media(max-width:480px){
+  /* 헤더: 브랜드명 숨기고 아이콘만 */
+  .brand-sub{display:none;}
+  .brand-name{font-size:.85rem;}
+  /* 헤더 버튼: 아이콘만 */
+  .hdr-btn{padding:5px;width:30px;height:30px;justify-content:center;border-radius:50%;font-size:0;}
+  .hdr-btn svg{flex-shrink:0;}
+  .hdr-links{gap:4px;}
+  #stTxt{display:none;}
+}
 /* ── CTA 배너 ── */
 .cta-bar{background:linear-gradient(135deg,#0d1f35 0%,#111827 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.25rem 2rem;}
 .cta-inner{max-width:1360px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
