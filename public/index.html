@@ -1235,24 +1235,18 @@ async function renderHys(days,btn){
   }catch(e){showSpin('w-hys');}
 }
 
-// MMF 데이터 공유 캐시 (renderMmf → renderMmfWeekly 재사용)
-let _mmfCache = null;
-
 async function renderMmf(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmf');
   showSpin('w-mmfwk'); // 11번도 같이 준비
   try{
     const [ins,ret]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('WRMFSL',days)]);
-    _mmfCache={ins,ret,days}; // 데이터 공유
     const{dates,vals:iv}=thin(ins.dates,ins.vals,200);
     const rv=thin(ret.dates,ret.vals,200).vals;
     mkLine('w-mmf',dates,[
       {label:'기관형',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'리테일',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-    renderMmfWeekly();   // 12번: 캐시 재사용, 추가 fetch 없음
-    renderMmfRrp(days);  // 10번: WRMFNS 캐시 재사용, RRPONTSYD만 새로 fetch
   }catch(e){showSpin('w-mmf');}
 }
 
@@ -1309,10 +1303,7 @@ async function renderMmfRrp(days,btn){
   if(btn&&btn.closest){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmfrrp');
   try{
-    // WRMFNS는 9번(renderMmf) 캐시 재사용, RRPONTSYD만 fetch
-    const mmfDays = (_mmfCache&&_mmfCache.days>=days) ? _mmfCache.days : days;
-    const md = (_mmfCache&&_mmfCache.days>=days) ? _mmfCache.ins : await apiFetch('WRMFNS',days);
-    const rd = await apiFetch('RRPONTSYD',days);
+    const [md,rd]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('RRPONTSYD',days)]);
     const{dates,vals:mv}=thin(md.dates,md.vals,150);
     const rv=thin(rd.dates,rd.vals,150).vals;
     mkLine('w-mmfrrp',dates,[
@@ -1323,10 +1314,9 @@ async function renderMmfRrp(days,btn){
 }
 
 async function renderMmfWeekly(){
-  // renderMmf가 이미 데이터를 받았으면 재사용, 아니면 자체 fetch
+  showSpin('w-mmfwk');
   try{
-    const ins = _mmfCache ? _mmfCache.ins : await apiFetch('WRMFNS',365*2);
-    const ret = _mmfCache ? _mmfCache.ret : await apiFetch('WRMFSL',365*2);
+    const [ins,ret]=await Promise.all([apiFetch('WRMFNS',365*2),apiFetch('WRMFSL',365*2)]);
     const idiff=ins.vals.slice(1).map((v,i)=>+(v-ins.vals[i]).toFixed(1));
     const rdiff=ret.vals.slice(1).map((v,i)=>+(v-ret.vals[i]).toFixed(1));
     const dates=ins.dates.slice(1);
@@ -1464,9 +1454,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-rrp',   ()=>renderRrp(365*2));
   observeLazy('w-tga',   ()=>renderTga(365*2));
   observeLazy('w-hys',   ()=>renderHys(365*2));
-  observeLazy('w-mmf',    ()=>renderMmf(365*2)); // 10번, 12번은 renderMmf 완료 후 자동 호출
-  observeLazy('w-mmfrrp', ()=>{if(!_mmfCache)renderMmf(365*2);}); // 9번 아직 안됐으면 트리거
-  observeLazy('w-mmfwk',  ()=>{if(!_mmfCache)renderMmf(365*2);}); // 9번 아직 안됐으면 트리거
+  observeLazy('w-mmf',    ()=>renderMmf(365*2));
+  observeLazy('w-mmfrrp', ()=>renderMmfRrp(365*2));
+  observeLazy('w-mmfwk',  ()=>renderMmfWeekly());
   observeLazy('w-wk',     ()=>renderWeekly());
   observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
   observeLazy('w-sofr',  ()=>renderSofr(365));
