@@ -1320,8 +1320,7 @@ async function loadTelegram(){
     });
     const text=p.text||'';
     const linkedText=text.replace(
-      /(https?:\/\/[^\S
-]+)/g,
+      /(https?:\/\/[^\s]+)/g,
       '<a href="$1" target="_blank" style="color:var(--c1);text-decoration:none;">$1</a>'
     );
     const formattedText=linkedText.replace(
