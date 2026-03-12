@@ -457,7 +457,7 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 10: MMF 총잔액 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS · WRMFSL</div></div>
+  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">MMF 총 잔액 추이</div>
@@ -741,7 +741,7 @@ async function apiFetch(series,days){
         vals=obs.map(o=>parseFloat(o.value));
         // WRMFNS/WRMFSL: FRED는 조달러(T) 단위 제공 → B로 변환
         // 500 미만이면 T단위(예: 6.5T), 이상이면 이미 B단위
-        if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())){
+        if(['WRMFNS'].includes(series.toUpperCase())){
           const last=vals.at(-1);
           if(last!=null&&last<500) vals=vals.map(v=>+(v*1000).toFixed(1));
         }
@@ -1218,13 +1218,11 @@ async function renderMmf(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmf');
   try{
-    // 11번과 동일 패턴: 각각 독립 thin
-    const [ins,ret]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('WRMFSL',days)]);
-    const{dates,vals:iv}=thin(ins.dates,ins.vals,200);
-    const rv=thin(ret.dates,ret.vals,200).vals;
+    const d=await apiFetch('WRMFNS',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-mmf',dates,[
-      {label:'기관형',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
-      {label:'리테일',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+      {label:'MMF 총잔액',data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
+       backgroundColor:'rgba(91,156,246,0.1)',tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
   }catch(e){showSpin('w-mmf');}
 }
@@ -1295,15 +1293,12 @@ async function renderMmfRrp(days,btn){
 async function renderMmfWeekly(){
   showSpin('w-mmfwk');
   try{
-    // 11번과 동일 패턴: WRMFNS 하나만 먼저 fetch해서 차분 계산
-    const [ins,ret]=await Promise.all([apiFetch('WRMFNS',365*2),apiFetch('WRMFSL',365*2)]);
-    const idiff=ins.vals.slice(1).map((v,i)=>+(v-ins.vals[i]).toFixed(1));
-    const rdiff=ret.vals.slice(1).map((v,i)=>+(v-ret.vals[i]).toFixed(1));
-    const{dates:dd,vals:iv}=thin(ins.dates.slice(1),idiff,150);
-    const rv2=thin(ret.dates.slice(1),rdiff,150).vals;
+    const d=await apiFetch('WRMFNS',365*2);
+    const diff=d.vals.slice(1).map((v,i)=>+(v-d.vals[i]).toFixed(1));
+    const{dates:dd,vals:dv}=thin(d.dates.slice(1),diff,150);
     mkLine('w-mmfwk',dd,[
-      {label:'기관형 유출입',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
-      {label:'리테일 유출입',data:rv2,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+      {label:'MMF 주간 증감',data:dv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
+       backgroundColor:'rgba(91,156,246,0.1)',tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
   }catch(e){showSpin('w-mmfwk');}
 }
