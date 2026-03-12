@@ -527,11 +527,11 @@ function mkLine(id,labels,datasets,yOpts){
   CHARTS[id]=new Chart(el.querySelector('canvas').getContext('2d'),{type:'line',data:{labels,datasets},options:mkOpts(yOpts)});
 }
 function showSpin(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="lw"><div class="sp"></div></div>';}
-function setH(id,val,cls,chg){
+function setH(id,val,cls,chg,chgCls){
   const el=document.getElementById('h'+id);
   if(el){el.innerHTML='';el.textContent=val;el.className='hcard-val '+(cls||'');}
   const ec=document.getElementById('h'+id+'c');
-  if(ec&&chg){ec.textContent=chg;ec.className='hcard-chg '+(cls||'');}
+  if(ec&&chg){ec.textContent=chg;ec.className='hcard-chg '+(chgCls||cls||'');}
 }
 
 // ── 24시간 localStorage 캐시 ──
@@ -604,7 +604,7 @@ async function loadFng(){
       const el=document.getElementById(id);
       if(el){el.textContent=val;el.style.color=fgCol(val);}
     });
-    setH(1,v,v<=44?'dn':v>=56?'up':'neu',j.current.rating);
+    setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',j.current.rating,'neu');
     drawGauge(v);
     const{dates:td,vals:tv}=thin(j.dates,j.vals,150);
     const wrap=document.getElementById('w-fng');
@@ -621,26 +621,69 @@ async function loadFng(){
 // ── Hero 수치 ──
 async function loadHero(){
   const delay=ms=>new Promise(r=>setTimeout(r,ms));
-  // VIX
-  try{const d=await apiFetch('VIXCLS',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);const vixCls=lv>=30?'dn':lv>=20?'neu':'up';setH(2,lv.toFixed(2),vixCls,(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');}catch(e){}
+  const chgStr=(dv,unit)=>(dv>=0?'▲ ':'▼ ')+(unit||'')+Math.abs(dv)+' ';
+
+  // VIX — 절대값 기준 색상, 변동은 상승=나쁨
+  try{
+    const d=await apiFetch('VIXCLS',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=+(lv-pv).toFixed(2);
+    const valCls=lv>=30?'dn':lv>=20?'neu':'up';
+    const chgCls=dv>0?'dn':dv<0?'up':'neu';
+    setH(2,lv.toFixed(2),valCls,chgStr(dv,'')+'전일 대비',chgCls);
+  }catch(e){}
   await delay(200);
-  // T10Y2Y
-  try{const d=await apiFetch('T10Y2Y',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(3);setH(3,lv.toFixed(2)+'%',lv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');}catch(e){}
+
+  // 금리차 — 양수=초록, 음수=빨강
+  try{
+    const d=await apiFetch('T10Y2Y',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=+(lv-pv).toFixed(3);
+    const valCls=lv>0?'up':lv>-0.2?'neu':'dn';
+    const chgCls=dv>0?'up':dv<0?'dn':'neu';
+    setH(3,lv.toFixed(2)+'%',valCls,chgStr(dv,'')+'전일 대비',chgCls);
+  }catch(e){}
   await delay(200);
-  // WALCL
-  try{const d=await apiFetch('WALCL',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;setH(4,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ $':'▼ $')+fmtB(Math.abs(dv))+' 전주 대비');}catch(e){}
+
+  // 연준 총자산 — 중립 (방향 무관)
+  try{
+    const d=await apiFetch('WALCL',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;
+    setH(4,fmtT(lv),'neu',chgStr(dv,'$')+fmtB(Math.abs(dv))+' 전주 대비','neu');
+  }catch(e){}
   await delay(200);
-  // WRESBAL
-  try{const d=await apiFetch('WRESBAL',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;setH(5,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ $':'▼ $')+fmtB(Math.abs(dv))+' 전주 대비');}catch(e){}
+
+  // 지급준비금 — 높을수록 좋음
+  try{
+    const d=await apiFetch('WRESBAL',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;
+    const chgCls=dv>0?'up':dv<0?'dn':'neu';
+    setH(5,fmtT(lv),'neu',chgStr(dv,'$')+fmtB(Math.abs(dv))+' 전주 대비',chgCls);
+  }catch(e){}
   await delay(200);
-  // RRPONTSYD
-  try{const d=await apiFetch('RRPONTSYD',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;setH(6,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ $':'▼ $')+fmtB(Math.abs(dv))+' 전일 대비');}catch(e){}
+
+  // RRP — 중립
+  try{
+    const d=await apiFetch('RRPONTSYD',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;
+    setH(6,fmtT(lv),'neu',chgStr(dv,'$')+fmtB(Math.abs(dv))+' 전일 대비','neu');
+  }catch(e){}
   await delay(200);
-  // BAMLH0A0HYM2
-  try{const d=await apiFetch('BAMLH0A0HYM2',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);setH(7,lv.toFixed(2)+'%',+dv>0?'dn':'up',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');}catch(e){}
+
+  // HY스프레드 — 낮을수록 좋음, 상승=나쁨
+  try{
+    const d=await apiFetch('BAMLH0A0HYM2',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=+(lv-pv).toFixed(2);
+    const valCls=lv>=5?'dn':lv>=3.5?'neu':'up';
+    const chgCls=dv>0?'dn':dv<0?'up':'neu';
+    setH(7,lv.toFixed(2)+'%',valCls,chgStr(dv,'')+'전일 대비',chgCls);
+  }catch(e){}
   await delay(200);
-  // WTREGEN
-  try{const d=await apiFetch('WTREGEN',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;setH(8,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ $':'▼ $')+fmtB(Math.abs(dv))+' 전주 대비');}catch(e){}
+
+  // TGA — 중립
+  try{
+    const d=await apiFetch('WTREGEN',14);
+    const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;
+    setH(8,fmtT(lv),'neu',chgStr(dv,'$')+fmtB(Math.abs(dv))+' 전주 대비','neu');
+  }catch(e){}
   setTimeout(updateSummary, 500);
 }
 
