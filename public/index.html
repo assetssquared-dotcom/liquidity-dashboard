@@ -1240,16 +1240,19 @@ async function renderHys(days,btn){
 async function renderMmf(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmf');
-  showSpin('w-mmfwk'); // 11번도 같이 준비
   try{
     const [ins,ret]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('WRMFSL',days)]);
-    const{dates,vals:iv}=thin(ins.dates,ins.vals,200);
-    const rv=thin(ret.dates,ret.vals,200).vals;
+    const minLen=Math.min(ins.dates.length,ret.dates.length);
+    const tIns=thin(ins.dates.slice(0,minLen),ins.vals.slice(0,minLen),200);
+    const tRet=thin(ret.dates.slice(0,minLen),ret.vals.slice(0,minLen),200);
+    const dates=tIns.dates;
+    const iv=tIns.vals;
+    const rv=tRet.vals.slice(0,dates.length);
     mkLine('w-mmf',dates,[
       {label:'기관형',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'리테일',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-  }catch(e){showSpin('w-mmf');}
+  }catch(e){console.error('renderMmf error:',e);showSpin('w-mmf');}
 }
 
 async function renderSofr(days,btn){
@@ -1319,16 +1322,20 @@ async function renderMmfWeekly(){
   showSpin('w-mmfwk');
   try{
     const [ins,ret]=await Promise.all([apiFetch('WRMFNS',365*2),apiFetch('WRMFSL',365*2)]);
-    const idiff=ins.vals.slice(1).map((v,i)=>+(v-ins.vals[i]).toFixed(1));
-    const rdiff=ret.vals.slice(1).map((v,i)=>+(v-ret.vals[i]).toFixed(1));
-    const dates=ins.dates.slice(1);
+    const minLen2=Math.min(ins.vals.length,ret.vals.length);
+    const iSlice=ins.vals.slice(0,minLen2);
+    const rSlice=ret.vals.slice(0,minLen2);
+    const dSlice=ins.dates.slice(0,minLen2);
+    const idiff=iSlice.slice(1).map((v,i)=>+(v-iSlice[i]).toFixed(1));
+    const rdiff=rSlice.slice(1).map((v,i)=>+(v-rSlice[i]).toFixed(1));
+    const dates=dSlice.slice(1);
     const{dates:dd,vals:iv}=thin(dates,idiff,150);
-    const rv2=thin(dates,rdiff,150).vals;
+    const rv2=thin(dates,rdiff,150).vals.slice(0,dd.length);
     mkLine('w-mmfwk',dd,[
       {label:'기관형 유출입',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'리테일 유출입',data:rv2,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
-  }catch(e){showSpin('w-mmfwk');}
+  }catch(e){console.error('renderMmfWeekly error:',e);showSpin('w-mmfwk');}
 }
 
 async function renderStlfsi(days,btn){
@@ -1415,10 +1422,15 @@ async function loadTelegram(){
     });
     const text=p.text||'';
     // URL → 링크 변환 (끝 문장부호 분리)
-    const linkedText=text.replace(/(https?:\/\/[^\s\)\]\>\"']+)/g, url=>{
+    const linkedText=text.replace(/(https?:\/\/[^\s]+)/g, url=>{
       const clean=url.replace(/[.,!?;:]+$/,'');
       const trail=url.slice(clean.length);
-      return `<a href="${clean}" target="_blank" onclick="event.stopPropagation()" style="color:#7eb8f7;text-decoration:underline;text-decoration-color:rgba(126,184,247,.4);word-break:break-all;position:relative;z-index:2;">${clean}</a>${trail}`;
+      const a=document.createElement('a');
+      a.href=clean; a.target='_blank';
+      a.onclick=function(e){e.stopPropagation();};
+      a.style.cssText='color:#7eb8f7;word-break:break-all;';
+      a.textContent=clean;
+      return a.outerHTML+trail;
     });
     // 해시태그 강조
     const formattedText=linkedText.replace(/#([^\s#]+)/g,'<span style="color:var(--c3)">#$1</span>');
