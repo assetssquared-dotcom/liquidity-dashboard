@@ -295,10 +295,20 @@ footer a:hover { color: var(--txt); }
     <div class="brand">
       <div class="brand-icon">
   <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
-    <rect width="60" height="60" fill="#000"/>
-    <path d="M14 46 L30 12 L46 46 M20 35 L40 35" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="38" y="22" font-family="Georgia,serif" font-size="14" font-weight="700" fill="#fff">2</text>
-  </svg>
+  <rect width="60" height="60" fill="#000"/>
+  <!-- A 왼쪽 다리: 아래서 위로 비스듬히 -->
+  <path d="M10 50 C11 46 15 38 20 28 C24 18 27 12 29 11"
+        stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- A 오른쪽 다리: 위에서 아래로 -->
+  <path d="M29 11 C31 13 34 21 37 31 C40 40 42 47 43 50"
+        stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- A 가로획 -->
+  <path d="M17 35 C21 33 27 33 35 34"
+        stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- 2: 위쪽 둥근 부분 -->
+  <path d="M38 16 C39 12 44 11 47 13 C50 15 50 19 48 22 C46 25 43 27 40 30 C38 32 37 34 37 36 L50 36"
+        stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
 </div>
       <div>
         <div class="brand-name">자산제곱 유동성 대시보드</div>
