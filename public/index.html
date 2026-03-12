@@ -309,8 +309,8 @@ footer a{color:var(--txt3);}
   <div class="insight-title">📌 연준 대차대조표란?</div>
   <div class="insight-body">연준(미국 중앙은행)이 보유한 <strong>자산의 총합</strong>이에요. 연준이 국채 등을 사들이면(QE) 돈이 시중에 풀리고, 팔면(QT) 돈이 줄어요. 이 규모가 클수록 시중에 돈이 많다는 뜻입니다.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">💰</div><div class="signal-body"><strong>자산 증가 (QE)</strong>연준이 돈을 푸는 중. 주식·부동산 등 자산가격 상승 압력이 생겨요.</div></div>
-    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-body"><strong>자산 감소 (QT)</strong>연준이 돈을 거두는 중. 유동성 축소로 자산시장에 압박이 가해져요.</div></div>
+    <div class="signal green"><div class="signal-icon">💰</div><div class="signal-body"><strong>양적완화 QE — 자산 증가</strong>연준이 돈을 푸는 중. 주식·부동산 등 자산가격 상승 압력이 생겨요.</div></div>
+    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-body"><strong>양적긴축 QT — 자산 감소</strong>연준이 돈을 거두는 중. 유동성 축소로 자산시장에 압박이 가해져요.</div></div>
     <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-body"><strong>2022년 고점</strong>약 9조 달러까지 늘어났다가 현재 6.6조 달러 수준으로 감소 중이에요.</div></div>
     <div class="signal yellow"><div class="signal-icon">🔍</div><div class="signal-body"><strong>지급준비금과 함께 보기</strong>대차대조표 크기보다 지급준비금 수준이 실제 유동성을 더 잘 보여줘요.</div></div>
   </div>
@@ -689,11 +689,32 @@ async function apiFetch(series,days){
 }
 
 // ── now-panel 표시 ──
-function showNow(id,val,badge,label,text){
+function showNow(id,val,badge,label,text,period){
   const el=document.getElementById('now-'+id);
   if(!el)return;
-  el.innerHTML=`<div class="now-header"><span class="now-badge ${badge}">${label}</span><span class="now-val">${val}</span></div><div class="now-text">${text}</div><div class="now-ai" id="ai-${id}"><span class="now-ai-loading"><span class="sp"></span> AI 해석 생성 중...</span></div>`;
+  const periodTag=period?`<span class="now-badge neu" style="opacity:.6">${period}</span>`:'';
+  el.innerHTML=`<div class="now-header">${periodTag}<span class="now-badge ${badge}">${label}</span><span class="now-val">${val}</span></div><div class="now-text">${text}</div><div class="now-ai" id="ai-${id}"><span class="now-ai-loading"><span class="sp"></span> AI 해석 생성 중...</span></div>`;
   el.classList.add('show');
+}
+
+// ── 기간 라벨 변환 ──
+function periodLabel(days){
+  if(days<=365)return'최근 1년';
+  if(days<=365*2)return'최근 2년';
+  if(days<=365*3)return'최근 3년';
+  if(days<=365*5)return'최근 5년';
+  return'최근 10년';
+}
+
+// ── 추세 분석 헬퍼 ──
+function trend(vals){
+  const n=vals.length;
+  if(n<2)return{dir:'neutral',chg:0,pct:0};
+  const first=vals[0],last=vals[n-1];
+  const chg=last-first;
+  const pct=first!==0?(chg/Math.abs(first)*100):0;
+  return{dir:chg>0?'up':chg<0?'down':'neutral',chg,pct,first,last,
+    max:Math.max(...vals),min:Math.min(...vals)};
 }
 
 // ── Claude AI 실시간 해석 ──
@@ -750,13 +771,13 @@ function spreadText(v){
 function spreadBadge(v){return v>=0.5?'green':v>=0?'yellow':'red';}
 function spreadLabel(v){return v>=0.5?'정상':v>=0?'주의':v>=-0.5?'역전':'심화 역전';}
 function walclText(v){
-  if(v>8500)return`연준 총자산 <strong>$${fmtT(v)}</strong> — 많은 유동성이 시중에 공급된 상태예요. 자산시장에 우호적인 환경이에요.`;
-  if(v>7000)return`연준 총자산 <strong>$${fmtT(v)}</strong> — 2022년 고점 대비 줄었지만 여전히 높은 수준이에요. 유동성이 천천히 흡수되고 있어요.`;
-  if(v>6000)return`연준 총자산 <strong>$${fmtT(v)}</strong> — QT(양적긴축)가 상당히 진행됐어요. 시중 유동성이 줄어드는 상황으로 자산시장에 <strong>점진적 압박 요인</strong>이에요.`;
+  if(v>8500)return`연준 총자산 <strong>$${fmtT(v)}</strong> — 양적완화(QE)로 많은 유동성이 시중에 공급된 상태예요. 자산시장에 우호적인 환경이에요.`;
+  if(v>7000)return`연준 총자산 <strong>$${fmtT(v)}</strong> — 2022년 고점 대비 줄었지만 여전히 높은 수준이에요. 양적긴축(QT)으로 유동성이 천천히 흡수되고 있어요.`;
+  if(v>6000)return`연준 총자산 <strong>$${fmtT(v)}</strong> — 양적긴축(QT)이 상당히 진행됐어요. 시중 유동성이 줄어드는 상황으로 자산시장에 <strong>점진적 압박 요인</strong>이에요.`;
   return`연준 총자산 <strong>$${fmtT(v)}</strong> — 유동성 환경이 타이트해졌어요. 금융시장 자금 여건에 주의가 필요해요.`;
 }
 function walclBadge(v){return v>8500?'green':v>7000?'blue':v>6000?'yellow':'red';}
-function walclLabel(v){return v>8500?'QE 확장':v>7000?'완만한 QT':v>6000?'QT 진행':'긴축 심화';}
+function walclLabel(v){return v>8500?'양적완화(QE)':v>7000?'완만한 QT':v>6000?'QT 진행':'긴축 심화';}
 function resText(v){
   if(v>3500)return`지급준비금 <strong>$${fmtT(v)}</strong> — 충분해요. 은행들이 여유 자금을 넉넉히 보유해 금융시장이 안정적이에요.`;
   if(v>3000)return`지급준비금 <strong>$${fmtT(v)}</strong> — 적정 수준이에요. 연준이 안전 마지노선으로 보는 3조달러에 근접했어요. 추이를 지켜보세요.`;
@@ -920,7 +941,15 @@ async function renderVix(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-vix',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569'}});
-    const _lv=vals.at(-1);if(_lv!=null){showNow('vix',_lv.toFixed(1)+'pt',vixBadge(_lv),vixLabel(_lv),vixText(_lv));aiInterpret('vix',`VIX 현재: ${_lv.toFixed(2)}, 최근 30일 범위: ${Math.min(...vals.slice(-30)).toFixed(1)}~${Math.max(...vals.slice(-30)).toFixed(1)}`);}
+    const _lv=vals.at(-1);if(_lv!=null){
+      const _tv=trend(vals);
+      const _pv=periodLabel(days);
+      const _dirVix=_tv.dir==='up'?'상승':'하락';
+      const _trendVix=`${_pv} 동안 ${_tv.first.toFixed(1)}→${_tv.last.toFixed(1)} (${_dirVix} ${Math.abs(_tv.pct).toFixed(0)}%), 구간 최저 ${_tv.min.toFixed(1)} / 최고 ${_tv.max.toFixed(1)}`;
+      const _txtVix=vixText(_lv)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_trendVix}</span>`;
+      showNow('vix',_lv.toFixed(1)+'pt',vixBadge(_lv),vixLabel(_lv),_txtVix,_pv);
+      aiInterpret('vix',`VIX 현재: ${_lv.toFixed(2)}, ${_trendVix}`);
+    }
   }catch(e){showSpin('w-vix');}
 }
 
@@ -932,7 +961,16 @@ async function renderT10y2y(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-t10y2y',dates,[{data:vals,borderWidth:1.5,pointRadius:0,fill:false,tension:.3,
       segment:{borderColor:c=>c.p1.parsed.y>=0?'#34d399':'#ef4444'}}],{ticks:{color:'#475569'}});
-    const _lt=vals.at(-1);if(_lt!=null){showNow('t10y2y',(_lt>=0?'+':'')+_lt.toFixed(2)+'%',spreadBadge(_lt),spreadLabel(_lt),spreadText(_lt));aiInterpret('t10y2y',`장단기 금리차(10Y-2Y) 현재: ${_lt.toFixed(3)}%, 3개월전: ${vals[Math.max(0,vals.length-65)]?.toFixed(3)}%`);}
+    const _lt=vals.at(-1);if(_lt!=null){
+      const _tt=trend(vals);
+      const _pt=periodLabel(days);
+      const _invDays=vals.filter(v=>v<0).length;
+      const _invPct=Math.round(_invDays/vals.length*100);
+      const _invNote=_invDays>0?`<br><span style="font-size:.68rem;color:#f87171;display:block;margin-top:.3rem">⚠️ ${_pt} 중 ${_invPct}% 기간 역전 상태였어요</span>`:'';
+      const _txtT=spreadText(_lt)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_pt}: ${_tt.first.toFixed(2)}%→${_tt.last.toFixed(2)}%, 최저 ${_tt.min.toFixed(2)}% / 최고 ${_tt.max.toFixed(2)}%</span>`+_invNote;
+      showNow('t10y2y',(_lt>=0?'+':'')+_lt.toFixed(2)+'%',spreadBadge(_lt),spreadLabel(_lt),_txtT,_pt);
+      aiInterpret('t10y2y',`금리차 현재: ${_lt.toFixed(3)}%, ${_pt}: ${_tt.first.toFixed(2)}→${_tt.last.toFixed(2)}%, 역전 비율: ${_invPct}%`);
+    }
   }catch(e){showSpin('w-t10y2y');}
 }
 
@@ -944,7 +982,15 @@ async function renderWalcl(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-walcl',dates,[{data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(91,156,246,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-    const _lw=vals.at(-1);if(_lw!=null){showNow('walcl','$'+fmtT(_lw),walclBadge(_lw),walclLabel(_lw),walclText(_lw));aiInterpret('walcl',`연준 총자산 현재: $${fmtT(_lw)}, 전주 대비: ${_lw>vals.at(-2)?'+':''}${fmtT(_lw-(vals.at(-2)||_lw))}`);}
+    const _lw=vals.at(-1);if(_lw!=null){
+      const _tw=trend(vals);
+      const _pw=periodLabel(days);
+      const _chgW=_lw-(vals.at(-2)||_lw);
+      const _chgWStr=(_chgW>=0?'▲':'▼')+' $'+fmtT(Math.abs(_chgW))+' 전주대비';
+      const _txtW=walclText(_lw)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_pw}: $${fmtT(_tw.first)}→$${fmtT(_tw.last)} (${_tw.dir==='up'?'▲증가':'▼감소'} ${Math.abs(_tw.pct).toFixed(1)}%) · ${_chgWStr}</span>`;
+      showNow('walcl','$'+fmtT(_lw),walclBadge(_lw),walclLabel(_lw),_txtW,_pw);
+      aiInterpret('walcl',`연준 총자산 현재: $${fmtT(_lw)}, ${_pw}: $${fmtT(_tw.first)}→$${fmtT(_tw.last)}, ${_tw.dir==='up'?'증가':'감소'} 추세`);
+    }
   }catch(e){showSpin('w-walcl');}
 }
 
@@ -956,7 +1002,15 @@ async function renderRes(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-res',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(167,139,250,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-    const _lr=vals.at(-1);if(_lr!=null){showNow('res','$'+fmtT(_lr),resBadge(_lr),resLabel(_lr),resText(_lr));aiInterpret('res',`지급준비금 현재: $${fmtT(_lr)}, 전주 대비: ${_lr>vals.at(-2)?'+':''}${fmtT(_lr-(vals.at(-2)||_lr))}`);}
+    const _lr=vals.at(-1);if(_lr!=null){
+      const _tr=trend(vals);
+      const _pr=periodLabel(days);
+      const _chgR=_lr-(vals.at(-2)||_lr);
+      const _chgRStr=(_chgR>=0?'▲':'▼')+' $'+fmtT(Math.abs(_chgR))+' 전주대비';
+      const _txtR=resText(_lr)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_pr}: $${fmtT(_tr.first)}→$${fmtT(_tr.last)} (${_tr.dir==='up'?'▲증가':'▼감소'} ${Math.abs(_tr.pct).toFixed(1)}%) · ${_chgRStr}</span>`;
+      showNow('res','$'+fmtT(_lr),resBadge(_lr),resLabel(_lr),_txtR,_pr);
+      aiInterpret('res',`지급준비금 현재: $${fmtT(_lr)}, ${_pr}: $${fmtT(_tr.first)}→$${fmtT(_tr.last)}, ${_tr.dir==='up'?'증가':'감소'} 추세, 전주대비 ${_chgRStr}`);
+    }
   }catch(e){showSpin('w-res');}
 }
 
@@ -968,7 +1022,16 @@ async function renderRrp(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-rrp',dates,[{data:vals,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(52,211,153,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-    const _lrp=vals.at(-1);if(_lrp!=null){showNow('rrp','$'+fmtT(_lrp),rrpBadge(_lrp),rrpLabel(_lrp),rrpText(_lrp));aiInterpret('rrp',`RRP 잔액 현재: $${fmtT(_lrp)}, 3개월전: $${fmtT(vals[Math.max(0,vals.length-13)]||_lrp)}`);}
+    const _lrp=vals.at(-1);if(_lrp!=null){
+      const _trp=trend(vals);
+      const _prp=periodLabel(days);
+      const _peakRrp=_trp.max;
+      const _dropPct=_peakRrp>0?Math.round((_peakRrp-_lrp)/_peakRrp*100):0;
+      const _noteRrp=_dropPct>50?`<br><span style="font-size:.68rem;color:#34d399;display:block;margin-top:.3rem">💧 고점($${fmtT(_peakRrp)}) 대비 ${_dropPct}% 소진 — 초과유동성 대부분 시장으로 유입됐어요</span>`:'';
+      const _txtRrp=rrpText(_lrp)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_prp}: $${fmtT(_trp.first)}→$${fmtT(_trp.last)}, 구간 최고 $${fmtT(_peakRrp)}</span>`+_noteRrp;
+      showNow('rrp','$'+fmtT(_lrp),rrpBadge(_lrp),rrpLabel(_lrp),_txtRrp,_prp);
+      aiInterpret('rrp',`RRP 잔액 현재: $${fmtT(_lrp)}, ${_prp} 고점: $${fmtT(_peakRrp)}, 고점대비 ${_dropPct}% 소진`);
+    }
   }catch(e){showSpin('w-rrp');}
 }
 
@@ -980,7 +1043,15 @@ async function renderTga(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-tga',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-    const _ltg=vals.at(-1);if(_ltg!=null){showNow('tga','$'+fmtT(_ltg),tgaBadge(_ltg),tgaLabel(_ltg),tgaText(_ltg));aiInterpret('tga',`TGA 잔액 현재: $${fmtT(_ltg)}, 전주 대비: ${_ltg>vals.at(-2)?'+':''}${fmtT(_ltg-(vals.at(-2)||_ltg))}`);}
+    const _ltg=vals.at(-1);if(_ltg!=null){
+      const _ttg=trend(vals);
+      const _ptg=periodLabel(days);
+      const _chgTg=_ltg-(vals.at(-2)||_ltg);
+      const _chgTgStr=(_chgTg>=0?'▲':'▼')+' $'+fmtT(Math.abs(_chgTg))+' 전주대비';
+      const _txtTg=tgaText(_ltg)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_ptg}: $${fmtT(_ttg.first)}→$${fmtT(_ttg.last)}, 최저 $${fmtT(_ttg.min)} / 최고 $${fmtT(_ttg.max)} · ${_chgTgStr}</span>`;
+      showNow('tga','$'+fmtT(_ltg),tgaBadge(_ltg),tgaLabel(_ltg),_txtTg,_ptg);
+      aiInterpret('tga',`TGA 잔액 현재: $${fmtT(_ltg)}, ${_ptg}: $${fmtT(_ttg.first)}→$${fmtT(_ttg.last)}, ${_chgTgStr}`);
+    }
   }catch(e){showSpin('w-tga');}
 }
 
@@ -992,7 +1063,14 @@ async function renderHys(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-hys',dates,[{data:vals,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(239,68,68,0.1)',tension:.3}],{ticks:{color:'#475569'}});
-    const _lh=vals.at(-1);if(_lh!=null){showNow('hys',_lh.toFixed(2)+'%',hysBadge(_lh),hysLabel(_lh),hysText(_lh));aiInterpret('hys',`하이일드 스프레드 현재: ${_lh.toFixed(2)}%, 3개월전: ${vals[Math.max(0,vals.length-65)]?.toFixed(2)}%`);}
+    const _lh=vals.at(-1);if(_lh!=null){
+      const _th=trend(vals);
+      const _ph=periodLabel(days);
+      const _chgHDir=_th.dir==='up'?'확대(위험↑)':'축소(안정↑)';
+      const _txtH=hysText(_lh)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_ph}: ${_th.first.toFixed(2)}%→${_th.last.toFixed(2)}% (${_chgHDir}), 구간 최저 ${_th.min.toFixed(2)}% / 최고 ${_th.max.toFixed(2)}%</span>`;
+      showNow('hys',_lh.toFixed(2)+'%',hysBadge(_lh),hysLabel(_lh),_txtH,_ph);
+      aiInterpret('hys',`HY 스프레드 현재: ${_lh.toFixed(2)}%, ${_ph}: ${_th.first.toFixed(2)}→${_th.last.toFixed(2)}% (${_chgHDir})`);
+    }
   }catch(e){showSpin('w-hys');}
 }
 
@@ -1099,7 +1177,16 @@ async function renderStlfsi(days,btn){
     mkLine('w-stlfsi',dates,[{data:vals,borderWidth:1.5,pointRadius:0,fill:true,tension:.3,
       segment:{borderColor:c=>c.p1.parsed.y>=0?'#ef4444':'#34d399'},
       backgroundColor:'rgba(239,68,68,0.07)'}],{ticks:{color:'#475569'}});
-    const _ls=vals.at(-1);if(_ls!=null){showNow('stlfsi',_ls.toFixed(2),stlfsBadge(_ls),stlfsiLabel(_ls),stlfsiText(_ls));aiInterpret('stlfsi',`금융스트레스지수 현재: ${_ls.toFixed(3)}, 3개월전: ${vals[Math.max(0,vals.length-13)]?.toFixed(3)}`);}
+    const _ls=vals.at(-1);if(_ls!=null){
+      const _ts=trend(vals);
+      const _ps=periodLabel(days);
+      const _highStress=vals.filter(v=>v>=1).length;
+      const _highPct=Math.round(_highStress/vals.length*100);
+      const _noteS=_highPct>10?`<br><span style="font-size:.68rem;color:#f87171;display:block;margin-top:.3rem">⚠️ ${_ps} 중 ${_highPct}% 기간 스트레스 상승 구간이었어요</span>`:'';
+      const _txtS=stlfsiText(_ls)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_ps}: ${_ts.first.toFixed(2)}→${_ts.last.toFixed(2)}, 최저 ${_ts.min.toFixed(2)} / 최고 ${_ts.max.toFixed(2)}</span>`+_noteS;
+      showNow('stlfsi',_ls.toFixed(2),stlfsBadge(_ls),stlfsiLabel(_ls),_txtS,_ps);
+      aiInterpret('stlfsi',`금융스트레스지수 현재: ${_ls.toFixed(3)}, ${_ps}: ${_ts.first.toFixed(2)}→${_ts.last.toFixed(2)}, 고스트레스 비율: ${_highPct}%`);
+    }
   }catch(e){showSpin('w-stlfsi');}
 }
 
