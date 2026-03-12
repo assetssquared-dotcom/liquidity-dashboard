@@ -756,7 +756,7 @@ let _staticCache = null;
 async function getStaticCache() {
   if (_staticCache) return _staticCache;
   try {
-    const r = await fetch('/data/cache.json');
+    const r = await fetch('/cache.json');
     if (r.ok) {
       _staticCache = await r.json();
       return _staticCache;
