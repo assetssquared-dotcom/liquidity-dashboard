@@ -1107,18 +1107,23 @@ async function renderHys(days,btn){
   }catch(e){showSpin('w-hys');}
 }
 
+// MMF 데이터 공유 캐시 (renderMmf → renderMmfWeekly 재사용)
+let _mmfCache = null;
+
 async function renderMmf(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmf');
+  showSpin('w-mmfwk'); // 11번도 같이 준비
   try{
     const [ins,ret]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('WRMFSL',days)]);
+    _mmfCache={ins,ret,days}; // 데이터 공유
     const{dates,vals:iv}=thin(ins.dates,ins.vals,200);
     const rv=thin(ret.dates,ret.vals,200).vals;
-    const total=iv.map((v,i)=>v+(rv[i]||0));
     mkLine('w-mmf',dates,[
       {label:'기관형',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'리테일',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    renderMmfWeekly(); // 11번 즉시 렌더 (추가 fetch 없음)
   }catch(e){showSpin('w-mmf');}
 }
 
@@ -1186,12 +1191,13 @@ async function renderMmfRrp(days,btn){
 }
 
 async function renderMmfWeekly(){
-  showSpin('w-mmfwk');
+  // renderMmf가 이미 데이터를 받았으면 재사용, 아니면 자체 fetch
   try{
-    const [id,rd]=await Promise.all([apiFetch('WRMFNS',365*2),apiFetch('WRMFSL',365*2)]);
-    const idiff=id.vals.slice(1).map((v,i)=>+(v-id.vals[i]).toFixed(1));
-    const rdiff=rd.vals.slice(1).map((v,i)=>+(v-rd.vals[i]).toFixed(1));
-    const dates=id.dates.slice(1);
+    const ins = _mmfCache ? _mmfCache.ins : await apiFetch('WRMFNS',365*2);
+    const ret = _mmfCache ? _mmfCache.ret : await apiFetch('WRMFSL',365*2);
+    const idiff=ins.vals.slice(1).map((v,i)=>+(v-ins.vals[i]).toFixed(1));
+    const rdiff=ret.vals.slice(1).map((v,i)=>+(v-ret.vals[i]).toFixed(1));
+    const dates=ins.dates.slice(1);
     const{dates:dd,vals:iv}=thin(dates,idiff,150);
     const rv2=thin(dates,rdiff,150).vals;
     mkLine('w-mmfwk',dd,[
@@ -1272,7 +1278,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-mmf',   ()=>renderMmf(365*2));
   observeLazy('w-wk',    ()=>renderWeekly());
   observeLazy('w-mmfrrp',()=>renderMmfRrp(365*2));
-  observeLazy('w-mmfwk', ()=>renderMmfWeekly());
+  // w-mmfwk는 renderMmf 완료 후 자동 호출됨
   observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
   observeLazy('w-sofr',  ()=>renderSofr(365));
   observeLazy('w-iorb',  ()=>renderIorb(365));
