@@ -759,7 +759,35 @@ footer a{color:var(--txt3);}
   <div class="cards-full"><div class="card">
     <div class="card-title">최근 리포트</div>
     <div class="card-sub">네이버 프리미엄 · 자산제곱</div>
-    <div id="naver-posts"><div class="lw" style="height:120px"><div class="sp"></div></div></div>
+    <div id="naver-posts">
+      <div style="margin-bottom:.75rem;">
+        <div class="tg-post" style="cursor:pointer;transition:border-color .2s;border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.03);"
+          onmouseover="this.style.borderColor='#03c75a'"
+          onmouseout="this.style.borderColor='rgba(3,199,90,.25)'"
+          onclick="window.open('https://contents.premium.naver.com/assetx2/assetsx2','_blank')">
+          <div class="tg-post-meta">
+            <span style="font-size:.72rem;color:#03c75a;font-family:var(--mono);font-weight:700;background:rgba(3,199,90,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(3,199,90,.3);">N NAVER PREMIUM</span>
+            <span style="font-size:.72rem;color:#aaa;font-family:var(--mono);">주 3회 발행 · 187편+</span>
+            <span class="tg-post-link" style="color:#03c75a;">구독하기 →</span>
+          </div>
+          <div style="font-size:.92rem;font-weight:700;color:#e8e8e8;margin:.6rem 0 .5rem;">자산제곱 구독자료</div>
+          <div style="font-size:.82rem;color:#bbb;line-height:1.85;">핵심 전략으로 귀하게 대접하겠습니다.</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(91,156,246,.12);color:#5b9cf6;border:1px solid rgba(91,156,246,.25);">투자 전략</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25);">시나리오</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);">시장 리포트</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);">기술적 분석</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#0d0d0d;border:1px solid var(--line);border-radius:8px;">
+        <span style="font-size:1.1rem;">🏆</span>
+        <div>
+          <div style="font-size:.82rem;color:#e8e8e8;font-weight:600;">미래에셋 VIP+ 서비스 제공 콘텐츠</div>
+          <div style="font-size:.72rem;color:#666;margin-top:2px;">실력으로 검증된 프리미엄 리서치</div>
+        </div>
+      </div>
+    </div>
   </div></div>
 </div>
 
@@ -904,7 +932,7 @@ function showNow(id,val,badge,label,text,period){
   const el=document.getElementById('now-'+id);
   if(!el)return;
   const periodTag=period?`<span class="now-badge neu" style="opacity:.6">${period}</span>`:'';
-  el.innerHTML=`<div class="now-header">${periodTag}<span class="now-badge ${badge}">${label}</span><span class="now-val">${val}</span></div><div class="now-text">${text}</div><div class="now-ai" id="ai-${id}"><span class="now-ai-loading"><span class="sp"></span> AI 해석 생성 중...</span></div>`;
+  el.innerHTML=`<div class="now-header">${periodTag}<span class="now-badge ${badge}">${label}</span><span class="now-val">${val}</span></div><div class="now-text">${text}</div>`;
   el.classList.add('show');
 }
 
@@ -1717,7 +1745,1756 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-m2',    ()=>renderM2(365*3));
   observeLazy('w-unrate',()=>renderUnrate(365*3));
   observeLazy('w-icsa',  ()=>renderIcsa(365*2));
-  observeLazy('naver-posts',()=>loadNaver());
+});
+</script>
+</body>
+</html>!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자산제곱 모니터링 대시보드</title>
+<link rel="icon" href="/assetx2.png" type="image/png">
+<meta property="og:title" content="자산제곱 모니터링 대시보드">
+<meta property="og:description" content="미국 금융시장 핵심 지표 실시간 대시보드">
+<meta property="og:image" content="https://assetx2-dashboard.vercel.app/assetx2.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{--bg:#0a0a0a;--card:#111;--line:#222;--c1:#5b9cf6;--c2:#f97316;--c3:#a78bfa;--c4:#34d399;--txt:#e8e8e8;--txt2:#aaa;--txt3:#666;--mono:'IBM Plex Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--txt);font-size:15px;}
+
+/* HEADER */
+header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;height:56px;display:flex;align-items:center;}
+.hdr{max-width:1300px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:32px;height:32px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#000;}
+.brand-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em;}
+.brand-sub{font-size:.7rem;color:var(--txt3);font-family:var(--mono);}
+.hdr-right{display:flex;align-items:center;gap:.5rem;}
+.badge{display:flex;align-items:center;gap:5px;font-size:.7rem;font-family:var(--mono);color:var(--txt3);}
+.dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hdr-links{display:flex;gap:.4rem;}
+.hdr-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;border:1px solid var(--line);font-size:.75rem;font-weight:500;text-decoration:none;white-space:nowrap;transition:all .15s;}
+.hdr-btn-th{color:#ddd;border-color:rgba(255,255,255,.2);}
+.hdr-btn-th:hover{border-color:rgba(255,255,255,.4);color:#fff;}
+.hdr-btn-tg{color:#29a8d8;border-color:rgba(39,167,214,.35);background:rgba(39,167,214,.08);}
+.hdr-btn-tg:hover{background:rgba(39,167,214,.16);}
+.hdr-btn-nv{color:#03c75a;border-color:rgba(3,199,90,.35);background:rgba(3,199,90,.08);}
+.hdr-btn-nv:hover{background:rgba(3,199,90,.16);}
+
+/* WRAP */
+.wrap{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:2.5rem;}
+.hcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;transition:border-color .2s;}
+.hcard:hover{border-color:#333;}
+.hcard-title{font-size:.75rem;color:var(--txt3);margin-bottom:.45rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;}
+.hcard-val{font-size:1.7rem;font-weight:700;font-family:var(--mono);letter-spacing:-.03em;min-height:2rem;line-height:1.1;}
+.hcard-chg{font-size:.78rem;margin-top:.45rem;font-family:var(--mono);font-weight:500;letter-spacing:-.01em;}
+.hcard-desc{font-size:.7rem;color:var(--txt3);margin-top:.55rem;border-top:1px solid var(--line);padding-top:.55rem;}
+.up{color:#34d399!important;} .dn{color:#f87171!important;} .neu{color:#94a3b8!important;}
+.hcard-chg.up{color:#34d399!important;} .hcard-chg.dn{color:#f87171!important;} .hcard-chg.neu{color:#94a3b8!important;}
+.skel{height:1.4rem;background:#1a1a1a;border-radius:4px;width:80%;animation:shimmer 1.5s infinite;}
+@keyframes shimmer{0%{opacity:.5;}50%{opacity:1;}100%{opacity:.5;}}
+
+/* SECTION */
+.sec{margin-bottom:2.5rem;}
+.sec-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;}
+.sec-num{width:24px;height:24px;background:var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-family:var(--mono);color:var(--txt3);}
+.sec-title{font-size:1.05rem;font-weight:700;}
+.sec-tag{margin-left:auto;font-size:.68rem;font-family:var(--mono);color:var(--txt3);border:1px solid var(--line);padding:3px 9px;border-radius:3px;}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:1fr 2fr;gap:.85rem;}
+.cards-full{display:grid;grid-template-columns:1fr;gap:.85rem;}
+.cards-half{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.4rem;}
+.card-title{font-size:.9rem;font-weight:600;margin-bottom:.25rem;}
+.card-sub{font-size:.75rem;color:var(--txt2);margin-bottom:1rem;font-family:var(--mono);}
+.chart-wrap{height:240px;position:relative;}
+.chart-wrap canvas{width:100%!important;height:100%!important;}
+
+/* GAUGE */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;}
+canvas#fg-gauge-canvas{width:220px;height:120px;}
+.fg-score{font-size:2.4rem;font-weight:700;font-family:var(--mono);margin-top:.5rem;}
+.fg-label{font-size:.82rem;color:var(--txt2);margin-top:.25rem;}
+.fg-rows{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem;width:100%;}
+.fg-cell{text-align:center;}
+.fg-cell-label{font-size:.7rem;color:var(--txt3);}
+.fg-cell-val{font-size:1rem;font-weight:700;font-family:var(--mono);}
+
+/* INSIGHT */
+.insight{background:#0d0d0d;border-left:3px solid var(--c1);border-radius:0 8px 8px 0;padding:1.1rem 1.25rem;margin-top:.85rem;font-size:.82rem;color:var(--txt2);line-height:1.75;}
+.insight strong{color:var(--txt);}
+.insight-title{font-size:.78rem;font-weight:700;color:var(--txt);margin-bottom:.5rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;opacity:.7;}
+.insight-body{margin-bottom:.85rem;}
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.75rem;}
+.signal{display:flex;gap:.85rem;align-items:flex-start;background:#111;border:1px solid var(--line);border-radius:8px;padding:.85rem 1rem;}
+.signal-icon{font-size:1.15rem;flex-shrink:0;margin-top:1px;}
+.signal-body{font-size:.78rem;color:var(--txt2);line-height:1.55;}
+.signal-body strong{color:var(--txt);display:block;margin-bottom:3px;font-size:.8rem;}
+.signal.green{border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.04);}
+.signal.red{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.04);}
+.signal.blue{border-color:rgba(91,156,246,.2);background:rgba(91,156,246,.04);}
+.signal.yellow{border-color:rgba(249,115,22,.2);background:rgba(249,115,22,.04);}
+
+/* TIME BTNS */
+.tbtn-wrap{display:flex;gap:.4rem;margin-bottom:.85rem;}
+.tbtn{padding:4px 11px;border-radius:5px;border:1px solid var(--line);font-size:.7rem;font-family:var(--mono);color:var(--txt3);cursor:pointer;background:transparent;transition:all .15s;}
+.tbtn.active,.tbtn:hover{border-color:var(--c1);color:var(--c1);}
+
+/* LOADING */
+.lw{display:flex;align-items:center;justify-content:center;height:100%;}
+.sp{width:24px;height:24px;border:2px solid var(--line);border-top-color:var(--c1);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* FOOTER */
+.cta-bar{border-top:1px solid var(--line);padding:1.25rem 1.5rem;}
+.cta-inner{max-width:1300px;margin:0 auto;display:flex;justify-content:center;}
+.cta-links{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;}
+.cta-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;border:1px solid var(--line);font-size:.75rem;font-weight:500;color:var(--txt2);text-decoration:none;background:transparent;transition:all .15s;}
+.cta-btn-th{color:#ddd;border-color:rgba(255,255,255,.2);}
+.cta-btn-th:hover{border-color:rgba(255,255,255,.4);color:#fff;}
+.cta-btn-tg{color:#29a8d8;border-color:rgba(39,167,214,.3);}
+.cta-btn-tg:hover{border-color:rgba(39,167,214,.5);}
+.cta-btn-nv{color:#03c75a;border-color:rgba(3,199,90,.3);}
+.cta-btn-nv:hover{border-color:rgba(3,199,90,.5);}
+footer{border-top:1px solid var(--line);padding:1rem 1.5rem;text-align:center;font-size:.72rem;color:var(--txt3);font-family:var(--mono);}
+footer a{color:var(--txt3);}
+
+/* SUMMARY BAR */
+.summary-bar{background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:.95rem 1.3rem;margin-bottom:1.6rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.summary-title{font-size:.75rem;color:var(--txt3);font-family:var(--mono);white-space:nowrap;margin-right:.25rem;}
+.summary-chips{display:flex;gap:.45rem;flex-wrap:wrap;flex:1;}
+.chip{display:flex;align-items:center;gap:.4rem;padding:4px 11px;border-radius:20px;font-size:.73rem;font-family:var(--mono);border:1px solid var(--line);background:rgba(255,255,255,.03);white-space:nowrap;}
+.chip-label{color:var(--txt3);}
+.chip-val{font-weight:600;}
+.chip.up{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06);}
+.chip.dn{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06);}
+.chip.neu{border-color:rgba(148,163,184,.2);background:rgba(148,163,184,.04);}
+.summary-time{font-size:.68rem;color:var(--txt3);font-family:var(--mono);white-space:nowrap;margin-left:auto;}
+
+/* 현재수치 해석 패널 */
+.now-panel{background:#0d0d0d;border-left:3px solid var(--c1);border-radius:0 8px 8px 0;padding:1.1rem 1.25rem;margin-top:.85rem;display:none;}
+.now-panel.show{display:block;}
+.now-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;flex-wrap:wrap;}
+.now-badge{font-size:.7rem;font-family:var(--mono);font-weight:700;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.now-badge.green{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3);}
+.now-badge.red{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);}
+.now-badge.yellow{background:rgba(249,115,22,.15);color:#f97316;border:1px solid rgba(249,115,22,.3);}
+.now-badge.blue{background:rgba(91,156,246,.15);color:#5b9cf6;border:1px solid rgba(91,156,246,.3);}
+.now-badge.neu{background:rgba(148,163,184,.1);color:#94a3b8;border:1px solid rgba(148,163,184,.2);}
+.now-val{font-size:1rem;font-weight:700;font-family:var(--mono);color:var(--txt);}
+.now-text{font-size:.82rem;color:var(--txt2);line-height:1.75;}
+.now-text strong{color:var(--txt);}
+.now-ai{margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--txt2);line-height:1.75;min-height:1.5rem;}
+.now-ai strong{color:var(--txt);}
+.now-ai-loading{display:flex;align-items:center;gap:.5rem;color:var(--txt3);font-size:.75rem;font-family:var(--mono);}
+.now-ai-loading .sp{width:13px;height:13px;border-width:1.5px;}
+/* 모바일 signal 1열 */
+@media(max-width:600px){
+  .signal-grid{grid-template-columns:1fr;}
+  .signal{padding:.75rem .9rem;}
+  .signal-body{font-size:.8rem;}
+  .insight{font-size:.8rem;}
+  .now-text{font-size:.8rem;}
+  .now-ai{font-size:.78rem;}
+  .card-sub{font-size:.73rem;}
+  .hcard-title{font-size:.72rem;}
+  .hcard-chg{font-size:.75rem;}
+  .hcard-desc{font-size:.68rem;}
+}
+/* 텔레그램 포스트 */
+.tg-post{background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:.75rem;transition:border-color .2s;}
+.tg-post:hover{border-color:#333;}
+.tg-post:last-child{margin-bottom:0;}
+.tg-post-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;}
+.tg-post-date{font-size:.72rem;color:var(--txt3);font-family:var(--mono);}
+.tg-post-link{font-size:.72rem;color:var(--c1);text-decoration:none;margin-left:auto;font-family:var(--mono);}
+.tg-post-link:hover{text-decoration:underline;}
+.tg-post-text{font-size:.85rem;color:#e8e8e8!important;line-height:1.75;white-space:pre-wrap;word-break:break-word;}
+.tg-post-text a{color:#7eb8f7!important;text-decoration:underline;}
+.tg-post>a[style*="inset"]{color:transparent!important;}
+.tg-post-img{margin-top:.75rem;border-radius:6px;max-width:100%;max-height:300px;object-fit:cover;}
+.tg-empty{text-align:center;color:var(--txt3);font-size:.82rem;padding:2rem;}
+
+/* RESPONSIVE */
+@media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
+@media(max-width:600px){.hero{grid-template-columns:repeat(2,1fr);}.cards-half{grid-template-columns:1fr;}.hdr-links .hdr-btn span{display:none;}.brand-sub{display:none;}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="hdr">
+  <div class="brand">
+    <div class="brand-icon">A²</div>
+    <div>
+      <div class="brand-name">자산제곱 모니터링 대시보드</div>
+      <div class="brand-sub">MARKET MONITOR · FRED REAL-TIME DATA</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="badge"><div class="dot"></div>LIVE</div>
+    <div class="hdr-links">
+      <a href="https://www.threads.com/@asset.x2" target="_blank" class="hdr-btn hdr-btn-th">
+        <svg width="12" height="12" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.23c8.249.053 14.474 2.452 18.502 7.13 2.932 3.405 4.893 8.11 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.741C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.206 17.11 97.015 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.204.195 97.105 0h-.113C68.977.195 47.42 9.643 32.7 28.08 19.663 44.479 12.875 67.461 12.636 96v.04c.239 28.579 7.027 51.56 20.064 68 14.72 18.437 36.277 27.885 64.326 28.08h.113c24.513-.172 41.766-6.589 55.888-20.707 18.868-18.862 18.291-42.498 12.064-57.014-4.419-10.321-12.659-18.696-23.554-24.411zm-41.036 55.309c-10.426.583-21.24-4.097-27.103-11.99-3.645-4.842-5.378-10.708-5.098-17.027.542-12.836 11.475-19.158 29.553-20.16 8.196-.473 15.888-.07 22.888 1.188-.806 24.367-9.095 47.098-20.24 47.99z"/></svg>
+        <span>Threads</span>
+      </a>
+      <a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank" class="hdr-btn hdr-btn-tg">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+        <span>프로젝트방</span>
+      </a>
+      <a href="https://contents.premium.naver.com/assetx2/assetsx2" target="_blank" class="hdr-btn hdr-btn-nv">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+        <span>구독자료</span>
+      </a>
+    </div>
+  </div>
+</div>
+</header>
+
+<div class="wrap">
+
+<!-- SUMMARY BAR -->
+<div class="summary-bar" id="summary-bar" style="display:none;">
+  <span class="summary-title">📊 현재 시장</span>
+  <div class="summary-chips" id="summary-chips"></div>
+  <span class="summary-time" id="summary-time"></span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hcard"><div class="hcard-title">공포탐욕지수</div><div class="hcard-val" id="h1"><div class="skel"></div></div><div class="hcard-chg" id="h1c">—</div><div class="hcard-desc">CNN Fear &amp; Greed Index</div></div>
+  <div class="hcard"><div class="hcard-title">VIX 변동성 지수</div><div class="hcard-val" id="h2"><div class="skel"></div></div><div class="hcard-chg" id="h2c">—</div><div class="hcard-desc">20 미만 안정 · 30 이상 경계</div></div>
+  <div class="hcard"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
+  <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard-val" id="h4"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 규모</div></div>
+  <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금 잔액</div></div>
+  <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
+  <div class="hcard"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스 지표</div></div>
+  <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
+</div>
+
+<!-- SEC 1: 텔레그램 채널 -->
+<div class="sec">
+  <div class="sec-hdr">
+    <div class="sec-num">1</div>
+    <div class="sec-title">자산제곱 최근 포스트</div>
+    <div class="sec-tag">@assets_x2</div>
+  </div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">최근 채널 글</div>
+      <div class="card-sub">텔레그램 @assets_x2 · 최신순</div>
+      <div id="tg-posts"><div class="lw" style="height:120px"><div class="sp"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 2: 공포탐욕 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">2</div><div class="sec-title">공포 &amp; 탐욕 지수</div><div class="sec-tag">CNN FEAR &amp; GREED</div></div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">현재</div>
+      <div class="gauge-wrap">
+        <canvas id="fg-gauge-canvas" width="220" height="120"></canvas>
+        <div class="fg-score" id="fg-score">—</div>
+        <div class="fg-label" id="fg-label">로딩 중...</div>
+        <div class="fg-rows">
+          <div class="fg-cell"><div class="fg-cell-label">1주 전</div><div class="fg-cell-val" id="fg-1w">—</div></div>
+          <div class="fg-cell"><div class="fg-cell-label">1개월 전</div><div class="fg-cell-val" id="fg-1m">—</div></div>
+          <div class="fg-cell"><div class="fg-cell-label">1년 전</div><div class="fg-cell-val" id="fg-1y">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">공포탐욕지수 추이</div>
+      <div class="card-sub">0 = 극단적 공포 · 100 = 극단적 탐욕</div>
+      <div class="chart-wrap" id="w-fng"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-fng"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 3: VIX -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">3</div><div class="sec-title">VIX 변동성 지수</div><div class="sec-tag">VIXCLS · CBOE</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">VIX 공포지수 추이</div>
+      <div class="card-sub">단위: 포인트 · 일간 · 20 이상 = 경계</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderVix(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderVix(365*3,this)">3Y</button>
+        <button class="tbtn" onclick="renderVix(365*5,this)">5Y</button>
+      </div>
+      <div class="chart-wrap" id="w-vix"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-vix"></div>
+    <div class="insight">
+  <div class="insight-title">📌 VIX란?</div>
+  <div class="insight-body">VIX는 <strong>시장이 앞으로 얼마나 출렁일지 예상하는 지수</strong>예요. 쉽게 말해 투자자들의 불안감을 숫자로 표현한 것으로, 주가가 급락할 때 VIX는 급등합니다. "공포지수"라고도 불려요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">😌</div><div class="signal-body"><strong>20 미만 — 안정</strong>시장이 조용하고 투자자들이 편안한 상태. 주식 등 위험자산 선호.</div></div>
+    <div class="signal yellow"><div class="signal-icon">😐</div><div class="signal-body"><strong>20~30 — 주의</strong>불확실성이 커지는 구간. 변동성이 높아질 수 있어 조심할 필요가 있어요.</div></div>
+    <div class="signal red"><div class="signal-icon">😱</div><div class="signal-body"><strong>30 이상 — 경계</strong>투자자들이 겁먹은 상태. 과거 주요 시장 충격 때 항상 이 구간을 넘었어요.</div></div>
+    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-body"><strong>40 이상 — 위기</strong>금융위기 수준의 패닉. 2008년 금융위기, 2020년 코로나 때 80을 넘었어요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 4: 금리차 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">4</div><div class="sec-title">미국 장단기 금리차 (10Y-2Y)</div><div class="sec-tag">T10Y2Y</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">10년물 - 2년물 국채 스프레드</div>
+      <div class="card-sub">단위: % · 일간 · 음수 = 역전</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderT10y2y(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderT10y2y(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderT10y2y(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-t10y2y"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-t10y2y"></div>
+    <div class="insight">
+  <div class="insight-title">📌 장단기 금리차란?</div>
+  <div class="insight-body"><strong>10년 금리에서 2년 금리를 뺀 값</strong>이에요. 보통은 10년 금리가 더 높아 양수(+)인데, 이게 음수(-)로 뒤집히면 "역전"이라고 해요. 역전은 역사적으로 경기침체 전에 항상 나타났던 강력한 경고 신호입니다.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>양수(+) — 정상</strong>장기금리 &gt; 단기금리. 경기 확장 기대. 일반적인 건강한 상태.</div></div>
+    <div class="signal red"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>음수(-) — 역전</strong>단기금리 &gt; 장기금리. 과거 50년간 모든 미국 경기침체 전에 나타났어요.</div></div>
+    <div class="signal blue"><div class="signal-icon">📈</div><div class="signal-body"><strong>역전 후 상승 전환</strong>역전이 풀리며 올라오는 시점이 실제 침체 시작과 맞물리는 경향이 있어요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">⏱️</div><div class="signal-body"><strong>시차 주의</strong>역전 후 실제 침체까지 보통 12~24개월이 걸려요. 즉각적 위험 신호는 아니에요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 5: 연준 총자산 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">5</div><div class="sec-title">연준 대차대조표 (총자산)</div><div class="sec-tag">WALCL</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">연준 총자산 추이</div>
+      <div class="card-sub">단위: $B · 주간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderWalcl(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderWalcl(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderWalcl(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-walcl"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-walcl"></div>
+    <div class="insight">
+  <div class="insight-title">📌 연준 대차대조표란?</div>
+  <div class="insight-body">연준(미국 중앙은행)이 보유한 <strong>자산의 총합</strong>이에요. 연준이 국채 등을 사들이면(QE) 돈이 시중에 풀리고, 팔면(QT) 돈이 줄어요. 이 규모가 클수록 시중에 돈이 많다는 뜻입니다.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">💰</div><div class="signal-body"><strong>양적완화 QE — 자산 증가</strong>연준이 돈을 푸는 중. 주식·부동산 등 자산가격 상승 압력이 생겨요.</div></div>
+    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-body"><strong>양적긴축 QT — 자산 감소</strong>연준이 돈을 거두는 중. 유동성 축소로 자산시장에 압박이 가해져요.</div></div>
+    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-body"><strong>2022년 고점</strong>약 9조 달러까지 늘어났다가 현재 6.6조 달러 수준으로 감소 중이에요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">🔍</div><div class="signal-body"><strong>지급준비금과 함께 보기</strong>대차대조표 크기보다 지급준비금 수준이 실제 유동성을 더 잘 보여줘요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 6: 지급준비금 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">6</div><div class="sec-title">연준 지급준비금 잔액</div><div class="sec-tag">WRESBAL</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">총 지급준비금 잔액</div>
+      <div class="card-sub">단위: $B · 주간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderRes(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderRes(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderRes(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-res"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-res"></div>
+    <div class="insight">
+  <div class="insight-title">📌 지급준비금이란?</div>
+  <div class="insight-body">은행들이 연준에 맡겨둔 <strong>현금 쿠션</strong>이에요. 이 잔액이 높을수록 은행들이 여유롭게 대출할 수 있어 금융시장이 안정적입니다. 너무 낮아지면 자금시장이 경색될 수 있어요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">🏦</div><div class="signal-body"><strong>잔액 충분</strong>은행들이 여유 자금 보유. 대출 원활, 금융시장 안정. 3조 달러 이상이 안전 구간으로 봐요.</div></div>
+    <div class="signal red"><div class="signal-icon">⚡</div><div class="signal-body"><strong>잔액 감소</strong>QT가 진행 중이거나 재무부 자금 흡수로 줄어드는 중. 2019년엔 급감으로 단기금리 폭등이 있었어요.</div></div>
+    <div class="signal blue"><div class="signal-icon">🔗</div><div class="signal-body"><strong>RRP와 반대로 움직임</strong>역레포 잔액이 줄면 지급준비금이 늘어나는 경향이 있어요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">📉</div><div class="signal-body"><strong>임계점 주의</strong>연준은 지급준비금이 너무 낮아지면 QT를 멈추거나 속도를 줄여요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 7: RRP -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">7</div><div class="sec-title">연준 역레포(RRP) 잔액</div><div class="sec-tag">RRPONTSYD</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">역레포 잔액 추이</div>
+      <div class="card-sub">단위: $B · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderRrp(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderRrp(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderRrp(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-rrp"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-rrp"></div>
+    <div class="insight">
+  <div class="insight-title">📌 역레포(RRP)란?</div>
+  <div class="insight-body">MMF 등 금융기관이 <strong>하루짜리로 연준에 맡기는 초단기 예금</strong>이에요. 갈 곳 없는 돈이 연준 금고에 쌓이는 것으로, 시중에 돈이 넘쳐날 때 급증해요. 이 잔액이 줄면 그 돈이 다시 시장으로 나온다는 뜻이에요.</div>
+  <div class="signal-grid">
+    <div class="signal red"><div class="signal-icon">💤</div><div class="signal-body"><strong>잔액 증가</strong>시중에 돈이 넘쳐 갈 곳이 없는 상태. 2022~23년 2조 달러까지 쌓였어요.</div></div>
+    <div class="signal green"><div class="signal-icon">🌊</div><div class="signal-body"><strong>잔액 감소</strong>돈이 시장으로 재유입. 주식·채권 등에 유동성이 공급되는 긍정적 신호예요.</div></div>
+    <div class="signal blue"><div class="signal-icon">🎯</div><div class="signal-body"><strong>현재 추세</strong>2022년 고점 대비 99% 이상 소진. 거의 바닥에 도달해 추가 유동성 공급 여력이 크지 않아요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>0에 가까워지면</strong>더 이상 시장으로 나올 돈이 없어져요. 이후 유동성은 연준 QT 속도에 의존하게 돼요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 8: TGA -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">미국 재무부 TGA 잔액</div><div class="sec-tag">WTREGEN</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">재무부 일반계정(TGA) 잔액</div>
+      <div class="card-sub">단위: $B · 주간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderTga(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderTga(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderTga(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-tga"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-tga"></div>
+    <div class="insight">
+  <div class="insight-title">📌 TGA(재무부 일반계정)란?</div>
+  <div class="insight-body">미국 재무부가 연준에 갖고 있는 <strong>정부 당좌계좌</strong>예요. 세금이 걷히거나 국채를 발행하면 늘고, 정부가 지출을 하면 줄어요. TGA가 줄 때마다 그 돈이 시중에 풀리기 때문에 유동성에 큰 영향을 줘요.</div>
+  <div class="signal-grid">
+    <div class="signal red"><div class="signal-icon">🏛️</div><div class="signal-body"><strong>TGA 증가 → 유동성 흡수</strong>세금 납부 시즌이나 국채 발행 때 급증. 시중 돈이 정부로 빨려 들어가요.</div></div>
+    <div class="signal green"><div class="signal-icon">💸</div><div class="signal-body"><strong>TGA 감소 → 유동성 공급</strong>정부 지출 시 돈이 시중에 풀려요. 부채한도 협상 때 TGA가 급감하면 유동성 호재.</div></div>
+    <div class="signal blue"><div class="signal-icon">⚖️</div><div class="signal-body"><strong>부채한도 협상과 연결</strong>부채한도 이슈로 국채 발행이 막히면 TGA가 급감했다가, 해결 후 재충전하며 시장에 충격을 줘요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">📅</div><div class="signal-body"><strong>계절성 있음</strong>4월(세금 납부), 연말은 증가. 1~2월, 여름은 감소 경향이 있어요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SEC 9: 주간증감 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">지급준비금 &amp; TGA — 전주 대비 증감</div><div class="sec-tag">WEEKLY CHANGE</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">주간 변동폭 (지급준비금 vs TGA)</div>
+      <div class="card-sub">단위: $B</div>
+      <div class="chart-wrap" id="w-wk"><div class="lw"><div class="sp"></div></div></div>
+      <div class="insight"><strong>지급준비금↓ + TGA↑</strong> → 긴축 국면. <strong>지급준비금↑ + TGA↓</strong> → 유동성 공급 국면.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 10: MMF 총잔액 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">MMF 총 잔액 추이</div>
+      <div class="card-sub">단위: $B · 주간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderMmf(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderMmf(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderMmf(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-mmf"><div class="lw"><div class="sp"></div></div></div>
+      <div class="insight">
+  <div class="insight-title">📌 MMF(머니마켓펀드)란?</div>
+  <div class="insight-body">단기 안전자산에 투자하는 펀드로, 투자자들이 <strong>"지금은 주식 말고 일단 안전한 곳에 넣자"</strong>고 판단할 때 자금이 몰려요. MMF 잔액이 급증하면 시장 불안이 크다는 신호이고, 반대로 줄면 위험자산으로 자금이 이동한다는 뜻이에요.</div>
+  <div class="signal-grid">
+    <div class="signal red"><div class="signal-icon">🏃</div><div class="signal-body"><strong>잔액 급증</strong>투자자들이 위험자산 피해 안전지대로 대피 중. 불안감이 크거나 금리가 매력적일 때 증가해요.</div></div>
+    <div class="signal green"><div class="signal-icon">🔄</div><div class="signal-body"><strong>잔액 감소</strong>투자자들이 주식·채권으로 복귀 중. MMF에서 빠진 돈이 자산시장으로 유입돼요.</div></div>
+    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-body"><strong>현재 6조 달러 이상</strong>역사적 최고 수준. 잠재적으로 시장으로 유입될 수 있는 엄청난 대기 자금이에요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">💡</div><div class="signal-body"><strong>기관형 vs 리테일</strong>기관형은 주로 역레포에, 리테일은 단기채권에 투자해요. 성격이 달라요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 11: MMF vs RRP -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">MMF vs 역레포(RRP) 비교</div><div class="sec-tag">CORRELATION</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">MMF 잔액 vs 역레포 잔액</div>
+      <div class="card-sub">단위: $B</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderMmfRrp(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderMmfRrp(365*5,this)">5Y</button>
+      </div>
+      <div class="chart-wrap" id="w-mmfrrp"><div class="lw"><div class="sp"></div></div></div>
+      <div class="insight">기관형 MMF는 초과 현금을 주로 <strong>연준 역레포(RRP)</strong>에 예치합니다. RRP 잔액 감소는 MMF 자금이 국채·CP 등 시장으로 이동했음을 뜻합니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 12: MMF 주간증감 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">MMF 전주 대비 증감폭</div><div class="sec-tag">WEEKLY FLOW</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">MMF 주간 자금 유출입</div>
+      <div class="card-sub">전주 대비 증감 · 단위: $B</div>
+      <div class="chart-wrap" id="w-mmfwk"><div class="lw"><div class="sp"></div></div></div>
+      <div class="insight"><strong>대규모 유입(+)</strong> → 위험 회피, 안전자산 선호. <strong>대규모 유출(−)</strong> → 투자자들이 주식·채권 등 위험자산으로 이동 중인 신호.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 13: 하이일드 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">하이일드 채권 스프레드</div>
+      <div class="card-sub">단위: % · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderHys(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderHys(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderHys(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-hys"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-hys"></div>
+    <div class="insight">
+  <div class="insight-title">📌 하이일드 스프레드란?</div>
+  <div class="insight-body"><strong>정크본드(고위험 회사채)와 국채 금리의 차이</strong>예요. 기업이 도산할 위험이 높아질수록 이 차이(스프레드)가 벌어져요. 신용시장의 스트레스를 가장 빠르게 감지하는 지표 중 하나예요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>3~4% — 정상</strong>기업 부도 우려가 낮고 신용시장이 건강한 상태. 경기 확장기에 주로 나타나요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>4~6% — 주의</strong>경기 둔화 우려가 생기는 구간. 투자자들이 위험을 회피하기 시작해요.</div></div>
+    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-body"><strong>8% 이상 — 위기</strong>신용경색 수준. 기업들이 자금 조달에 어려움을 겪어요. 2008년엔 20%까지 치솟았어요.</div></div>
+    <div class="signal blue"><div class="signal-icon">🔮</div><div class="signal-body"><strong>선행지표</strong>주식시장보다 먼저 위험 신호를 보내는 경향이 있어요. 스프레드 급등에 주목하세요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 10: MMF -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">14</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">금융스트레스지수 (STLFSI)</div>
+      <div class="card-sub">단위: 표준편차 · 주간 · 0 이상 = 스트레스</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderStlfsi(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderStlfsi(365*5,this)">5Y</button>
+      </div>
+      <div class="chart-wrap" id="w-stlfsi"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-stlfsi"></div>
+      <div class="insight">
+  <div class="insight-title">📌 금융스트레스지수란?</div>
+  <div class="insight-body">세인트루이스 연준이 만든 지수로, <strong>금리·신용·주식 등 18개 지표를 종합</strong>해 금융시스템 전체의 스트레스를 하나의 숫자로 보여줘요. 0이 역사적 평균이에요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">😊</div><div class="signal-body"><strong>0 미만 — 낮은 스트레스</strong>평균보다 금융시장이 안정적인 상태. 대부분의 평상시가 이 구간이에요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">😶</div><div class="signal-body"><strong>0~1 — 보통</strong>약간의 스트레스가 있지만 정상 범위. 지속 관찰이 필요한 구간이에요.</div></div>
+    <div class="signal red"><div class="signal-icon">😰</div><div class="signal-body"><strong>1 이상 — 높은 스트레스</strong>금융시장 전반에 긴장감. 과거 위기 때마다 이 구간을 넘어섰어요.</div></div>
+    <div class="signal red"><div class="signal-icon">🔥</div><div class="signal-body"><strong>3 이상 — 위기</strong>2008년 금융위기, 2020년 코로나 충격 때 이 수준에 도달했어요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 15: SOFR/EFFR -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">15</div><div class="sec-title">SOFR / EFFR 스프레드</div><div class="sec-tag">SECURED vs UNSECURED</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">SOFR · EFFR 금리 및 스프레드 추이</div>
+      <div class="card-sub">단위: % · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderSofr(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderSofr(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-sofr"><div class="lw"><div class="sp"></div></div></div>
+    <div class="insight">
+  <div class="insight-title">📌 SOFR/EFFR 스프레드란?</div>
+  <div class="insight-body"><strong>SOFR</strong>은 담보를 맡기고 빌리는 금리, <strong>EFFR</strong>은 담보 없이 빌리는 금리예요. 두 금리의 차이(스프레드)가 갑자기 벌어지면 담보 자산(국채 등)을 급히 필요로 하는 수요가 생겼다는 뜻으로, 시장 스트레스 신호예요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>스프레드 0 근처</strong>담보부·무담보 시장이 균형 잡힌 상태. 자금시장이 원활하게 돌아가고 있어요.</div></div>
+    <div class="signal red"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>스프레드 급확대</strong>담보 자산 수요 급증. 자금시장 긴장 신호. 분기 말·연말에 일시적으로 확대되기도 해요.</div></div>
+    <div class="signal blue"><div class="signal-icon">💡</div><div class="signal-body"><strong>SOFR이 더 낮은 게 정상</strong>담보가 있으면 리스크가 낮아 금리도 보통 낮아요. 역전되면 비정상 상황이에요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">📅</div><div class="signal-body"><strong>분기 말 주의</strong>분기 말에는 은행 규제로 일시적으로 스프레드가 벌어지는 현상이 반복돼요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 16: SOFR/IORB -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">16</div><div class="sec-title">SOFR / IORB 스프레드</div><div class="sec-tag">MARKET RATE vs FED RATE</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">SOFR · IORB 금리 및 스프레드 추이</div>
+      <div class="card-sub">단위: % · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderIorb(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderIorb(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-iorb"><div class="lw"><div class="sp"></div></div></div>
+    <div class="insight">
+  <div class="insight-title">📌 SOFR/IORB 스프레드란?</div>
+  <div class="insight-body"><strong>IORB</strong>는 연준이 은행 초과준비금에 지급하는 이자율이에요. SOFR이 IORB보다 높으면 은행들이 연준 대신 시장에서 돈을 빌려주는 게 유리하다는 뜻으로, 시중 유동성이 빠듯하다는 신호예요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">💧</div><div class="signal-body"><strong>SOFR &lt; IORB</strong>은행들이 시장보다 연준에 돈 맡기기를 선호. 시중에 유동성이 넉넉한 상태예요.</div></div>
+    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-body"><strong>SOFR &gt; IORB</strong>시장 금리가 연준 이자율보다 높아짐. 시중 유동성 부족 신호. QT가 과도하게 진행된다는 경고예요.</div></div>
+    <div class="signal blue"><div class="signal-icon">🎯</div><div class="signal-body"><strong>연준의 조절 기준</strong>SOFR이 IORB를 지속적으로 넘어서면 연준이 QT를 늦추거나 중단할 수 있어요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">📊</div><div class="signal-body"><strong>2019년 교훈</strong>준비금이 부족해 SOFR이 IORB를 훨씬 넘어서며 단기금리가 폭등한 사례가 있어요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- SEC 17: 달러인덱스 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-title">달러인덱스 (DXY)</div><div class="sec-tag">DTWEXBGS</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">달러인덱스 추이</div>
+    <div class="card-sub">단위: 지수 · 일간 · 100 기준</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderDxy(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderDxy(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderDxy(365*5,this)">5Y</button>
+    </div>
+    <div class="chart-wrap" id="w-dxy"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-dxy"></div>
+    <div class="insight">
+      <div class="insight-title">📌 달러인덱스란?</div>
+      <div class="insight-body">주요 6개국 통화 대비 달러 강도를 나타내요. <strong>달러 강세</strong>는 신흥국 자금유출·원자재 하락 압력, <strong>달러 약세</strong>는 위험자산 선호 환경을 만들어요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">💵</div><div class="signal-body"><strong>달러 강세(↑)</strong>신흥국 통화 약세, 원자재 하락, 글로벌 유동성 위축 압력</div></div>
+        <div class="signal green"><div class="signal-icon">🌏</div><div class="signal-body"><strong>달러 약세(↓)</strong>위험자산 선호, 신흥국 자금유입, 원자재 상승 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 18: 10년물 국채금리 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-title">미국 10년물 국채금리</div><div class="sec-tag">DGS10</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">10년물 국채금리 추이</div>
+    <div class="card-sub">단위: % · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderDgs10(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderDgs10(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderDgs10(365*5,this)">5Y</button>
+    </div>
+    <div class="chart-wrap" id="w-dgs10"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-dgs10"></div>
+    <div class="insight">
+      <div class="insight-title">📌 10년물 국채금리란?</div>
+      <div class="insight-body">미국 장기 금리의 기준이에요. 주식 밸류에이션의 할인율로 작용하며 <strong>금리 상승</strong>은 성장주에 부담, <strong>금리 하락</strong>은 채권·성장주에 유리해요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>금리 상승</strong>주식 할인율 상승 → 성장주 밸류에이션 압박, 채권 가격 하락</div></div>
+        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>금리 하락</strong>채권 가격 상승, 성장주 유리, 경기침체 우려 반영 신호</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 19: WTI 원유 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">WTI 원유가격 추이</div>
+    <div class="card-sub">단위: USD/배럴 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderWti(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderWti(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderWti(365*5,this)">5Y</button>
+    </div>
+    <div class="chart-wrap" id="w-wti"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-wti"></div>
+    <div class="insight">
+      <div class="insight-title">📌 WTI 원유란?</div>
+      <div class="insight-body">글로벌 경기 선행지표이자 인플레이션 핵심 변수예요. <strong>유가 상승</strong>은 물가 압력을 높여 연준 긴축을 강화하고, <strong>유가 하락</strong>은 디플레이션 우려와 경기둔화 신호일 수 있어요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">🛢️</div><div class="signal-body"><strong>유가 상승</strong>인플레이션 압력 ↑ → 연준 긴축 장기화 가능성</div></div>
+        <div class="signal green"><div class="signal-icon">💨</div><div class="signal-body"><strong>유가 하락</strong>물가 안정 → 금리인하 여지 확대, 단 경기침체 신호일 수도</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 20: M2 통화량 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">20</div><div class="sec-title">미국 M2 통화량</div><div class="sec-tag">M2SL</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">M2 통화량 추이</div>
+    <div class="card-sub">단위: $B · 월간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderM2(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderM2(365*5,this)">5Y</button>
+      <button class="tbtn" onclick="renderM2(365*10,this)">10Y</button>
+    </div>
+    <div class="chart-wrap" id="w-m2"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-m2"></div>
+    <div class="insight">
+      <div class="insight-title">📌 M2 통화량이란?</div>
+      <div class="insight-body">현금+예금+MMF 등을 포함한 광의의 통화량이에요. <strong>M2 증가</strong>는 시중에 돈이 많아져 자산가격 상승 압력, <strong>M2 감소</strong>는 역사적으로 드물며 자산시장에 부정적이에요.</div>
+      <div class="signal-grid">
+        <div class="signal green"><div class="signal-icon">💰</div><div class="signal-body"><strong>M2 증가</strong>시중 유동성 확대 → 자산가격 상승 압력, 인플레이션 위험</div></div>
+        <div class="signal red"><div class="signal-icon">🔻</div><div class="signal-body"><strong>M2 감소</strong>유동성 수축 → 역사적으로 자산가격 조정과 동반</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 21: 실업률 & 신규실업수당 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">21</div><div class="sec-title">실업률 &amp; 신규실업수당</div><div class="sec-tag">UNRATE · ICSA</div></div>
+  <div class="cards-half">
+    <div class="card">
+      <div class="card-title">미국 실업률</div>
+      <div class="card-sub">단위: % · 월간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderUnrate(365*3,this)">3Y</button>
+        <button class="tbtn" onclick="renderUnrate(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderUnrate(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-unrate"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-unrate"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">주간 신규 실업수당 청구</div>
+      <div class="card-sub">단위: 천 건 · 주간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderIcsa(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderIcsa(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-icsa"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-icsa"></div>
+    </div>
+  </div>
+  <div class="insight" style="margin-top:.85rem;">
+    <div class="insight-title">📌 고용지표란?</div>
+    <div class="insight-body">연준의 두 가지 목표 중 하나가 <strong>최대 고용</strong>이에요. 실업률 상승·신규실업수당 급증은 경기침체 신호이자 연준 금리인하의 핵심 트리거예요.</div>
+    <div class="signal-grid">
+      <div class="signal green"><div class="signal-icon">👷</div><div class="signal-body"><strong>실업률 4% 이하</strong>완전고용 수준. 연준이 금리인하에 서두를 필요 없음</div></div>
+      <div class="signal red"><div class="signal-icon">📋</div><div class="signal-body"><strong>신규실업수당 25만+ 급증</strong>고용시장 냉각 신호. 연준 피벗 기대 강화</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 22: 네이버 프리미엄 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">22</div><div class="sec-title">네이버 프리미엄 콘텐츠</div><div class="sec-tag">자산제곱</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">최근 리포트</div>
+    <div class="card-sub">네이버 프리미엄 · 자산제곱</div>
+    <div id="naver-posts">
+      <div style="margin-bottom:.75rem;">
+        <div class="tg-post" style="cursor:pointer;transition:border-color .2s;border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.03);"
+          onmouseover="this.style.borderColor='#03c75a'"
+          onmouseout="this.style.borderColor='rgba(3,199,90,.25)'"
+          onclick="window.open('https://contents.premium.naver.com/assetx2/assetsx2','_blank')">
+          <div class="tg-post-meta">
+            <span style="font-size:.72rem;color:#03c75a;font-family:var(--mono);font-weight:700;background:rgba(3,199,90,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(3,199,90,.3);">N NAVER PREMIUM</span>
+            <span style="font-size:.72rem;color:#aaa;font-family:var(--mono);">주 3회 발행 · 187편+</span>
+            <span class="tg-post-link" style="color:#03c75a;">구독하기 →</span>
+          </div>
+          <div style="font-size:.92rem;font-weight:700;color:#e8e8e8;margin:.6rem 0 .5rem;">자산제곱 구독자료</div>
+          <div style="font-size:.82rem;color:#bbb;line-height:1.85;">핵심 전략으로 귀하게 대접하겠습니다.</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(91,156,246,.12);color:#5b9cf6;border:1px solid rgba(91,156,246,.25);">투자 전략</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25);">시나리오</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);">시장 리포트</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);">기술적 분석</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#0d0d0d;border:1px solid var(--line);border-radius:8px;">
+        <span style="font-size:1.1rem;">🏆</span>
+        <div>
+          <div style="font-size:.82rem;color:#e8e8e8;font-weight:600;">미래에셋 VIP+ 서비스 제공 콘텐츠</div>
+          <div style="font-size:.72rem;color:#666;margin-top:2px;">실력으로 검증된 프리미엄 리서치</div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+</div><!-- /wrap --></div><!-- /wrap -->
+
+<div class="cta-bar">
+  <div class="cta-inner">
+    <div class="cta-links">
+      <a href="https://www.threads.com/@asset.x2" target="_blank" class="cta-btn cta-btn-th">
+        <svg width="12" height="12" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.23c8.249.053 14.474 2.452 18.502 7.13 2.932 3.405 4.893 8.11 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.741C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.206 17.11 97.015 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.204.195 97.105 0h-.113C68.977.195 47.42 9.643 32.7 28.08 19.663 44.479 12.875 67.461 12.636 96v.04c.239 28.579 7.027 51.56 20.064 68 14.72 18.437 36.277 27.885 64.326 28.08h.113c24.513-.172 41.766-6.589 55.888-20.707 18.868-18.862 18.291-42.498 12.064-57.014-4.419-10.321-12.659-18.696-23.554-24.411zm-41.036 55.309c-10.426.583-21.24-4.097-27.103-11.99-3.645-4.842-5.378-10.708-5.098-17.027.542-12.836 11.475-19.158 29.553-20.16 8.196-.473 15.888-.07 22.888 1.188-.806 24.367-9.095 47.098-20.24 47.99z"/></svg>
+        Threads
+      </a>
+      <a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank" class="cta-btn cta-btn-tg">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+        프로젝트방
+      </a>
+      <a href="https://contents.premium.naver.com/assetx2/assetsx2" target="_blank" class="cta-btn cta-btn-nv">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+        구독자료
+      </a>
+    </div>
+  </div>
+</div>
+<footer>데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a> · 본 페이지는 정보 제공 목적으로만 제공됩니다.</footer>
+
+<script>
+const GRID='rgba(255,255,255,0.05)';
+const CHARTS={};
+Chart.defaults.color='#475569';
+Chart.defaults.font.family="'IBM Plex Mono',monospace";
+Chart.defaults.font.size=10.5;
+
+// ── 유틸 ──
+function fmtB(v){const a=Math.abs(+v);if(a>=1000)return (v/1000).toFixed(1)+'T';return (+v).toFixed(0)+'B';}
+function fmtT(v){if(v>=1e6)return (v/1e6).toFixed(2)+'T';if(v>=1e3)return (v/1e3).toFixed(1)+'B';return v.toFixed(0);}
+function thin(dates,vals,max){
+  if(dates.length<=max)return{dates,vals};
+  const s=Math.ceil(dates.length/max);
+  return{dates:dates.filter((_,i)=>i%s===0),vals:vals.filter((_,i)=>i%s===0)};
+}
+function mkOpts(yOpts){
+  return{responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    animation:{duration:400},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#111',borderColor:'#333',borderWidth:1,titleColor:'#888',bodyColor:'#eee',padding:10}},
+    scales:{x:{grid:{color:GRID},ticks:{maxTicksLimit:8,color:'#475569'}},y:{grid:{color:GRID},...(yOpts||{})}}
+  };
+}
+function mkLine(id,labels,datasets,yOpts){
+  const c=CHARTS[id];if(c)c.destroy();
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML='<canvas></canvas>';
+  CHARTS[id]=new Chart(el.querySelector('canvas').getContext('2d'),{type:'line',data:{labels,datasets},options:mkOpts(yOpts)});
+}
+function showSpin(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="lw"><div class="sp"></div></div>';}
+function setH(id,val,cls,chg,chgCol){
+  const el=document.getElementById('h'+id);
+  if(el){
+    el.innerHTML='';
+    el.textContent=val;
+    el.className='hcard-val';
+    if(typeof chgCol==='string'&&chgCol.startsWith('#')) el.style.color='';
+    else el.className='hcard-val '+(cls||'');
+  }
+  const ec=document.getElementById('h'+id+'c');
+  if(ec&&chg){
+    ec.textContent=chg;
+    ec.className='hcard-chg';
+    if(typeof chgCol==='string'&&chgCol.startsWith('#')) ec.style.color=chgCol;
+    else ec.style.color='';
+  }
+}
+
+// ── apiFetch: 위에서 정의됨 ──
+
+// ── 색상 헬퍼 ──
+function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';}
+function fgTxt(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
+
+// ── 세션 캐시 (1시간) ──
+const CACHE_TTL = 36e5;
+function cKey(s,d){return`aq2_${s}_${d}`;}
+function cGet(s,d){try{const r=sessionStorage.getItem(cKey(s,d));if(!r)return null;const p=JSON.parse(r);if(Date.now()-p.t>CACHE_TTL)return null;return p.v;}catch(e){return null;}}
+function cSet(s,d,v){try{sessionStorage.setItem(cKey(s,d),JSON.stringify({t:Date.now(),v}));}catch(e){}}
+
+// ── FRED API (corsproxy 경유 → /api/fred 폴백) ──
+const FRED_KEY='38a4c9938e82be4200fd122b8fe645a1';
+async function apiFetch(series,days){
+  const cached=cGet(series,days);
+  if(cached)return cached;
+  const start=new Date();
+  start.setDate(start.getDate()-(parseInt(days)||365));
+  const startStr=start.toISOString().slice(0,10);
+  const fredUrl=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_KEY}&file_type=json&observation_start=${startStr}&sort_order=asc`;
+
+  // 방법1: /api/fred 서버 함수 (Vercel 서버리스 - 가장 안정적)
+  // 방법2: allorigins proxy
+  // 방법3: corsproxy.io (fallback)
+  const proxies=[
+    ()=>fetch(`/api/fred?series=${series}&days=${days}`),
+    ()=>fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(fredUrl)}`).then(async r=>{
+      const w=await r.json();
+      return new Response(w.contents,{headers:{'Content-Type':'application/json'}});
+    }),
+    ()=>fetch(`https://corsproxy.io/?url=${encodeURIComponent(fredUrl)}`),
+  ];
+
+  let lastErr;
+  for(const proxyFn of proxies){
+    try{
+      const r=await proxyFn();
+      if(!r.ok)throw new Error(r.status);
+      const raw=await r.json();
+      // /api/fred 응답은 {dates,vals}, FRED 직접 응답은 {observations:[]}
+      let dates,vals;
+      if(raw.dates&&raw.vals){
+        dates=raw.dates; vals=raw.vals;
+      } else {
+        const obs=(raw.observations||[]).filter(o=>o.value!=='.'&&o.value!=='');
+        if(!obs.length)throw new Error('no data');
+        if(raw.error_code)throw new Error(raw.error_message);
+        vals=obs.map(o=>parseFloat(o.value));
+        // WRMFNS/WRMFSL: FRED는 조달러(T) 단위 제공 → B로 변환
+        // 500 미만이면 T단위(예: 6.5T), 이상이면 이미 B단위
+        if(['WRMFNS'].includes(series.toUpperCase())){
+          const last=vals.at(-1);
+          if(last!=null&&last<500) vals=vals.map(v=>+(v*1000).toFixed(1));
+        }
+        dates=obs.map(o=>o.date);
+      }
+      if(!dates||!dates.length)throw new Error('no data');
+      const data={dates,vals};
+      cSet(series,days,data);
+      return data;
+    }catch(e){lastErr=e;}
+  }
+  throw lastErr||new Error('all proxies failed');
+}
+
+// ── now-panel 표시 ──
+function showNow(id,val,badge,label,text,period){
+  const el=document.getElementById('now-'+id);
+  if(!el)return;
+  const periodTag=period?`<span class="now-badge neu" style="opacity:.6">${period}</span>`:'';
+  el.innerHTML=`<div class="now-header">${periodTag}<span class="now-badge ${badge}">${label}</span><span class="now-val">${val}</span></div><div class="now-text">${text}</div>`;
+  el.classList.add('show');
+}
+
+// ── 기간 라벨 변환 ──
+function periodLabel(days){
+  if(days<=365)return'최근 1년';
+  if(days<=365*2)return'최근 2년';
+  if(days<=365*3)return'최근 3년';
+  if(days<=365*5)return'최근 5년';
+  return'최근 10년';
+}
+
+// ── 추세 분석 헬퍼 ──
+function trend(vals){
+  const n=vals.length;
+  if(n<2)return{dir:'neutral',chg:0,pct:0};
+  const first=vals[0],last=vals[n-1];
+  const chg=last-first;
+  const pct=first!==0?(chg/Math.abs(first)*100):0;
+  return{dir:chg>0?'up':chg<0?'down':'neutral',chg,pct,first,last,
+    max:Math.max(...vals),min:Math.min(...vals)};
+}
+
+// ── Claude AI 실시간 해석 ──
+function aiInterpret(id, context){ /* CORS 이슈로 비활성화 */ }
+
+// ── 지표별 정적 해석 함수 ──
+function fngBadge(v){return v<=24?'red':v<=44?'red':v<=55?'neu':v<=74?'green':'red';}
+function fngLabel(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
+function fngText(v){
+  if(v<=24)return`현재 <strong>${v}점</strong>으로 극단적 공포 구간이에요. 투자자들이 매우 불안한 상태로 시장이 크게 눌려 있어요. 역발상 관점에서 저가 매수 기회가 열릴 수 있지만, <strong>분할 접근</strong>이 안전해요.`;
+  if(v<=44)return`현재 <strong>${v}점</strong>으로 공포 구간이에요. 투자자 불안이 우세해요. 섣부른 추격보다 <strong>현금 비중 유지</strong>가 좋아요.`;
+  if(v<=55)return`현재 <strong>${v}점</strong>으로 중립 구간이에요. 탐욕도 공포도 아닌 균형 상태예요. <strong>기존 포지션 유지</strong>가 적합해요.`;
+  if(v<=74)return`현재 <strong>${v}점</strong>으로 탐욕 구간이에요. 시장 과열 조짐이 있어요. <strong>수익 일부 실현</strong>을 고려해볼 때예요.`;
+  return`현재 <strong>${v}점</strong>으로 극단적 탐욕 구간이에요! 시장이 과열됐어요. <strong>신규 매수는 매우 신중</strong>하게 해야 해요.`;
+}
+// ── 해석 함수 ──
+// 일간 데이터: vals.at(-6)=1주전, vals.at(-13)=2주전, vals.at(-65)=3개월전
+// 주간 데이터: vals.at(-1)=직전주, vals.at(-2)=전전주, vals.at(-13)=3개월전
+
+function _tag(chg, isGoodUp){
+  // isGoodUp: 올라가면 좋은 지표(준비금 등)는 true, 올라가면 나쁜 지표(VIX, HYS 등)는 false
+  if(chg===0||chg==null)return'';
+  const up=chg>0;
+  const good=isGoodUp?up:!up;
+  const col=good?'#34d399':'#f87171';
+  const arrow=up?'▲':'▼';
+  return `<span style="color:${col};font-weight:600">${arrow}</span>`;
+}
+
+// ── VIX (일간, 1주전 비교) ──
+function vixText(v, vals){
+  const w1=vals&&vals.length>6?vals.at(-6):null;   // 1주전
+  const m3=vals&&vals.length>65?vals.at(-65):null; // 3개월전
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>1주 전(${w1.toFixed(1)}) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲':'▼'}${Math.abs(wchg).toFixed(1)}pt ${wchg>0?'상승':'하락'}</span>`+(m3!=null?` · 3개월 전(${m3.toFixed(1)}) 대비 ${v>m3?'▲높음':'▼낮음'}`:'')
+    :'';
+  let base;
+  if(v<15)base=`VIX <strong>${v.toFixed(1)}</strong> — 시장이 매우 조용해요. 이 수준은 역사적 저점으로, 갑작스러운 충격이 올 수 있어요.`;
+  else if(v<20)base=`VIX <strong>${v.toFixed(1)}</strong> — 안정 구간이에요. 투자자들이 편안한 상태로 위험자산에 우호적이에요.`;
+  else if(v<30)base=`VIX <strong>${v.toFixed(1)}</strong> — 불안이 커지고 있어요. 포지션 점검과 방어적 자산 비중 확대를 고려할 때예요.`;
+  else if(v<40)base=`VIX <strong>${v.toFixed(1)}</strong> — 투자자들이 크게 불안한 상태예요. <strong>리스크 관리</strong>가 우선이에요.`;
+  else base=`VIX <strong>${v.toFixed(1)}</strong> — 금융위기 수준의 패닉이에요! 역사적으로 이 구간에서 저점이 형성됐어요. <strong>냉정함 유지</strong>가 중요해요.`;
+  return base+note;
+}
+function vixBadge(v){return v<15?'green':v<20?'green':v<30?'yellow':'red';}
+function vixLabel(v){return v<15?'매우 안정':v<20?'안정':v<30?'주의':v<40?'경계':'위기';}
+
+// ── 금리차 (일간, 1주전 비교) ──
+function spreadText(v, vals){
+  const w1=vals&&vals.length>6?vals.at(-6):null;
+  const m3=vals&&vals.length>65?vals.at(-65):null;
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>1주 전(${w1>=0?'+':''}${w1.toFixed(2)}%) 대비 <span style="color:${wchg>0?'#34d399':'#f87171'};font-weight:600">${wchg>0?'▲':'▼'}${Math.abs(wchg).toFixed(2)}%p ${wchg>0?'개선':'악화'}</span>`+(m3!=null?` · 3개월 전(${m3>=0?'+':''}${m3.toFixed(2)}%) 대비 ${v>m3?'▲개선':'▼악화'}`:'')
+    :'';
+  let base;
+  if(v>=0.5)base=`금리차 <strong>+${v.toFixed(2)}%</strong> — 정상 구간이에요. 장기금리>단기금리로 경제 성장 기대가 반영된 건강한 상태예요.`;
+  else if(v>=0)base=`금리차 <strong>+${v.toFixed(2)}%</strong> — 0에 근접했어요. 역전 직전으로 경기 둔화 우려가 반영되고 있어요.`;
+  else if(v>=-0.5)base=`금리차 <strong>${v.toFixed(2)}%</strong> — 역전 상태예요. 역사적으로 경기침체 전 항상 나타났던 신호예요. 실제 침체까지는 <strong>12~24개월 시차</strong>가 있어요.`;
+  else base=`금리차 <strong>${v.toFixed(2)}%</strong> — 역전이 크게 심화됐어요. 시장이 경기침체 가능성을 높게 보고 있어요.`;
+  return base+note;
+}
+function spreadBadge(v){return v>=0.5?'green':v>=0?'yellow':'red';}
+function spreadLabel(v){return v>=0.5?'정상':v>=0?'주의':v>=-0.5?'역전':'심화 역전';}
+
+// ── 연준 총자산 (주간, 전주 비교) ──
+function walclText(v, vals){
+  const w1=vals&&vals.length>1?vals.at(-2):null;   // 전주
+  const m3=vals&&vals.length>13?vals.at(-13):null; // 3개월전
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>전주($${fmtT(w1)}) 대비 <span style="color:${wchg>0?'#34d399':'#f87171'};font-weight:600">${wchg>0?'▲증가':'▼감소'} $${fmtT(Math.abs(wchg))}</span>`+(m3!=null?` · 3개월 전($${fmtT(m3)}) 대비 ${v>m3?'▲증가':'▼감소'}`:'')
+    :'';
+  let base;
+  if(v>8500)base=`연준 총자산 <strong>$${fmtT(v)}</strong> — QE(양적완화) 수준이에요. 시중에 유동성이 풍부해 자산시장에 우호적이에요.`;
+  else if(v>7000)base=`연준 총자산 <strong>$${fmtT(v)}</strong> — 2022년 고점($8.9T) 대비 줄었지만 여전히 높은 수준이에요. QT가 진행 중이에요.`;
+  else if(v>6000)base=`연준 총자산 <strong>$${fmtT(v)}</strong> — QT가 상당히 진행됐어요. 시중 유동성이 줄어들어 자산시장에 <strong>압박 요인</strong>으로 작용해요.`;
+  else base=`연준 총자산 <strong>$${fmtT(v)}</strong> — 유동성 환경이 크게 타이트해졌어요. 금융시장 자금 여건에 주의가 필요해요.`;
+  return base+note;
+}
+function walclBadge(v){return v>8500?'green':v>7000?'blue':v>6000?'yellow':'red';}
+function walclLabel(v){return v>8500?'양적완화(QE)':v>7000?'완만한 QT':v>6000?'QT 진행':'긴축 심화';}
+
+// ── 지급준비금 (주간, 전주 비교) ──
+function resText(v, vals){
+  const w1=vals&&vals.length>1?vals.at(-2):null;
+  const m3=vals&&vals.length>13?vals.at(-13):null;
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>전주($${fmtT(w1)}) 대비 <span style="color:${wchg>0?'#34d399':'#f87171'};font-weight:600">${wchg>0?'▲증가':'▼감소'} $${fmtT(Math.abs(wchg))}</span>`+(m3!=null?` · 3개월 추세: ${v>m3?'▲증가':'▼감소'} 방향`:'')
+    :'';
+  let base;
+  if(v>3500)base=`지급준비금 <strong>$${fmtT(v)}</strong> — 충분해요. 은행들이 여유 자금을 넉넉히 보유해 금융시장이 안정적이에요.`;
+  else if(v>3000)base=`지급준비금 <strong>$${fmtT(v)}</strong> — 연준 안전 마지노선($3T)에 근접했어요. 추이를 지켜봐야 해요.`;
+  else if(v>2500)base=`지급준비금 <strong>$${fmtT(v)}</strong> — 안전 구간($3T) 아래예요. 2019년처럼 단기금리 급등 가능성이 있어요.`;
+  else base=`지급준비금 <strong>$${fmtT(v)}</strong> — 매우 낮아요! 자금시장 경색 위험이 있어요. 연준의 정책 대응이 필요한 수준이에요.`;
+  return base+note;
+}
+function resBadge(v){return v>3500?'green':v>3000?'blue':v>2500?'yellow':'red';}
+function resLabel(v){return v>3500?'유동성 충분':v>3000?'적정 수준':v>2500?'감소 주의':'부족 경고';}
+
+// ── RRP (일간, 1주전 비교) ──
+function rrpText(v, vals){
+  const w1=vals&&vals.length>6?vals.at(-6):null;
+  const m3=vals&&vals.length>65?vals.at(-65):null;
+  const peak=vals?Math.max(...vals):v;
+  const dropPct=peak>0?Math.round((peak-v)/peak*100):0;
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>1주 전($${fmtT(w1)}) 대비 <span style="color:${wchg<0?'#34d399':'#f87171'};font-weight:600">${wchg<0?'▼감소':'▲증가'} $${fmtT(Math.abs(wchg))}</span>`+(dropPct>0?` · 구간 고점 대비 <strong>${dropPct}% 소진</strong>`:'')
+    :'';
+  let base;
+  if(v>1000)base=`RRP 잔액 <strong>$${fmtT(v)}</strong> — 아직 많은 초과 유동성이 연준에 잠겨 있어요. 이 돈이 시장으로 서서히 나오고 있어요.`;
+  else if(v>200)base=`RRP 잔액 <strong>$${fmtT(v)}</strong> — 고점 대비 크게 줄었어요. 초과 유동성이 시장으로 재유입되며 자산시장을 지지하고 있어요.`;
+  else if(v>50)base=`RRP 잔액 <strong>$${fmtT(v)}</strong> — 거의 바닥이에요. 유동성 공급 여력이 소진됐어요. 이후 유동성은 연준 QT 속도에 달려 있어요.`;
+  else base=`RRP 잔액 <strong>$${fmtT(v)}</strong> — 사실상 소진됐어요. QT 영향이 시장에 <strong>직접적으로</strong> 작용하는 국면이에요.`;
+  return base+note;
+}
+function rrpBadge(v){return v>1000?'yellow':v>200?'blue':v>50?'yellow':'red';}
+function rrpLabel(v){return v>1000?'초과유동성 잔존':v>200?'정상화 진행':v>50?'거의 소진':'바닥 도달';}
+
+// ── TGA (주간, 전주 비교) ──
+function tgaText(v, vals){
+  const w1=vals&&vals.length>1?vals.at(-2):null;
+  const m3=vals&&vals.length>13?vals.at(-13):null;
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>전주($${fmtT(w1)}) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲증가(유동성↓)':'▼감소(유동성↑)'} $${fmtT(Math.abs(wchg))}</span>`+(m3!=null?` · 3개월 전($${fmtT(m3)}) 대비 ${v>m3?'▲높음':'▼낮음'}`:'')
+    :'';
+  let base;
+  if(v>800)base=`TGA 잔액 <strong>$${fmtT(v)}</strong> — 높아요. 세금·국채발행으로 자금이 정부 계좌에 쌓여 시중 유동성을 흡수하고 있어요.`;
+  else if(v>400)base=`TGA 잔액 <strong>$${fmtT(v)}</strong> — 보통 수준이에요. 유동성에 특별한 영향 없이 안정적이에요.`;
+  else base=`TGA 잔액 <strong>$${fmtT(v)}</strong> — 낮아요. 정부 지출이 활발해 시중에 자금이 풀리고 있어요. 단기 유동성에 <strong>긍정적</strong>이에요.`;
+  return base+note;
+}
+function tgaBadge(v){return v>800?'red':v>400?'neu':'green';}
+function tgaLabel(v){return v>800?'유동성 흡수':v>400?'보통 수준':'유동성 공급';}
+
+// ── 하이일드 스프레드 (일간, 1주전 비교) ──
+function hysText(v, vals){
+  const w1=vals&&vals.length>6?vals.at(-6):null;
+  const m3=vals&&vals.length>65?vals.at(-65):null;
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>1주 전(${w1.toFixed(2)}%) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲확대(위험↑)':'▼축소(안정↑)'} ${Math.abs(wchg).toFixed(2)}%p</span>`+(m3!=null?` · 3개월 전(${m3.toFixed(2)}%) 대비 ${v>m3?'▲확대':'▼축소'}`:'')
+    :'';
+  let base;
+  if(v<3.5)base=`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 역사적 저점 수준이에요. 기업 부도 우려가 없고 신용시장이 매우 건강해요.`;
+  else if(v<5)base=`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 정상 범위예요. 경기 둔화 우려가 일부 반영됐지만 아직 안정적이에요.`;
+  else if(v<7)base=`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 스프레드가 벌어지고 있어요. 기업 신용위험 경고 신호로 위험자산 비중 조절이 필요해요.`;
+  else base=`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 위험 구간이에요! 신용경색 조짐이 있어요. 주식시장에도 부정적 영향이 예상돼요.`;
+  return base+note;
+}
+function hysBadge(v){return v<3.5?'green':v<5?'blue':v<7?'yellow':'red';}
+function hysLabel(v){return v<3.5?'안정':v<5?'보통':v<7?'확대 주의':'위험';}
+
+// ── 금융스트레스지수 (주간, 전주 비교) ──
+function stlfsiText(v, vals){
+  const w1=vals&&vals.length>1?vals.at(-2):null;
+  const m3=vals&&vals.length>13?vals.at(-13):null;
+  const wchg=w1!=null?v-w1:null;
+  const note=wchg!=null
+    ?`<br>전주(${w1.toFixed(2)}) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲악화':'▼개선'} ${Math.abs(wchg).toFixed(3)}</span>`+(m3!=null?` · 3개월 전(${m3.toFixed(2)}) 대비 ${v>m3?'▲악화':'▼개선'}`:'')
+    :'';
+  let base;
+  if(v<-0.5)base=`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 매우 낮아요. 18개 금융지표 전반이 안정적으로 작동하고 있어요.`;
+  else if(v<0)base=`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 평균(0) 이하예요. 금융시스템 전반이 안정적이에요.`;
+  else if(v<1)base=`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 평균을 넘어섰어요. 일부 금융지표에서 긴장감이 감지되고 있어요.`;
+  else base=`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 스트레스가 높아요! 금융시장 전반에 긴장감이 퍼지고 있어요. 리스크 관리에 집중하세요.`;
+  return base+note;
+}
+function stlfsBadge(v){return v<-0.5?'green':v<0?'green':v<1?'yellow':'red';}
+function stlfsiLabel(v){return v<-0.5?'매우 안정':v<0?'안정':v<1?'보통':'스트레스 상승';}
+
+// ── 공포탐욕 ──
+function drawGauge(score){
+  const canvas=document.getElementById('fg-gauge-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),cx=110,cy=105,r=85;
+  ctx.clearRect(0,0,220,120);
+  [{f:Math.PI,t:Math.PI*1.2,c:'#7f1d1d'},{f:Math.PI*1.2,t:Math.PI*1.4,c:'#ef4444'},
+   {f:Math.PI*1.4,t:Math.PI*1.6,c:'#64748b'},{f:Math.PI*1.6,t:Math.PI*1.8,c:'#34d399'},
+   {f:Math.PI*1.8,t:Math.PI*2,c:'#10b981'}].forEach(s=>{
+    ctx.beginPath();ctx.arc(cx,cy,r,s.f,s.t);ctx.arc(cx,cy,r-16,s.t,s.f,true);
+    ctx.fillStyle=s.c+'44';ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,r,s.f,s.t);ctx.strokeStyle=s.c;ctx.lineWidth=3;ctx.stroke();
+  });
+  const a=Math.PI+(score/100)*Math.PI;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-8)*Math.cos(a),cy+(r-8)*Math.sin(a));
+  ctx.strokeStyle=fgCol(score);ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle=fgCol(score);ctx.fill();
+  ctx.fillStyle='#475569';ctx.font='9px IBM Plex Mono,monospace';ctx.textAlign='center';
+  ctx.fillText('공포',cx-60,cy+12);ctx.fillText('탐욕',cx+60,cy+12);
+}
+
+async function loadFng(){
+  try{
+    // CNN 공식 API 직접 호출 (CORS 허용됨)
+    const CNN_URL='https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+    const r=await fetch(CNN_URL);
+    if(!r.ok)throw new Error(r.status);
+    const data=await r.json();
+    const fg=data.fear_and_greed;
+    const hist=data.fear_and_greed_historical?.data||[];
+    if(!fg)throw new Error('no data');
+
+    const v=Math.round(fg.score);
+    const rating=fg.rating;
+    // CNN이 직접 이전 값 제공
+    const w1=Math.round(fg.previous_1_week||v);
+    const m1=Math.round(fg.previous_1_month||v);
+    const y1=Math.round(fg.previous_1_year||v);
+
+    const col=fgCol(v);
+    document.getElementById('fg-score').textContent=v;
+    document.getElementById('fg-score').style.color=col;
+    document.getElementById('fg-label').textContent=fgTxt(v)+' · '+rating;
+    document.getElementById('fg-label').style.color=col;
+    ['fg-1w','fg-1m','fg-1y'].forEach((id,i)=>{
+      const val=[w1,m1,y1][i];
+      const el=document.getElementById(id);
+      if(el){el.textContent=val;el.style.color=fgCol(val);}
+    });
+    setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',rating,'neu');
+    drawGauge(v);
+    showNow('fng', v+'점', fngBadge(v), fngLabel(v), fngText(v));
+    aiInterpret('fng', `공포탐욕지수 현재값: ${v}점 (${rating}), 1주전: ${w1}, 1개월전: ${m1}, 1년전: ${y1}`);
+
+    // 차트 데이터 (히스토리)
+    const dates=hist.map(d=>new Date(d.x).toISOString().slice(0,10));
+    const vals=hist.map(d=>Math.round(d.y));
+    const{dates:td,vals:tv}=thin(dates,vals,150);
+    const wrap=document.getElementById('w-fng');
+    wrap.innerHTML='<canvas></canvas>';
+    CHARTS['fng']=new Chart(wrap.querySelector('canvas').getContext('2d'),{
+      type:'line',
+      data:{labels:td,datasets:[{data:tv,borderWidth:1.5,pointRadius:0,fill:false,tension:.3,
+        segment:{borderColor:c=>fgCol(c.p1.parsed.y)}}]},
+      options:mkOpts({min:0,max:100,ticks:{color:'#475569'}})
+    });
+  }catch(e){console.warn('FNG:',e.message);}
+}
+
+// ── Hero 수치 ──
+async function loadHero(){
+  // 7개 히어로 카드 병렬 fetch
+  const jobs = [
+    ['VIXCLS',       5,  2, v=>v.toFixed(2),      true],
+    ['T10Y2Y',       5,  3, v=>v.toFixed(2)+'%',  true],
+    ['WALCL',        14, 4, v=>fmtT(v),           true],
+    ['WRESBAL',      14, 5, v=>fmtT(v),           true],
+    ['RRPONTSYD',    5,  6, v=>fmtT(v),           true],
+    ['BAMLH0A0HYM2', 5,  7, v=>v.toFixed(2)+'%', true],
+    ['WTREGEN',      14, 8, v=>fmtT(v),           true],
+  ];
+
+  // FNG (CNN 공식 API)
+  fetch('https://production.dataviz.cnn.io/index/fearandgreed/graphdata')
+    .then(r=>r.json()).then(data=>{
+    const fg=data.fear_and_greed;if(!fg)return;
+    const v=Math.round(fg.score);
+    const col=fgCol(v);
+    const hv=document.getElementById('h1');
+    if(hv){hv.textContent=v;hv.style.color=col;hv.className='hcard-val';}
+    const hvc=document.getElementById('h1c');
+    if(hvc){hvc.textContent=fg.rating;hvc.style.color=col;}
+  }).catch(()=>{});
+
+  // 7개 병렬 fetch
+  await Promise.all(jobs.map(async ([series, days, idx, fmt, positive])=>{
+    try{
+      const d = await apiFetch(series, days);
+      const lv = d.vals.at(-1), pv = d.vals.at(-2)||lv, dv = lv-pv;
+      const isUp = dv > 0;
+      let chgCol = '#888';
+      if(positive === true)  chgCol = isUp ? '#34d399' : '#f87171';
+      if(positive === false) chgCol = isUp ? '#f87171' : '#34d399';
+      const arrow = isUp ? '▲' : '▼';
+      const isB = ['WALCL','WRESBAL','RRPONTSYD','WTREGEN'].includes(series);
+      const dvStr = isB ? '$'+fmtB(Math.abs(dv)) : Math.abs(dv).toFixed(series==='T10Y2Y'?3:2);
+      const period = ['WALCL','WRESBAL','WTREGEN'].includes(series) ? '전주 대비' : '전일 대비';
+      setH(idx, fmt(lv), '', `${arrow} ${dvStr} ${period}`, chgCol);
+    }catch(e){}
+  }));
+
+  setTimeout(updateSummary, 200);
+}
+
+
+// ── 차트 렌더 함수들 ──
+async function renderVix(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-vix');
+  try{
+    const d=await apiFetch('VIXCLS',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-vix',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569'}});
+    const _lv=vals.at(-1);if(_lv!=null){
+      const _tv=trend(vals);
+      const _pv=periodLabel(days);
+      const _dirVix=_tv.dir==='up'?'상승':'하락';
+      const _trendVix=`${_pv} 동안 ${_tv.first.toFixed(1)}→${_tv.last.toFixed(1)} (${_dirVix} ${Math.abs(_tv.pct).toFixed(0)}%), 구간 최저 ${_tv.min.toFixed(1)} / 최고 ${_tv.max.toFixed(1)}`;
+      const _txtVix=vixText(_lv, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_trendVix}</span>`;
+      showNow('vix',_lv.toFixed(1)+'pt',vixBadge(_lv),vixLabel(_lv),_txtVix,_pv);
+      aiInterpret('vix',`VIX 현재: ${_lv.toFixed(2)}, ${_trendVix}`);
+    }
+  }catch(e){showSpin('w-vix');}
+}
+
+async function renderT10y2y(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-t10y2y');
+  try{
+    const d=await apiFetch('T10Y2Y',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-t10y2y',dates,[{data:vals,borderWidth:1.5,pointRadius:0,fill:false,tension:.3,
+      segment:{borderColor:c=>c.p1.parsed.y>=0?'#34d399':'#ef4444'}}],{ticks:{color:'#475569'}});
+    const _lt=vals.at(-1);if(_lt!=null){
+      const _tt=trend(vals);
+      const _pt=periodLabel(days);
+      const _invDays=vals.filter(v=>v<0).length;
+      const _invPct=Math.round(_invDays/vals.length*100);
+      const _invNote=_invDays>0?`<br><span style="font-size:.68rem;color:#f87171;display:block;margin-top:.3rem">⚠️ ${_pt} 중 ${_invPct}% 기간 역전 상태였어요</span>`:'';
+      const _txtT=spreadText(_lt, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_pt}: ${_tt.first.toFixed(2)}%→${_tt.last.toFixed(2)}%, 최저 ${_tt.min.toFixed(2)}% / 최고 ${_tt.max.toFixed(2)}%</span>`+_invNote;
+      showNow('t10y2y',(_lt>=0?'+':'')+_lt.toFixed(2)+'%',spreadBadge(_lt),spreadLabel(_lt),_txtT,_pt);
+      aiInterpret('t10y2y',`금리차 현재: ${_lt.toFixed(3)}%, ${_pt}: ${_tt.first.toFixed(2)}→${_tt.last.toFixed(2)}%, 역전 비율: ${_invPct}%`);
+    }
+  }catch(e){showSpin('w-t10y2y');}
+}
+
+async function renderWalcl(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-walcl');
+  try{
+    const d=await apiFetch('WALCL',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-walcl',dates,[{data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(91,156,246,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lw=vals.at(-1);if(_lw!=null){
+      const _tw=trend(vals);
+      const _pw=periodLabel(days);
+      const _chgW=_lw-(vals.at(-2)||_lw);
+      const _chgWStr=(_chgW>=0?'▲':'▼')+' $'+fmtT(Math.abs(_chgW))+' 전주대비';
+      const _txtW=walclText(_lw, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_pw}: $${fmtT(_tw.first)}→$${fmtT(_tw.last)} (${_tw.dir==='up'?'▲증가':'▼감소'} ${Math.abs(_tw.pct).toFixed(1)}%) · ${_chgWStr}</span>`;
+      showNow('walcl','$'+fmtT(_lw),walclBadge(_lw),walclLabel(_lw),_txtW,_pw);
+      aiInterpret('walcl',`연준 총자산 현재: $${fmtT(_lw)}, ${_pw}: $${fmtT(_tw.first)}→$${fmtT(_tw.last)}, ${_tw.dir==='up'?'증가':'감소'} 추세`);
+    }
+  }catch(e){showSpin('w-walcl');}
+}
+
+async function renderRes(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-res');
+  try{
+    const d=await apiFetch('WRESBAL',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-res',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(167,139,250,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lr=vals.at(-1);if(_lr!=null){
+      const _tr=trend(vals);
+      const _pr=periodLabel(days);
+      const _chgR=_lr-(vals.at(-2)||_lr);
+      const _chgRStr=(_chgR>=0?'▲':'▼')+' $'+fmtT(Math.abs(_chgR))+' 전주대비';
+      const _txtR=resText(_lr, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_pr}: $${fmtT(_tr.first)}→$${fmtT(_tr.last)} (${_tr.dir==='up'?'▲증가':'▼감소'} ${Math.abs(_tr.pct).toFixed(1)}%) · ${_chgRStr}</span>`;
+      showNow('res','$'+fmtT(_lr),resBadge(_lr),resLabel(_lr),_txtR,_pr);
+      aiInterpret('res',`지급준비금 현재: $${fmtT(_lr)}, ${_pr}: $${fmtT(_tr.first)}→$${fmtT(_tr.last)}, ${_tr.dir==='up'?'증가':'감소'} 추세, 전주대비 ${_chgRStr}`);
+    }
+  }catch(e){showSpin('w-res');}
+}
+
+async function renderRrp(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-rrp');
+  try{
+    const d=await apiFetch('RRPONTSYD',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-rrp',dates,[{data:vals,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(52,211,153,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lrp=vals.at(-1);if(_lrp!=null){
+      const _trp=trend(vals);
+      const _prp=periodLabel(days);
+      const _peakRrp=_trp.max;
+      const _dropPct=_peakRrp>0?Math.round((_peakRrp-_lrp)/_peakRrp*100):0;
+      const _noteRrp=_dropPct>50?`<br><span style="font-size:.68rem;color:#34d399;display:block;margin-top:.3rem">💧 고점($${fmtT(_peakRrp)}) 대비 ${_dropPct}% 소진 — 초과유동성 대부분 시장으로 유입됐어요</span>`:'';
+      const _txtRrp=rrpText(_lrp, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_prp}: $${fmtT(_trp.first)}→$${fmtT(_trp.last)}, 구간 최고 $${fmtT(_peakRrp)}</span>`+_noteRrp;
+      showNow('rrp','$'+fmtT(_lrp),rrpBadge(_lrp),rrpLabel(_lrp),_txtRrp,_prp);
+      aiInterpret('rrp',`RRP 잔액 현재: $${fmtT(_lrp)}, ${_prp} 고점: $${fmtT(_peakRrp)}, 고점대비 ${_dropPct}% 소진`);
+    }
+  }catch(e){showSpin('w-rrp');}
+}
+
+async function renderTga(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-tga');
+  try{
+    const d=await apiFetch('WTREGEN',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-tga',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _ltg=vals.at(-1);if(_ltg!=null){
+      const _ttg=trend(vals);
+      const _ptg=periodLabel(days);
+      const _chgTg=_ltg-(vals.at(-2)||_ltg);
+      const _chgTgStr=(_chgTg>=0?'▲':'▼')+' $'+fmtT(Math.abs(_chgTg))+' 전주대비';
+      const _txtTg=tgaText(_ltg, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_ptg}: $${fmtT(_ttg.first)}→$${fmtT(_ttg.last)}, 최저 $${fmtT(_ttg.min)} / 최고 $${fmtT(_ttg.max)} · ${_chgTgStr}</span>`;
+      showNow('tga','$'+fmtT(_ltg),tgaBadge(_ltg),tgaLabel(_ltg),_txtTg,_ptg);
+      aiInterpret('tga',`TGA 잔액 현재: $${fmtT(_ltg)}, ${_ptg}: $${fmtT(_ttg.first)}→$${fmtT(_ttg.last)}, ${_chgTgStr}`);
+    }
+  }catch(e){showSpin('w-tga');}
+}
+
+async function renderHys(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-hys');
+  try{
+    const d=await apiFetch('BAMLH0A0HYM2',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-hys',dates,[{data:vals,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(239,68,68,0.1)',tension:.3}],{ticks:{color:'#475569'}});
+    const _lh=vals.at(-1);if(_lh!=null){
+      const _th=trend(vals);
+      const _ph=periodLabel(days);
+      const _chgHDir=_th.dir==='up'?'확대(위험↑)':'축소(안정↑)';
+      const _txtH=hysText(_lh, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_ph}: ${_th.first.toFixed(2)}%→${_th.last.toFixed(2)}% (${_chgHDir}), 구간 최저 ${_th.min.toFixed(2)}% / 최고 ${_th.max.toFixed(2)}%</span>`;
+      showNow('hys',_lh.toFixed(2)+'%',hysBadge(_lh),hysLabel(_lh),_txtH,_ph);
+      aiInterpret('hys',`HY 스프레드 현재: ${_lh.toFixed(2)}%, ${_ph}: ${_th.first.toFixed(2)}→${_th.last.toFixed(2)}% (${_chgHDir})`);
+    }
+  }catch(e){showSpin('w-hys');}
+}
+
+async function renderMmf(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-mmf');
+  try{
+    const d=await apiFetch('WRMFNS',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-mmf',dates,[
+      {label:'MMF 총잔액',data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
+       backgroundColor:'rgba(91,156,246,0.1)',tension:.3}
+    ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+  }catch(e){showSpin('w-mmf');}
+}
+
+async function renderSofr(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-sofr');
+  try{
+    const [sd,ed]=await Promise.all([apiFetch('SOFR',days),apiFetch('EFFR',days)]);
+    const{dates,vals:sv}=thin(sd.dates,sd.vals,200);
+    const ev=thin(ed.dates,ed.vals,200).vals;
+    const sp=sv.map((v,i)=>+(v-(ev[i]||v)).toFixed(3));
+    mkLine('w-sofr',dates,[
+      {label:'SOFR',data:sv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'EFFR',data:ev,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'스프레드',data:sp,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+    ],{ticks:{color:'#475569'}});
+  }catch(e){showSpin('w-sofr');}
+}
+
+async function renderIorb(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-iorb');
+  try{
+    const [sd,id]=await Promise.all([apiFetch('SOFR',days),apiFetch('IORB',days)]);
+    const{dates,vals:sv}=thin(sd.dates,sd.vals,200);
+    const iv=thin(id.dates,id.vals,200).vals;
+    const sp=sv.map((v,i)=>+(v-(iv[i]||v)).toFixed(3));
+    mkLine('w-iorb',dates,[
+      {label:'SOFR',data:sv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'IORB',data:iv,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'스프레드',data:sp,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+    ],{ticks:{color:'#475569'}});
+  }catch(e){showSpin('w-iorb');}
+}
+
+
+async function renderWeekly(btn){
+  showSpin('w-wk');
+  try{
+    const [rd,td]=await Promise.all([apiFetch('WRESBAL',365*2),apiFetch('WTREGEN',365*2)]);
+    const rdiff=rd.vals.slice(1).map((v,i)=>+(v-rd.vals[i]).toFixed(0));
+    const tdiff=td.vals.slice(1).map((v,i)=>+(v-td.vals[i]).toFixed(0));
+    const dates=rd.dates.slice(1);
+    const{dates:dd,vals:rv}=thin(dates,rdiff,150);
+    const tv=thin(dates,tdiff,150).vals;
+    mkLine('w-wk',dd,[
+      {label:'지급준비금 변동',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'TGA 변동',data:tv,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+    ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
+  }catch(e){showSpin('w-wk');}
+}
+
+async function renderMmfRrp(days,btn){
+  if(btn&&btn.closest){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-mmfrrp');
+  try{
+    const [md,rd]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('RRPONTSYD',days)]);
+    const{dates,vals:mv}=thin(md.dates,md.vals,150);
+    const rv=thin(rd.dates,rd.vals,150).vals;
+    mkLine('w-mmfrrp',dates,[
+      {label:'MMF 총잔액',data:mv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'역레포(RRP)',data:rv,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+    ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+  }catch(e){showSpin('w-mmfrrp');}
+}
+
+async function renderMmfWeekly(){
+  showSpin('w-mmfwk');
+  try{
+    const d=await apiFetch('WRMFNS',365*2);
+    const diff=d.vals.slice(1).map((v,i)=>+(v-d.vals[i]).toFixed(1));
+    const{dates:dd,vals:dv}=thin(d.dates.slice(1),diff,150);
+    mkLine('w-mmfwk',dd,[
+      {label:'MMF 주간 증감',data:dv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
+       backgroundColor:'rgba(91,156,246,0.1)',tension:.3}
+    ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
+  }catch(e){showSpin('w-mmfwk');}
+}
+
+async function renderStlfsi(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-stlfsi');
+  try{
+    const d=await apiFetch('STLFSI4',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-stlfsi',dates,[{data:vals,borderWidth:1.5,pointRadius:0,fill:true,tension:.3,
+      segment:{borderColor:c=>c.p1.parsed.y>=0?'#ef4444':'#34d399'},
+      backgroundColor:'rgba(239,68,68,0.07)'}],{ticks:{color:'#475569'}});
+    const _ls=vals.at(-1);if(_ls!=null){
+      const _ts=trend(vals);
+      const _ps=periodLabel(days);
+      const _highStress=vals.filter(v=>v>=1).length;
+      const _highPct=Math.round(_highStress/vals.length*100);
+      const _noteS=_highPct>10?`<br><span style="font-size:.68rem;color:#f87171;display:block;margin-top:.3rem">⚠️ ${_ps} 중 ${_highPct}% 기간 스트레스 상승 구간이었어요</span>`:'';
+      const _txtS=stlfsiText(_ls, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_ps}: ${_ts.first.toFixed(2)}→${_ts.last.toFixed(2)}, 최저 ${_ts.min.toFixed(2)} / 최고 ${_ts.max.toFixed(2)}</span>`+_noteS;
+      showNow('stlfsi',_ls.toFixed(2),stlfsBadge(_ls),stlfsiLabel(_ls),_txtS,_ps);
+      aiInterpret('stlfsi',`금융스트레스지수 현재: ${_ls.toFixed(3)}, ${_ps}: ${_ts.first.toFixed(2)}→${_ts.last.toFixed(2)}, 고스트레스 비율: ${_highPct}%`);
+    }
+  }catch(e){showSpin('w-stlfsi');}
+}
+
+
+// ── 요약 배너 ──
+function updateSummary(){
+  const items = [
+    {id:'h1', label:'공포탐욕'},
+    {id:'h2', label:'VIX'},
+    {id:'h3', label:'금리차'},
+    {id:'h7', label:'HY 스프레드'},
+  ];
+  const chips = document.getElementById('summary-chips');
+  const bar = document.getElementById('summary-bar');
+  if(!chips||!bar) return;
+  const html = items.map(({id,label})=>{
+    const el = document.getElementById(id);
+    if(!el||!el.textContent||el.textContent==='—') return '';
+    const val = el.textContent.trim();
+    const cls = el.className.includes('up')?'up':el.className.includes('dn')?'dn':'neu';
+    return `<span class="chip ${cls}"><span class="chip-label">${label}</span><span class="chip-val">${val}</span></span>`;
+  }).filter(Boolean).join('');
+  if(html){
+    chips.innerHTML = html;
+    bar.style.display = 'flex';
+    document.getElementById('summary-time').textContent = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준';
+  }
+}
+
+// ── lazy loading ──
+function observeLazy(id,fn){
+  const el=document.getElementById(id);if(!el)return;
+  const obs=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){obs.disconnect();fn();}
+  },{rootMargin:'150px'});
+  obs.observe(el);
+}
+
+
+// ── 달러인덱스 ──
+async function renderDxy(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-dxy');
+  try{
+    const d=await apiFetch('DTWEXBGS',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-dxy',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>6?vals.at(-6):null;
+    const m3=vals.length>65?vals.at(-65):null;
+    const wchg=w1!=null?+(v-w1).toFixed(2):null;
+    let note='';
+    if(wchg!=null) note='<br>1주 전('+w1.toFixed(2)+') 대비 <span style="color:'+(wchg>0?'#f87171':'#34d399')+';font-weight:600">'+(wchg>0?'▲':'▼')+Math.abs(wchg).toFixed(2)+' '+(wchg>0?'달러강세':'달러약세')+'</span>'+(m3!=null?' · 3개월 전('+m3.toFixed(2)+') 대비 '+(v>m3?'▲강세':'▼약세'):'');
+    const badge=v>105?'red':v>100?'yellow':v>95?'neu':'green';
+    const label=v>105?'달러 강세':v>100?'강세 우위':v>95?'중립':'달러 약세';
+    const base=v>105?'달러가 매우 강해요. 신흥국 통화 약세·원자재 하락 압력이 커요.':v>100?'달러 강세 구간이에요. 글로벌 자금이 달러로 쏠리는 상황이에요.':v>95?'중립 구간이에요. 달러 방향성을 주시할 필요가 있어요.':'달러가 약세예요. 신흥국·원자재·위험자산에 우호적인 환경이에요.';
+    showNow('dxy',v.toFixed(2),badge,label,'달러인덱스 <strong>'+v.toFixed(2)+'</strong> — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-dxy');}
+}
+
+// ── 10년물 국채금리 ──
+async function renderDgs10(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-dgs10');
+  try{
+    const d=await apiFetch('DGS10',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-dgs10',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>6?vals.at(-6):null;
+    const m3=vals.length>65?vals.at(-65):null;
+    const wchg=w1!=null?+(v-w1).toFixed(2):null;
+    let note='';
+    if(wchg!=null) note='<br>1주 전('+w1.toFixed(2)+'%) 대비 <span style="color:'+(wchg>0?'#f87171':'#34d399')+';font-weight:600">'+(wchg>0?'▲':'▼')+Math.abs(wchg).toFixed(2)+'%p '+(wchg>0?'상승':'하락')+'</span>'+(m3!=null?' · 3개월 전('+m3.toFixed(2)+'%) 대비 '+(v>m3?'▲상승':'▼하락'):'');
+    const badge=v>5?'red':v>4?'yellow':v>3?'neu':'green';
+    const label=v>5?'고금리 경계':v>4?'금리 부담':v>3?'중립':'저금리';
+    const base=v>5?'금리가 매우 높아요. 주식 밸류에이션 부담이 크고 채권 매력이 높아요.':v>4?'금리 부담 구간이에요. 성장주보다 가치주·배당주가 유리해요.':v>3?'중립 구간이에요. 주식과 채권의 밸런스가 적절해요.':'저금리예요. 성장주·채권 가격에 우호적인 환경이에요.';
+    showNow('dgs10',v.toFixed(2)+'%',badge,label,'10년물 금리 <strong>'+v.toFixed(2)+'%</strong> — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-dgs10');}
+}
+
+// ── WTI 원유 ──
+async function renderWti(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-wti');
+  try{
+    const d=await apiFetch('DCOILWTICO',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-wti',dates,[{data:vals,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(52,211,153,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>6?vals.at(-6):null;
+    const m3=vals.length>65?vals.at(-65):null;
+    const wchg=w1!=null?+(v-w1).toFixed(1):null;
+    let note='';
+    if(wchg!=null) note='<br>1주 전($'+w1.toFixed(1)+') 대비 <span style="color:'+(wchg>0?'#f87171':'#34d399')+';font-weight:600">'+(wchg>0?'▲':'▼')+'$'+Math.abs(wchg).toFixed(1)+' '+(wchg>0?'상승':'하락')+'</span>'+(m3!=null?' · 3개월 전($'+m3.toFixed(1)+') 대비 '+(v>m3?'▲상승':'▼하락'):'');
+    const badge=v>90?'red':v>70?'yellow':v>50?'neu':'green';
+    const label=v>90?'고유가 경계':v>70?'유가 부담':v>50?'중립':'저유가';
+    const base=v>90?'고유가예요. 인플레이션 압력이 높아 연준 긴축이 장기화될 수 있어요.':v>70?'유가가 부담 구간이에요. 물가에 영향을 주는 수준이에요.':v>50?'안정적인 유가 수준이에요. 물가 부담이 크지 않아요.':'유가가 낮아요. 물가는 안정되지만 경기 둔화 우려가 있어요.';
+    showNow('wti','$'+v.toFixed(1),badge,label,'WTI 원유 <strong>$'+v.toFixed(1)+'</strong>/배럴 — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-wti');}
+}
+
+// ── M2 통화량 ──
+async function renderM2(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-m2');
+  try{
+    const d=await apiFetch('M2SL',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-m2',dates,[{data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const v=vals.at(-1);if(v==null)return;
+    const m1=vals.length>1?vals.at(-2):null;
+    const m3=vals.length>3?vals.at(-3):null;
+    const wchg=m1!=null?+(v-m1).toFixed(1):null;
+    let note='';
+    if(wchg!=null) note='<br>전월($'+fmtT(m1)+') 대비 <span style="color:'+(wchg>0?'#34d399':'#f87171')+';font-weight:600">'+(wchg>0?'▲증가':'▼감소')+' $'+fmtT(Math.abs(wchg))+'</span>'+(m3!=null?' · 3개월 전($'+fmtT(m3)+') 대비 '+(v>m3?'▲증가':'▼감소'):'');
+    const badge=v>21000?'green':v>20000?'blue':v>19000?'yellow':'red';
+    const label=v>21000?'유동성 풍부':v>20000?'정상':v>19000?'감소 추세':'유동성 수축';
+    const base=v>21000?'시중에 돈이 많이 풀려 있어요. 자산가격 상승 환경이에요.':v>20000?'정상 수준의 통화량이에요.':v>19000?'M2가 줄고 있어요. 시중 유동성이 수축되고 있어요.':'M2가 크게 줄었어요. 역사적으로 드문 현상으로 자산시장에 부정적이에요.';
+    showNow('m2','$'+fmtT(v),badge,label,'M2 통화량 <strong>$'+fmtT(v)+'</strong> — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-m2');}
+}
+
+// ── 실업률 ──
+async function renderUnrate(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-unrate');
+  try{
+    const d=await apiFetch('UNRATE',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-unrate',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const m1=vals.length>1?vals.at(-2):null;
+    const m3=vals.length>3?vals.at(-3):null;
+    const wchg=m1!=null?+(v-m1).toFixed(1):null;
+    let note='';
+    if(wchg!=null) note='<br>전월('+m1.toFixed(1)+'%) 대비 <span style="color:'+(wchg>0?'#f87171':'#34d399')+';font-weight:600">'+(wchg>0?'▲상승(악화)':'▼하락(개선)')+' '+Math.abs(wchg).toFixed(1)+'%p</span>'+(m3!=null?' · 3개월 전('+m3.toFixed(1)+'%) 대비 '+(v>m3?'▲악화':'▼개선'):'');
+    const badge=v<4?'green':v<5?'blue':v<6?'yellow':'red';
+    const label=v<4?'완전고용':v<5?'양호':v<6?'주의':'경기침체 우려';
+    const base=v<4?'완전고용 수준이에요. 연준이 금리인하를 서두를 이유가 없어요.':v<5?'고용시장이 양호해요. 경기 연착륙 가능성이 높아요.':v<6?'실업률이 올라오고 있어요. 연준 피벗 기대가 높아지는 구간이에요.':'실업률이 높아요! 경기침체 우려가 커지고 연준의 적극적 금리인하가 예상돼요.';
+    showNow('unrate',v.toFixed(1)+'%',badge,label,'실업률 <strong>'+v.toFixed(1)+'%</strong> — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-unrate');}
+}
+
+// ── 신규실업수당 ──
+async function renderIcsa(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-icsa');
+  try{
+    const d=await apiFetch('ICSA',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-icsa',dates,[{data:vals,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(239,68,68,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>(v/1000).toFixed(0)+'K'}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>1?vals.at(-2):null;
+    const m3=vals.length>13?vals.at(-13):null;
+    const wchg=w1!=null?+(v-w1):null;
+    const vK=(v/1000).toFixed(0);
+    let note='';
+    if(wchg!=null) note='<br>전주('+(w1/1000).toFixed(0)+'K) 대비 <span style="color:'+(wchg>0?'#f87171':'#34d399')+';font-weight:600">'+(wchg>0?'▲증가(악화)':'▼감소(개선)')+' '+(Math.abs(wchg)/1000).toFixed(0)+'K</span>'+(m3!=null?' · 3개월 전('+(m3/1000).toFixed(0)+'K) 대비 '+(v>m3?'▲악화':'▼개선'):'');
+    const badge=v<200000?'green':v<250000?'blue':v<300000?'yellow':'red';
+    const label=v<200000?'고용 강함':v<250000?'양호':v<300000?'주의':'급증 경고';
+    const base=v<200000?'고용시장이 매우 강해요. 해고가 거의 없는 상태예요.':v<250000?'정상 수준이에요. 고용시장이 안정적이에요.':v<300000?'청구건수가 늘고 있어요. 고용시장 냉각 신호예요.':'급증하고 있어요! 대규모 해고 우려. 연준 금리인하 기대가 강해져요.';
+    showNow('icsa',vK+'K',badge,label,'신규실업수당 <strong>'+vK+'K건</strong>/주 — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-icsa');}
+}
+
+// ── 네이버 프리미엄 ──
+
+// ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
+async function loadTelegram(){
+  const el=document.getElementById('tg-posts');
+  if(!el)return;
+  try{
+    const r=await fetch('/api/telegram?limit=50');
+    if(!r.ok)throw new Error(r.status);
+    const data=await r.json();
+    const posts=data.posts||[];
+
+    if(!posts.length){
+      el.innerHTML=`<div class="tg-empty">
+        <div style="font-size:1.5rem;margin-bottom:.75rem">📨</div>
+        <div style="font-weight:600;margin-bottom:.4rem;color:var(--txt)">아직 포워드된 글이 없어요</div>
+        <div style="font-size:.8rem;color:var(--txt3);line-height:1.7">채널에 글을 올린 후 <strong style="color:var(--txt)">@assetx2bot</strong> 에게 해당 메시지를 포워드하면<br>이 대시보드에 자동으로 표시돼요.</div>
+      </div>`;
+      return;
+    }
+
+    // 가장 최근 글 1개만
+    const p=posts[0];
+    const date=new Date(p.date*1000).toLocaleDateString('ko-KR',{
+      year:'numeric',month:'short',day:'numeric',
+      hour:'2-digit',minute:'2-digit'
+    });
+    const text=p.text||'';
+    // URL → 링크 변환 (끝 문장부호 분리)
+    const linkedText=text.replace(/(https?:\/\/[^\s]+)/g, url=>{
+      const clean=url.replace(/[.,!?;:]+$/,'');
+      const trail=url.slice(clean.length);
+      const a=document.createElement('a');
+      a.href=clean; a.target='_blank';
+      a.onclick=function(e){e.stopPropagation();};
+      a.style.cssText='color:#7eb8f7;word-break:break-all;';
+      a.textContent=clean;
+      return a.outerHTML+trail;
+    });
+    // 해시태그 강조
+    const formattedText=linkedText.replace(/#([^\s#]+)/g,'<span style="color:var(--c3)">#$1</span>');
+
+    el.innerHTML=`<div class="tg-post" style="cursor:pointer;transition:border-color .2s;"
+      onmouseover="this.style.borderColor='var(--c1)'"
+      onmouseout="this.style.borderColor=''"
+      onclick="window.open('https://t.me/+2Qw1cAZTm8FjMGNl','_blank')">
+        <div class="tg-post-meta">
+          <span class="tg-post-date">🕐 ${date}</span>
+          <span class="tg-post-link">채널 바로가기 →</span>
+        </div>
+        <div class="tg-post-text">${formattedText}</div>
+      </div>`;
+
+  }catch(e){
+    el.innerHTML=`<div class="tg-empty">
+      <div style="margin-bottom:.5rem">불러오기 실패: ${e.message}</div>
+      <a href="https://t.me/assets_x2" target="_blank" style="color:var(--c1)">텔레그램 채널 바로가기 →</a>
+    </div>`;
+  }
+}
+
+// ── 초기화 ──
+document.addEventListener('DOMContentLoaded',()=>{
+  observeLazy('tg-posts', ()=>loadTelegram()); // 1번: 텔레그램 포스트
+  loadHero();
+  loadFng();
+  observeLazy('w-vix',   ()=>renderVix(365));
+  observeLazy('w-t10y2y',()=>renderT10y2y(365*2));
+  observeLazy('w-walcl', ()=>renderWalcl(365*2));
+  observeLazy('w-res',   ()=>renderRes(365*2));
+  observeLazy('w-rrp',   ()=>renderRrp(365*2));
+  observeLazy('w-tga',   ()=>renderTga(365*2));
+  observeLazy('w-hys',   ()=>renderHys(365*2));
+  observeLazy('w-mmf',    ()=>renderMmf(365*2));
+  observeLazy('w-mmfrrp', ()=>renderMmfRrp(365*2));
+  observeLazy('w-mmfwk',  ()=>renderMmfWeekly());
+  observeLazy('w-wk',     ()=>renderWeekly());
+  observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
+  observeLazy('w-sofr',  ()=>renderSofr(365));
+  observeLazy('w-iorb',  ()=>renderIorb(365));
+  observeLazy('w-dxy',   ()=>renderDxy(365));
+  observeLazy('w-dgs10', ()=>renderDgs10(365));
+  observeLazy('w-wti',   ()=>renderWti(365));
+  observeLazy('w-m2',    ()=>renderM2(365*3));
+  observeLazy('w-unrate',()=>renderUnrate(365*3));
+  observeLazy('w-icsa',  ()=>renderIcsa(365*2));
 });
 </script>
 </body>
