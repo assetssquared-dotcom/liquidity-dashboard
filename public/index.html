@@ -669,7 +669,6 @@ async function loadFng(){
     if(!r.ok)throw new Error(r.status);
     const j=await r.json();
     if(!j.current)throw new Error('no data');
-    {
     const v=j.current.score,len=j.vals.length;
     const w1=j.vals[Math.max(0,len-8)]??v,m1=j.vals[Math.max(0,len-31)]??v,y1=j.vals[Math.max(0,len-252)]??v;
     const col=fgCol(v);
