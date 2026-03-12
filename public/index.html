@@ -620,6 +620,149 @@ footer a{color:var(--txt3);}
 </div>
 
 
+
+<!-- SEC 17: 달러인덱스 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-title">달러인덱스 (DXY)</div><div class="sec-tag">DTWEXBGS</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">달러인덱스 추이</div>
+    <div class="card-sub">단위: 지수 · 일간 · 100 기준</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderDxy(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderDxy(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderDxy(365*5,this)">5Y</button>
+    </div>
+    <div class="chart-wrap" id="w-dxy"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-dxy"></div>
+    <div class="insight">
+      <div class="insight-title">📌 달러인덱스란?</div>
+      <div class="insight-body">주요 6개국 통화 대비 달러 강도를 나타내요. <strong>달러 강세</strong>는 신흥국 자금유출·원자재 하락 압력, <strong>달러 약세</strong>는 위험자산 선호 환경을 만들어요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">💵</div><div class="signal-body"><strong>달러 강세(↑)</strong>신흥국 통화 약세, 원자재 하락, 글로벌 유동성 위축 압력</div></div>
+        <div class="signal green"><div class="signal-icon">🌏</div><div class="signal-body"><strong>달러 약세(↓)</strong>위험자산 선호, 신흥국 자금유입, 원자재 상승 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 18: 10년물 국채금리 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-title">미국 10년물 국채금리</div><div class="sec-tag">DGS10</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">10년물 국채금리 추이</div>
+    <div class="card-sub">단위: % · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderDgs10(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderDgs10(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderDgs10(365*5,this)">5Y</button>
+    </div>
+    <div class="chart-wrap" id="w-dgs10"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-dgs10"></div>
+    <div class="insight">
+      <div class="insight-title">📌 10년물 국채금리란?</div>
+      <div class="insight-body">미국 장기 금리의 기준이에요. 주식 밸류에이션의 할인율로 작용하며 <strong>금리 상승</strong>은 성장주에 부담, <strong>금리 하락</strong>은 채권·성장주에 유리해요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>금리 상승</strong>주식 할인율 상승 → 성장주 밸류에이션 압박, 채권 가격 하락</div></div>
+        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>금리 하락</strong>채권 가격 상승, 성장주 유리, 경기침체 우려 반영 신호</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 19: WTI 원유 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">WTI 원유가격 추이</div>
+    <div class="card-sub">단위: USD/배럴 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderWti(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderWti(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderWti(365*5,this)">5Y</button>
+    </div>
+    <div class="chart-wrap" id="w-wti"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-wti"></div>
+    <div class="insight">
+      <div class="insight-title">📌 WTI 원유란?</div>
+      <div class="insight-body">글로벌 경기 선행지표이자 인플레이션 핵심 변수예요. <strong>유가 상승</strong>은 물가 압력을 높여 연준 긴축을 강화하고, <strong>유가 하락</strong>은 디플레이션 우려와 경기둔화 신호일 수 있어요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">🛢️</div><div class="signal-body"><strong>유가 상승</strong>인플레이션 압력 ↑ → 연준 긴축 장기화 가능성</div></div>
+        <div class="signal green"><div class="signal-icon">💨</div><div class="signal-body"><strong>유가 하락</strong>물가 안정 → 금리인하 여지 확대, 단 경기침체 신호일 수도</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 20: M2 통화량 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">20</div><div class="sec-title">미국 M2 통화량</div><div class="sec-tag">M2SL</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">M2 통화량 추이</div>
+    <div class="card-sub">단위: $B · 월간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderM2(365*3,this)">3Y</button>
+      <button class="tbtn" onclick="renderM2(365*5,this)">5Y</button>
+      <button class="tbtn" onclick="renderM2(365*10,this)">10Y</button>
+    </div>
+    <div class="chart-wrap" id="w-m2"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-m2"></div>
+    <div class="insight">
+      <div class="insight-title">📌 M2 통화량이란?</div>
+      <div class="insight-body">현금+예금+MMF 등을 포함한 광의의 통화량이에요. <strong>M2 증가</strong>는 시중에 돈이 많아져 자산가격 상승 압력, <strong>M2 감소</strong>는 역사적으로 드물며 자산시장에 부정적이에요.</div>
+      <div class="signal-grid">
+        <div class="signal green"><div class="signal-icon">💰</div><div class="signal-body"><strong>M2 증가</strong>시중 유동성 확대 → 자산가격 상승 압력, 인플레이션 위험</div></div>
+        <div class="signal red"><div class="signal-icon">🔻</div><div class="signal-body"><strong>M2 감소</strong>유동성 수축 → 역사적으로 자산가격 조정과 동반</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 21: 실업률 & 신규실업수당 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">21</div><div class="sec-title">실업률 &amp; 신규실업수당</div><div class="sec-tag">UNRATE · ICSA</div></div>
+  <div class="cards-half">
+    <div class="card">
+      <div class="card-title">미국 실업률</div>
+      <div class="card-sub">단위: % · 월간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderUnrate(365*3,this)">3Y</button>
+        <button class="tbtn" onclick="renderUnrate(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderUnrate(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-unrate"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-unrate"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">주간 신규 실업수당 청구</div>
+      <div class="card-sub">단위: 천 건 · 주간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderIcsa(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderIcsa(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-icsa"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-icsa"></div>
+    </div>
+  </div>
+  <div class="insight" style="margin-top:.85rem;">
+    <div class="insight-title">📌 고용지표란?</div>
+    <div class="insight-body">연준의 두 가지 목표 중 하나가 <strong>최대 고용</strong>이에요. 실업률 상승·신규실업수당 급증은 경기침체 신호이자 연준 금리인하의 핵심 트리거예요.</div>
+    <div class="signal-grid">
+      <div class="signal green"><div class="signal-icon">👷</div><div class="signal-body"><strong>실업률 4% 이하</strong>완전고용 수준. 연준이 금리인하에 서두를 필요 없음</div></div>
+      <div class="signal red"><div class="signal-icon">📋</div><div class="signal-body"><strong>신규실업수당 25만+ 급증</strong>고용시장 냉각 신호. 연준 피벗 기대 강화</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 22: 네이버 프리미엄 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">22</div><div class="sec-title">네이버 프리미엄 콘텐츠</div><div class="sec-tag">자산제곱</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">최근 리포트</div>
+    <div class="card-sub">네이버 프리미엄 · 자산제곱</div>
+    <div id="naver-posts"><div class="lw" style="height:120px"><div class="sp"></div></div></div>
+  </div></div>
+</div>
+
 </div><!-- /wrap --></div><!-- /wrap -->
 
 <div class="cta-bar">
@@ -1360,6 +1503,182 @@ function observeLazy(id,fn){
   obs.observe(el);
 }
 
+
+// ── 달러인덱스 ──
+async function renderDxy(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-dxy');
+  try{
+    const d=await apiFetch('DTWEXBGS',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-dxy',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);
+    if(v!=null){
+      const w1=vals.length>6?vals.at(-6):null;
+      const m3=vals.length>65?vals.at(-65):null;
+      const wchg=w1!=null?v-w1:null;
+      const note=wchg!=null?`<br>1주 전(${w1.toFixed(2)}) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲':'▼'}${Math.abs(wchg).toFixed(2)} ${wchg>0?'달러강세':'달러약세'}</span>`+(m3!=null?` · 3개월 전(${m3.toFixed(2)}) 대비 ${v>m3?'▲강세':'▼약세'}`:''):'';
+      const badge=v>105?'red':v>100?'yellow':v>95?'neu':'green';
+      const label=v>105?'달러 강세':v>100?'강세 우위':v>95?'중립':'달러 약세';
+      const txt=`달러인덱스 <strong>${v.toFixed(2)}</strong> — ${v>105?'달러가 매우 강해요. 신흥국 통화 약세·원자재 하락 압력이 커요.':v>100?'달러 강세 구간이에요. 글로벌 자금이 달러로 쏠리는 상황이에요.':v>95?'중립 구간이에요. 달러 방향성을 주시할 필요가 있어요.':'달러가 약세예요. 신흥국·원자재·위험자산에 우호적인 환경이에요.'}${note}`;
+      showNow('dxy',v.toFixed(2),badge,label,txt,periodLabel(days));
+    }
+  }catch(e){showSpin('w-dxy');}
+}
+
+// ── 10년물 국채금리 ──
+async function renderDgs10(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-dgs10');
+  try{
+    const d=await apiFetch('DGS10',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-dgs10',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);
+    if(v!=null){
+      const w1=vals.length>6?vals.at(-6):null;
+      const m3=vals.length>65?vals.at(-65):null;
+      const wchg=w1!=null?v-w1:null;
+      const note=wchg!=null?`<br>1주 전(${w1.toFixed(2)}%) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲':'▼'}${Math.abs(wchg).toFixed(2)}%p ${wchg>0?'상승':'하락'}</span>`+(m3!=null?` · 3개월 전(${m3.toFixed(2)}%) 대비 ${v>m3?'▲상승':'▼하락'}`:''):'';
+      const badge=v>5?'red':v>4?'yellow':v>3?'neu':'green';
+      const label=v>5?'고금리 경계':v>4?'금리 부담':v>3?'중립':'저금리';
+      const txt=`10년물 금리 <strong>${v.toFixed(2)}%</strong> — ${v>5?'금리가 매우 높아요. 주식 밸류에이션 부담이 크고 채권 매력이 높아요.':v>4?'금리 부담 구간이에요. 성장주보다 가치주·배당주가 유리해요.':v>3?'중립 구간이에요. 주식과 채권의 밸런스가 적절해요.':'저금리예요. 성장주·채권 가격에 우호적인 환경이에요.'}${note}`;
+      showNow('dgs10',v.toFixed(2)+'%',badge,label,txt,periodLabel(days));
+    }
+  }catch(e){showSpin('w-dgs10');}
+}
+
+// ── WTI 원유 ──
+async function renderWti(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-wti');
+  try{
+    const d=await apiFetch('DCOILWTICO',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-wti',dates,[{data:vals,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(52,211,153,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);
+    if(v!=null){
+      const w1=vals.length>6?vals.at(-6):null;
+      const m3=vals.length>65?vals.at(-65):null;
+      const wchg=w1!=null?v-w1:null;
+      const note=wchg!=null?`<br>1주 전($${w1.toFixed(1)}) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲':'▼'}$${Math.abs(wchg).toFixed(1)} ${wchg>0?'상승':'하락'}</span>`+(m3!=null?` · 3개월 전($${m3.toFixed(1)}) 대비 ${v>m3?'▲상승':'▼하락'}`:''):'';
+      const badge=v>90?'red':v>70?'yellow':v>50?'neu':'green';
+      const label=v>90?'고유가 경계':v>70?'유가 부담':v>50?'중립':'저유가';
+      const txt=`WTI 원유 <strong>$${v.toFixed(1)}</strong>/배럴 — ${v>90?'고유가예요. 인플레이션 압력이 높아 연준 긴축이 장기화될 수 있어요.':v>70?'유가가 부담 구간이에요. 물가에 영향을 주는 수준이에요.':v>50?'안정적인 유가 수준이에요. 물가 부담이 크지 않아요.':'유가가 낮아요. 물가는 안정되지만 경기 둔화 우려가 있어요.'}${note}`;
+      showNow('wti','$'+v.toFixed(1),badge,label,txt,periodLabel(days));
+    }
+  }catch(e){showSpin('w-wti');}
+}
+
+// ── M2 통화량 ──
+async function renderM2(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-m2');
+  try{
+    const d=await apiFetch('M2SL',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-m2',dates,[{data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const v=vals.at(-1);
+    if(v!=null){
+      const m3=vals.length>3?vals.at(-3):null;  // 월간: 3개월전
+      const m1=vals.length>1?vals.at(-2):null;  // 전월
+      const wchg=m1!=null?v-m1:null;
+      const note=wchg!=null?`<br>전월($${fmtT(m1)}) 대비 <span style="color:${wchg>0?'#34d399':'#f87171'};font-weight:600">${wchg>0?'▲증가':'▼감소'} $${fmtT(Math.abs(wchg))}</span>`+(m3!=null?` · 3개월 전($${fmtT(m3)}) 대비 ${v>m3?'▲증가':'▼감소'}`:''):'';
+      const badge=v>21000?'green':v>20000?'blue':v>19000?'yellow':'red';
+      const label=v>21000?'유동성 풍부':v>20000?'정상':v>19000?'감소 추세':'유동성 수축';
+      const txt=`M2 통화량 <strong>$${fmtT(v)}</strong> — ${v>21000?'시중에 돈이 많이 풀려 있어요. 자산가격 상승 환경이에요.':v>20000?'정상 수준의 통화량이에요.':v>19000?'M2가 줄고 있어요. 시중 유동성이 수축되고 있어요.':'M2가 크게 줄었어요. 역사적으로 드문 현상으로 자산시장에 부정적이에요.'}${note}`;
+      showNow('m2','$'+fmtT(v),badge,label,txt,periodLabel(days));
+    }
+  }catch(e){showSpin('w-m2');}
+}
+
+// ── 실업률 ──
+async function renderUnrate(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-unrate');
+  try{
+    const d=await apiFetch('UNRATE',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-unrate',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);
+    if(v!=null){
+      const m3=vals.length>3?vals.at(-3):null;
+      const m1=vals.length>1?vals.at(-2):null;
+      const wchg=m1!=null?v-m1:null;
+      const note=wchg!=null?`<br>전월(${m1.toFixed(1)}%) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲상승(악화)':'▼하락(개선)'} ${Math.abs(wchg).toFixed(1)}%p</span>`+(m3!=null?` · 3개월 전(${m3.toFixed(1)}%) 대비 ${v>m3?'▲악화':'▼개선'}`:''):'';
+      const badge=v<4?'green':v<5?'blue':v<6?'yellow':'red';
+      const label=v<4?'완전고용':v<5?'양호':v<6?'주의':'경기침체 우려';
+      const txt=`실업률 <strong>${v.toFixed(1)}%</strong> — ${v<4?'완전고용 수준이에요. 연준이 금리인하를 서두를 이유가 없어요.':v<5?'고용시장이 양호해요. 경기 연착륙 가능성이 높아요.':v<6?'실업률이 올라오고 있어요. 연준 피벗 기대가 높아지는 구간이에요.':'실업률이 높아요! 경기침체 우려가 커지고 연준의 적극적 금리인하가 예상돼요.'}${note}`;
+      showNow('unrate',v.toFixed(1)+'%',badge,label,txt,periodLabel(days));
+    }
+  }catch(e){showSpin('w-unrate');}
+}
+
+// ── 신규실업수당 ──
+async function renderIcsa(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-icsa');
+  try{
+    const d=await apiFetch('ICSA',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-icsa',dates,[{data:vals,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,fill:true,
+      backgroundColor:'rgba(239,68,68,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>(v/1000).toFixed(0)+'K'}});
+    const v=vals.at(-1);
+    if(v!=null){
+      const w1=vals.length>1?vals.at(-2):null;
+      const m3=vals.length>13?vals.at(-13):null;
+      const wchg=w1!=null?v-w1:null;
+      const vK=(v/1000).toFixed(0);
+      const note=wchg!=null?`<br>전주(${(w1/1000).toFixed(0)}K) 대비 <span style="color:${wchg>0?'#f87171':'#34d399'};font-weight:600">${wchg>0?'▲증가(악화)':'▼감소(개선)'} ${(Math.abs(wchg)/1000).toFixed(0)}K</span>`+(m3!=null?` · 3개월 전(${(m3/1000).toFixed(0)}K) 대비 ${v>m3?'▲악화':'▼개선'}`:''):'';
+      const badge=v<200000?'green':v<250000?'blue':v<300000?'yellow':'red';
+      const label=v<200000?'고용 강함':v<250000?'양호':v<300000?'주의':'급증 경고';
+      const txt=`신규실업수당 <strong>${vK}K건</strong>/주 — ${v<200000?'고용시장이 매우 강해요. 해고가 거의 없는 상태예요.':v<250000?'정상 수준이에요. 고용시장이 안정적이에요.':v<300000?'청구건수가 늘고 있어요. 고용시장 냉각 신호예요.':'급증하고 있어요! 대규모 해고 우려. 연준 금리인하 기대가 강해져요.'}${note}`;
+      showNow('icsa',vK+'K',badge,label,txt,periodLabel(days));
+    }
+  }catch(e){showSpin('w-icsa');}
+}
+
+// ── 네이버 프리미엄 ──
+async function loadNaver(){
+  const el=document.getElementById('naver-posts');
+  if(!el)return;
+  el.innerHTML=`
+    <div style="margin-bottom:.75rem;">
+      <div class="tg-post" style="cursor:pointer;transition:border-color .2s;border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.03);"
+        onmouseover="this.style.borderColor='#03c75a'"
+        onmouseout="this.style.borderColor='rgba(3,199,90,.25)'"
+        onclick="window.open('https://contents.premium.naver.com/assetx2/assetsx2','_blank')">
+        <div class="tg-post-meta">
+          <span style="font-size:.72rem;color:#03c75a;font-family:var(--mono);font-weight:700;background:rgba(3,199,90,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(3,199,90,.3);">N NAVER PREMIUM</span>
+          <span style="font-size:.72rem;color:#aaa;font-family:var(--mono);">주 3회 발행 · 187편+</span>
+          <span class="tg-post-link" style="color:#03c75a;">구독하기 →</span>
+        </div>
+        <div style="font-size:.92rem;font-weight:700;color:#e8e8e8;margin:.6rem 0 .4rem;">자산제곱 — 실력으로 증명하는 투자 리포트</div>
+        <div style="font-size:.82rem;color:#bbb;line-height:1.8;">
+          단순한 뉴스 요약이 아니에요. <strong style="color:#e8e8e8;">투자 전략 · 시나리오 분석 · 시장 리포트</strong>를 주 3회 깊이 있게 다뤄요.<br>
+          "지금 어디에 돈이 흐르는지", "다음 시장의 방향은 어디인지"를 데이터와 논리로 풀어냅니다.
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
+          <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(91,156,246,.12);color:#5b9cf6;border:1px solid rgba(91,156,246,.25);">투자 전략</span>
+          <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25);">시나리오 분석</span>
+          <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);">시장 리포트</span>
+          <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);">기술적 분석</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#0d0d0d;border:1px solid var(--line);border-radius:8px;">
+      <span style="font-size:1.1rem;">🏆</span>
+      <div>
+        <div style="font-size:.82rem;color:#e8e8e8;font-weight:600;">미래에셋 VIP+ 서비스 제공 콘텐츠</div>
+        <div style="font-size:.72rem;color:#666;margin-top:2px;">실력으로 검증된 프리미엄 리서치</div>
+      </div>
+    </div>`;
+}
 // ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
 async function loadTelegram(){
   const el=document.getElementById('tg-posts');
@@ -1438,6 +1757,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
   observeLazy('w-sofr',  ()=>renderSofr(365));
   observeLazy('w-iorb',  ()=>renderIorb(365));
+  observeLazy('w-dxy',   ()=>renderDxy(365));
+  observeLazy('w-dgs10', ()=>renderDgs10(365));
+  observeLazy('w-wti',   ()=>renderWti(365));
+  observeLazy('w-m2',    ()=>renderM2(365*3));
+  observeLazy('w-unrate',()=>renderUnrate(365*3));
+  observeLazy('w-icsa',  ()=>renderIcsa(365*2));
+  observeLazy('naver-posts',()=>loadNaver());
 });
 </script>
 </body>
