@@ -777,7 +777,7 @@ async function apiFetch(series, days){
   for(let i=0;i<3;i++){
     try{
       const r=await fetch(`/api/fred?series=${series}&days=${days}&t=${Date.now()}`);
-      if(r.status===429){ await new Promise(r=>setTimeout(r,1500*(i+1))); continue; }
+      if(r.status===429){ await new Promise(r=>setTimeout(r,2000*(i+1))); continue; }
       if(!r.ok) throw new Error(`${r.status}`);
       const j=await r.json();
       if(j.error) throw new Error(j.error);
@@ -1028,21 +1028,29 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   loadFng();
 
   // 나머지 모두 뷰포트 진입 시 로드 (lazy)
-  observeLazy('w-fng',   ()=>{});  // 이미 loadFng()에서 처리
-  observeLazy('w-vix',   ()=>renderVix(365));
-  observeLazy('w-t10y2y',()=>renderT10y2y(365*2));
-  observeLazy('w-walcl', ()=>renderWalcl(365*2));
-  observeLazy('w-res',   ()=>renderRes(365*2));
-  observeLazy('w-rrp',   ()=>renderRrp(365*2));
-  observeLazy('w-tga',   ()=>renderTga(365*2));
-  observeLazy('w-wk',    ()=>renderWeekly());
-  observeLazy('w-mmf',   ()=>renderMmf(365*2));
-  observeLazy('w-mmfrrp',()=>renderMmfRrp(365*2));
-  observeLazy('w-mmfwk', ()=>renderMmfWeekly());
-  observeLazy('w-hys',   ()=>renderHys(365*2));
-  observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
-  observeLazy('w-sofr',  ()=>renderSofr(365));
-  observeLazy('w-iorb',  ()=>renderIorb(365));
+  // 차트마다 딜레이 줘서 429 방지
+  let chartDelay = 0;
+  const lazyChart = (id, fn) => {
+    observeLazy(id, () => {
+      setTimeout(fn, chartDelay);
+      chartDelay = 0; // 스크롤로 새로 진입하면 딜레이 초기화
+    });
+  };
+
+  lazyChart('w-vix',    ()=>renderVix(365));
+  lazyChart('w-t10y2y', ()=>renderT10y2y(365*2));
+  lazyChart('w-walcl',  ()=>renderWalcl(365*2));
+  lazyChart('w-res',    ()=>renderRes(365*2));
+  lazyChart('w-rrp',    ()=>renderRrp(365*2));
+  lazyChart('w-tga',    ()=>renderTga(365*2));
+  lazyChart('w-wk',     ()=>renderWeekly());
+  lazyChart('w-mmf',    ()=>renderMmf(365*2));
+  lazyChart('w-mmfrrp', ()=>renderMmfRrp(365*2));
+  lazyChart('w-mmfwk',  ()=>renderMmfWeekly());
+  lazyChart('w-hys',    ()=>renderHys(365*2));
+  lazyChart('w-stlfsi', ()=>renderStlfsi(365*2));
+  lazyChart('w-sofr',   ()=>renderSofr(365));
+  lazyChart('w-iorb',   ()=>renderIorb(365));
 });
 </script>
 </body>
