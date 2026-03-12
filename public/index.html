@@ -1022,7 +1022,7 @@ function toast(msg,cls=''){
   setTimeout(()=>el.className='toast',3500);
 }
 
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('DOMContentLoaded', async ()=>{
   // 히어로 카드 + 상단 차트만 즉시 로드
   loadHero();
   loadFng();
