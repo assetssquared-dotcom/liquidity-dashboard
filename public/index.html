@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미국 유동성 대시보드</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg:#070c14; --surface:#0d1424; --surface2:#131d30; --border:#1a2840;
+  --c1:#38bdf8; --c2:#fb923c; --c3:#c084fc; --c4:#4ade80;
+  --text:#e2e8f0; --muted:#475569; --dim:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);}
+.hdr{max-width:1360px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#38bdf8,#c084fc);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.brand-name{font-size:1rem;font-weight:700;}
+.brand-sub{font-size:.62rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.badge{display:flex;align-items:center;gap:5px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:99px;padding:3px 10px;font-size:.62rem;font-family:'JetBrains Mono',monospace;color:#4ade80;}
+.dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+#stTxt{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+
+/* WRAP */
+.wrap{max-width:1360px;margin:0 auto;padding:1.75rem 2rem;}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.hc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.4rem;position:relative;overflow:hidden;transition:border-color .2s;}
+.hc:hover{border-color:rgba(56,189,248,.3);}
+.hc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0;}
+.hc:nth-child(1)::after{background:var(--c1);}
+.hc:nth-child(2)::after{background:var(--c3);}
+.hc:nth-child(3)::after{background:var(--c4);}
+.hc:nth-child(4)::after{background:var(--c2);}
+.hc-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+.hc-val{font-size:1.75rem;font-weight:700;font-family:'JetBrains Mono',monospace;line-height:1;min-height:2rem;}
+.hc:nth-child(1) .hc-val{color:var(--c1);}
+.hc:nth-child(2) .hc-val{color:var(--c3);}
+.hc:nth-child(3) .hc-val{color:var(--c4);}
+.hc:nth-child(4) .hc-val{color:var(--c2);}
+.hc-chg{font-size:.68rem;font-family:'JetBrains Mono',monospace;margin-top:.35rem;min-height:.9rem;}
+.up{color:#4ade80;}.dn{color:#f87171;}
+.hc-desc{font-size:.65rem;color:var(--muted);margin-top:.15rem;}
+.skel{background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;height:1.75rem;width:60%;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* SECTION */
+.section{margin-bottom:2.5rem;}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:1rem;padding-bottom:.65rem;border-bottom:1px solid var(--border);}
+.sn{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.n1{background:rgba(56,189,248,.12);color:var(--c1);}
+.n2{background:rgba(192,132,252,.12);color:var(--c3);}
+.n3{background:rgba(74,222,128,.12);color:var(--c4);}
+.n4{background:rgba(251,146,60,.12);color:var(--c2);}
+.st{font-size:.95rem;font-weight:700;}
+.stag{margin-left:auto;font-size:.6rem;font-family:'JetBrains Mono',monospace;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
+
+/* CARD */
+.cc{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.cc-h{padding:1rem 1.4rem .85rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.cc-t{font-size:.86rem;font-weight:600;}
+.cc-s{font-size:.65rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.cc-b{padding:1.1rem 1.4rem;}
+.cc-b canvas{width:100%!important;height:240px!important;}
+.pbs{display:flex;gap:3px;}
+.pb{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:5px;padding:2px 8px;font-size:.62rem;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;}
+.pb:hover,.pb.on{background:var(--c1);border-color:var(--c1);color:#000;font-weight:700;}
+.leg{display:flex;gap:12px;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:5px;font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--dim);}
+.ll{width:18px;height:2px;border-radius:2px;}
+
+/* EXPLAIN */
+.ex{background:var(--surface2);border:1px solid var(--border);border-left-width:3px;border-radius:0 10px 10px 0;padding:1rem 1.4rem;margin-top:.85rem;}
+.ex-t{font-size:.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;font-family:'JetBrains Mono',monospace;margin-bottom:.5rem;}
+.ex p{font-size:.79rem;color:var(--muted);line-height:1.75;}
+.ex p strong{color:var(--dim);font-weight:600;}
+.kp{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.65rem;}
+.kpi{background:rgba(0,0,0,.2);border-radius:8px;padding:.65rem;display:flex;gap:7px;}
+.ki{font-size:.82rem;flex-shrink:0;}
+.kt{font-size:.73rem;color:var(--muted);line-height:1.5;}
+.kt strong{display:block;color:var(--dim);margin-bottom:1px;}
+.ex1{border-left-color:var(--c1);}.ex2{border-left-color:var(--c3);}
+.ex3{border-left-color:var(--c4);}.ex4{border-left-color:var(--c2);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+.lw{display:flex;align-items:center;justify-content:center;height:240px;}
+.sp{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--c1);border-radius:50%;animation:spin .75s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.em{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:8px;font-size:.78rem;color:#f87171;font-family:'JetBrains Mono',monospace;text-align:center;padding:1rem;}
+.em button{margin-top:6px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.4);color:#f87171;border-radius:6px;padding:4px 14px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace;}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem 1.1rem;font-size:.73rem;font-family:'JetBrains Mono',monospace;color:var(--dim);opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:none;}
+.toast.ok{border-color:#4ade80;color:#4ade80;}
+.toast.ng{border-color:#f87171;color:#f87171;}
+footer{border-top:1px solid var(--border);padding:1.2rem 2rem;text-align:center;font-size:.65rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+footer a{color:var(--c1);text-decoration:none;}
+@media(max-width:900px){.hero{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}.kp{grid-template-columns:1fr;}}
+@media(max-width:500px){.wrap{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="brand">
+      <div class="brand-icon">💧</div>
+      <div>
+        <div class="brand-name">미국 유동성 대시보드</div>
+        <div class="brand-sub">US LIQUIDITY MONITOR · FRED REAL-TIME DATA</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="badge"><div class="dot"></div>LIVE</div>
+      <div id="stTxt">연결 중...</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hc"><div class="hc-lbl">SOFR - EFFR 스프레드</div><div class="hc-val" id="sv1"><div class="skel"></div></div><div class="hc-chg" id="sc1">&nbsp;</div><div class="hc-desc">담보부 vs 무담보 금리차</div></div>
+    <div class="hc"><div class="hc-lbl">연준 지급준비금</div><div class="hc-val" id="sv2"><div class="skel"></div></div><div class="hc-chg" id="sc2">&nbsp;</div><div class="hc-desc">은행 시스템 총 준비금 잔액</div></div>
+    <div class="hc"><div class="hc-lbl">역레포(RRP) 잔액</div><div class="hc-val" id="sv3"><div class="skel"></div></div><div class="hc-chg" id="sc3">&nbsp;</div><div class="hc-desc">연준 초과유동성 흡수액</div></div>
+    <div class="hc"><div class="hc-lbl">TGA 잔액</div><div class="hc-val" id="sv4"><div class="skel"></div></div><div class="hc-chg" id="sc4">&nbsp;</div><div class="hc-desc">재무부 일반계정 잔고</div></div>
+  </div>
+
+  <!-- ① SOFR/EFFR -->
+  <div class="section">
+    <div class="sh"><div class="sn n1">①</div><div class="st">SOFR / EFFR 스프레드</div><div class="stag">SECURED vs UNSECURED</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">SOFR · EFFR 금리 및 스프레드 추이</div><div class="cc-s">단위: % · 일간</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
+          <div class="leg"><div class="li"><div class="ll" style="background:#38bdf8"></div>SOFR</div><div class="li"><div class="ll" style="background:#fb923c"></div>EFFR</div><div class="li"><div class="ll" style="background:#c084fc"></div>스프레드</div></div>
+          <div class="pbs"><button class="pb on" onclick="load('sofr',365,this)">1Y</button><button class="pb" onclick="load('sofr',365*3,this)">3Y</button><button class="pb" onclick="load('sofr',365*5,this)">5Y</button></div>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-sofr"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex1">
+      <div class="ex-t">📌 지표 해설</div>
+      <p><strong>SOFR-EFFR 스프레드</strong>는 담보부·무담보 대출 시장 간 금리 차이입니다. <strong>스프레드 급확대</strong> → 담보부 자금 수요 급증, 유동성 긴축 신호. <strong>스프레드 축소</strong> → 유동성 풍부 신호.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">🔴</div><div class="kt"><strong>스프레드 확대</strong>담보부 자금 수요 급증 → 유동성 긴축 또는 시장 불안 신호</div></div>
+        <div class="kpi"><div class="ki">🟢</div><div class="kt"><strong>스프레드 축소</strong>시장 유동성 풍부 또는 무담보 대출 환경 개선 신호</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② SOFR/IORB -->
+  <div class="section">
+    <div class="sh"><div class="sn n2">②</div><div class="st">SOFR / IORB 스프레드</div><div class="stag">MARKET RATE vs FED RATE</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">SOFR · IORB 금리 및 스프레드 추이</div><div class="cc-s">단위: % · 일간</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
+          <div class="leg"><div class="li"><div class="ll" style="background:#38bdf8"></div>SOFR</div><div class="li"><div class="ll" style="background:#fb923c"></div>IORB</div><div class="li"><div class="ll" style="background:#c084fc"></div>스프레드</div></div>
+          <div class="pbs"><button class="pb on" onclick="load('iorb',365,this)">1Y</button><button class="pb" onclick="load('iorb',365*3,this)">3Y</button><button class="pb" onclick="load('iorb',365*5,this)">5Y</button></div>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-iorb"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex2">
+      <div class="ex-t">📌 지표 해설</div>
+      <p><strong>IORB</strong>는 연준이 은행의 초과준비금에 지급하는 이자율입니다. <strong>SOFR &gt; IORB</strong> → 유동성 긴축 신호. <strong>SOFR ≤ IORB</strong> → 유동성 과잉 상태.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">🔺</div><div class="kt"><strong>SOFR &gt; IORB</strong>시장 금리 > 연준 이자율 → 유동성 긴축 신호</div></div>
+        <div class="kpi"><div class="ki">🔻</div><div class="kt"><strong>SOFR ≤ IORB</strong>은행 초과준비금 선호 → 유동성 과잉 상태</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③④ -->
+  <div class="g2">
+    <div>
+      <div class="sh"><div class="sn n3">③</div><div class="st">연준 지급준비금 잔액</div><div class="stag">WRESBAL</div></div>
+      <div class="cc">
+        <div class="cc-h"><div><div class="cc-t">총 지급준비금 잔액</div><div class="cc-s">단위: $B · 주간</div></div><div class="pbs"><button class="pb on" onclick="load('res',365*2,this)">2Y</button><button class="pb" onclick="load('res',365*5,this)">5Y</button><button class="pb" onclick="load('res',365*10,this)">10Y</button></div></div>
+        <div class="cc-b"><div id="w-res"><div class="lw"><div class="sp"></div></div></div></div>
+      </div>
+      <div class="ex ex3" style="margin-top:.85rem"><div class="ex-t">📌 지표 해설</div><p><strong>QE(양적완화)</strong> → 잔액 증가, <strong>QT(양적긴축)</strong> → 잔액 감소. 잔액이 낮아지면 금융시장 유동성 부족 위험이 증가합니다.</p></div>
+    </div>
+    <div>
+      <div class="sh"><div class="sn n4">④</div><div class="st">연준 역레포(RRP) 잔액</div><div class="stag">RRPONTSYD</div></div>
+      <div class="cc">
+        <div class="cc-h"><div><div class="cc-t">역레포 잔액 추이</div><div class="cc-s">단위: $B · 일간</div></div><div class="pbs"><button class="pb on" onclick="load('rrp',365*2,this)">2Y</button><button class="pb" onclick="load('rrp',365*5,this)">5Y</button><button class="pb" onclick="load('rrp',365*10,this)">10Y</button></div></div>
+        <div class="cc-b"><div id="w-rrp"><div class="lw"><div class="sp"></div></div></div></div>
+      </div>
+      <div class="ex ex4" style="margin-top:.85rem"><div class="ex-t">📌 지표 해설</div><p>잔액 감소 → 초과 유동성이 시장으로 재유입되는 신호. <strong>2022~2023년 고점</strong> 이후 꾸준히 감소 중.</p></div>
+    </div>
+  </div>
+
+  <!-- ⑤ TGA -->
+  <div class="section">
+    <div class="sh"><div class="sn n1">⑤</div><div class="st">미국 재무부 TGA 잔액</div><div class="stag">WTREGEN</div></div>
+    <div class="cc">
+      <div class="cc-h"><div><div class="cc-t">재무부 일반계정(TGA) 잔액</div><div class="cc-s">단위: $B · 주간</div></div><div class="pbs"><button class="pb on" onclick="load('tga',365*2,this)">2Y</button><button class="pb" onclick="load('tga',365*5,this)">5Y</button><button class="pb" onclick="load('tga',365*10,this)">10Y</button></div></div>
+      <div class="cc-b"><div id="w-tga"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex1">
+      <div class="ex-t">📌 지표 해설</div>
+      <p><strong>TGA 증가</strong> → 유동성 흡수. <strong>TGA 감소</strong> → 유동성 공급. 부채한도 협상 시 TGA 급감 후 재충전 과정이 시장에 큰 영향을 줍니다.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">🏦</div><div class="kt"><strong>TGA 증가 → 유동성 흡수</strong>세수·국채 발행 시 자금이 연준으로 이동</div></div>
+        <div class="kpi"><div class="ki">💸</div><div class="kt"><strong>TGA 감소 → 유동성 공급</strong>정부 지출 시 자금이 시중으로 방출</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ 주간 변동폭 -->
+  <div class="section">
+    <div class="sh"><div class="sn n2">⑥</div><div class="st">지급준비금 &amp; TGA — 전주 대비 증감폭</div><div class="stag">WEEKLY CHANGE</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">주간 변동폭 (지급준비금 vs TGA)</div><div class="cc-s">단위: $B</div></div>
+        <div class="leg"><div class="li"><div class="ll" style="background:#c084fc"></div>지급준비금 변동</div><div class="li"><div class="ll" style="background:#38bdf8"></div>TGA 변동</div></div>
+      </div>
+      <div class="cc-b"><div id="w-wk"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex2"><div class="ex-t">📌 지표 해설</div><p><strong>지급준비금↓ + TGA↑</strong> → 긴축 국면. <strong>지급준비금↑ + TGA↓</strong> → 유동성 공급 국면.</p></div>
+  </div>
+
+</div>
+<footer>데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a> &nbsp;·&nbsp; 본 페이지는 정보 제공 목적으로만 제공됩니다.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const GRID = 'rgba(26,40,64,0.7)';
+Chart.defaults.color='#475569';
+Chart.defaults.font.family="'JetBrains Mono',monospace";
+Chart.defaults.font.size=10.5;
+
+const CHARTS={};
+function kill(id){if(CHARTS[id]){CHARTS[id].destroy();delete CHARTS[id];}}
+
+function gFill(ctx,hex,a1=0.25,a2=0){
+  const g=ctx.createLinearGradient(0,0,0,240);
+  const h=v=>Math.round(v*255).toString(16).padStart(2,'0');
+  g.addColorStop(0,hex+h(a1));g.addColorStop(1,hex+h(a2));return g;
+}
+
+function mkOpts(scales){
+  return{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},animation:{duration:500},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1424',borderColor:'#1a2840',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e2e8f0',padding:10}},
+    scales:scales||{x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}}
+  };
+}
+
+// ── API 호출 (Vercel 서버리스 함수 경유) ──────────────────
+async function apiFetch(series, days) {
+  const r = await fetch(`/api/fred?series=${series}&days=${days}`);
+  if (!r.ok) throw new Error(`서버 오류 ${r.status}`);
+  const j = await r.json();
+  if (j.error) throw new Error(j.error);
+  return j; // { dates, vals }
+}
+
+function thin(dates,vals,n=120){
+  const s=Math.max(1,Math.floor(dates.length/n));
+  return{dates:dates.filter((_,i)=>i%s===0),vals:vals.filter((_,i)=>i%s===0)};
+}
+function cvs(wid,cid){document.getElementById(wid).innerHTML=`<canvas id="${cid}"></canvas>`;return document.getElementById(cid);}
+function showErr(wid,msg,fn){document.getElementById(wid).innerHTML=`<div class="em">⚠ ${msg}${fn?`<button onclick="${fn}">다시 시도</button>`:''}</div>`;}
+function fmtT(v){return v>=1000?(v/1000).toFixed(2)+'T':v.toFixed(0)+'B';}
+function fmtB(v){return Math.abs(v)>=1000?'$'+(Math.abs(v)/1000).toFixed(1)+'T':'$'+Math.abs(v)+'B';}
+function setH(n,val,cls,chg){document.getElementById('sv'+n).textContent=val;const el=document.getElementById('sc'+n);el.textContent=chg;el.className='hc-chg '+(cls||'');}
+
+// ① SOFR/EFFR
+async function renderSofr(days){
+  try{
+    const[s,e]=await Promise.all([apiFetch('SOFR',days),apiFetch('EFFR',days)]);
+    const sM=Object.fromEntries(s.dates.map((d,i)=>[d,s.vals[i]]));
+    const eM=Object.fromEntries(e.dates.map((d,i)=>[d,e.vals[i]]));
+    const dt=s.dates.filter(d=>eM[d]!==undefined);
+    const sv=dt.map(d=>sM[d]),ev=dt.map(d=>eM[d]),sp=sv.map((v,i)=>+(v-ev[i]).toFixed(4));
+    const{dates:td,vals:tsv}=thin(dt,sv,130);
+    const{vals:tev}=thin(dt,ev,130);
+    const{vals:tsp}=thin(dt,sp,130);
+    const cv=cvs('w-sofr','c-sofr');kill('sofr');const ctx=cv.getContext('2d');
+    CHARTS['sofr']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[
+      {label:'SOFR',data:tsv,borderColor:'#38bdf8',borderWidth:1.8,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#38bdf8'),tension:.3},
+      {label:'EFFR',data:tev,borderColor:'#fb923c',borderWidth:1.8,pointRadius:0,fill:false,tension:.3},
+      {label:'스프레드',data:tsp,borderColor:'#c084fc',borderWidth:1.2,pointRadius:0,fill:false,tension:.3,borderDash:[5,3],yAxisID:'y2'},
+    ]},options:mkOpts({
+      x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
+      y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'},title:{display:true,text:'금리 (%)',color:'#475569',font:{size:10}}},
+      y2:{position:'right',grid:{display:false},ticks:{color:'#c084fc',font:{size:9}},title:{display:true,text:'스프레드',color:'#c084fc',font:{size:10}}}
+    })});
+  }catch(e){showErr('w-sofr',e.message,`load('sofr',${days},document.querySelector('.pb.on'))`);}
+}
+
+// ② SOFR/IORB
+async function renderIorb(days){
+  try{
+    const[s,b]=await Promise.all([apiFetch('SOFR',days),apiFetch('IORB',days)]);
+    const sM=Object.fromEntries(s.dates.map((d,i)=>[d,s.vals[i]]));
+    const bM=Object.fromEntries(b.dates.map((d,i)=>[d,b.vals[i]]));
+    const dt=s.dates.filter(d=>bM[d]!==undefined);
+    const sv=dt.map(d=>sM[d]),bv=dt.map(d=>bM[d]),sp=sv.map((v,i)=>+(v-bv[i]).toFixed(4));
+    const{dates:td,vals:tsv}=thin(dt,sv,130);
+    const{vals:tbv}=thin(dt,bv,130);
+    const{vals:tsp}=thin(dt,sp,130);
+    const cv=cvs('w-iorb','c-iorb');kill('iorb');const ctx=cv.getContext('2d');
+    CHARTS['iorb']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[
+      {label:'SOFR',data:tsv,borderColor:'#38bdf8',borderWidth:1.8,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#38bdf8'),tension:.3},
+      {label:'IORB',data:tbv,borderColor:'#fb923c',borderWidth:1.8,pointRadius:0,fill:false,tension:.3},
+      {label:'스프레드',data:tsp,borderColor:'#c084fc',borderWidth:1.2,pointRadius:0,fill:false,tension:.3,borderDash:[5,3],yAxisID:'y2'},
+    ]},options:mkOpts({
+      x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
+      y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'},title:{display:true,text:'금리 (%)',color:'#475569',font:{size:10}}},
+      y2:{position:'right',grid:{display:false},ticks:{color:'#c084fc',font:{size:9}},title:{display:true,text:'스프레드',color:'#c084fc',font:{size:10}}}
+    })});
+  }catch(e){showErr('w-iorb',e.message);}
+}
+
+// ③ 지급준비금
+async function renderRes(days){
+  try{
+    const d=await apiFetch('WRESBAL',days);
+    const{dates:td,vals:tv}=thin(d.dates,d.vals,130);
+    const cv=cvs('w-res','c-res');kill('res');const ctx=cv.getContext('2d');
+    CHARTS['res']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[{label:'지급준비금($B)',data:tv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4}]},options:mkOpts()});
+  }catch(e){showErr('w-res',e.message);}
+}
+
+// ④ 역레포
+async function renderRrp(days){
+  try{
+    const d=await apiFetch('RRPONTSYD',days);
+    const{dates:td,vals:tv}=thin(d.dates,d.vals,150);
+    const cv=cvs('w-rrp','c-rrp');kill('rrp');const ctx=cv.getContext('2d');
+    CHARTS['rrp']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[{label:'역레포($B)',data:tv,borderColor:'#fb923c',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#fb923c'),tension:.4}]},options:mkOpts()});
+  }catch(e){showErr('w-rrp',e.message);}
+}
+
+// ⑤ TGA
+async function renderTga(days){
+  try{
+    const d=await apiFetch('WTREGEN',days);
+    const{dates:td,vals:tv}=thin(d.dates,d.vals,130);
+    const cv=cvs('w-tga','c-tga');kill('tga');const ctx=cv.getContext('2d');
+    CHARTS['tga']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[{label:'TGA($B)',data:tv,borderColor:'#38bdf8',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#38bdf8'),tension:.4}]},options:mkOpts()});
+  }catch(e){showErr('w-tga',e.message);}
+}
+
+// ⑥ 주간 변동폭
+async function renderWeekly(){
+  try{
+    const[res,tga]=await Promise.all([apiFetch('WRESBAL',365*2),apiFetch('WTREGEN',365*2)]);
+    const rd=res.vals.map((v,i)=>i===0?0:+(v-res.vals[i-1]).toFixed(1));
+    const td=tga.vals.map((v,i)=>i===0?0:+(v-tga.vals[i-1]).toFixed(1));
+    const{dates:labs,vals:rv}=thin(res.dates.slice(1),rd.slice(1),80);
+    const{vals:tv}=thin(tga.dates.slice(1),td.slice(1),80);
+    const cv=cvs('w-wk','c-wk');kill('wk');const ctx=cv.getContext('2d');
+    CHARTS['wk']=new Chart(ctx,{type:'bar',data:{labels:labs,datasets:[
+      {label:'지준 변동',data:rv,backgroundColor:rv.map(v=>v>=0?'rgba(192,132,252,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
+      {label:'TGA 변동',data:tv,backgroundColor:tv.map(v=>v>=0?'rgba(56,189,248,0.7)':'rgba(251,146,60,0.6)'),borderRadius:2,barPercentage:.5},
+    ]},options:mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})});
+  }catch(e){showErr('w-wk',e.message);}
+}
+
+// Hero 수치
+async function loadHero(){
+  try{
+    const[sofr,effr,res,rrp,tga]=await Promise.all([
+      apiFetch('SOFR',10),apiFetch('EFFR',10),
+      apiFetch('WRESBAL',21),apiFetch('RRPONTSYD',10),apiFetch('WTREGEN',21)
+    ]);
+    const ls=sofr.vals.at(-1),le=effr.vals.at(-1);
+    const sp=(ls-le).toFixed(3),sp2=sofr.vals.length>1?(sofr.vals.at(-2)-effr.vals.at(-2)).toFixed(3):sp;
+    const dsp=(sp-sp2).toFixed(3);
+    setH(1,sp+'%',dsp>=0?'up':'dn',(dsp>=0?'▲ ':'▼ ')+Math.abs(dsp)+' 전일 대비');
+    const lr=res.vals.at(-1),pr=res.vals.at(-2)||lr,dr=(lr-pr).toFixed(0);
+    setH(2,fmtT(lr),dr>=0?'up':'dn',(dr>=0?'▲ ':'▼ ')+fmtB(dr)+' 전주 대비');
+    const lrp=rrp.vals.at(-1),prp=rrp.vals.at(-2)||lrp,drp=(lrp-prp).toFixed(0);
+    setH(3,fmtT(lrp),drp>=0?'up':'dn',(drp>=0?'▲ ':'▼ ')+fmtB(drp)+' 전일 대비');
+    const lt=tga.vals.at(-1),pt=tga.vals.at(-2)||lt,dt=(lt-pt).toFixed(0);
+    setH(4,fmtT(lt),dt>=0?'up':'dn',(dt>=0?'▲ ':'▼ ')+fmtB(dt)+' 전주 대비');
+    document.getElementById('stTxt').textContent='실시간 FRED 데이터 ✓';
+    toast('✓ 실시간 데이터 로딩 완료!','ok');
+  }catch(e){
+    document.getElementById('stTxt').textContent='오류: '+e.message;
+    toast('데이터 오류: '+e.message,'ng');
+  }
+}
+
+function load(key,days,btn){
+  if(btn){btn.closest('.pbs').querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga})[key](days);
+}
+
+function toast(msg,cls=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast show '+cls;
+  setTimeout(()=>el.className='toast',3500);
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  loadHero();
+  renderSofr(365);renderIorb(365);
+  renderRes(365*2);renderRrp(365*2);renderTga(365*2);
+  renderWeekly();
+});
+</script>
+</body>
+</html>
