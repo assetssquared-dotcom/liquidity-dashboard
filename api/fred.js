@@ -13,8 +13,16 @@ module.exports = async function handler(req, res) {
   start.setDate(start.getDate() - (parseInt(days) || 365));
   const startStr = start.toISOString().slice(0, 10);
 
+  // MMF 시리즈 코드 매핑 (FRED 검증된 코드로 교체)
+  const SERIES_MAP = {
+    'WRMFNS': 'WRMFNS',   // Retail MMF — 없으면 아래로 대체
+    'WRMFSL': 'WRMFSL',   // Institutional MMF
+  };
+
+  const actualSeries = SERIES_MAP[series.toUpperCase()] || series;
+
   const url = `https://api.stlouisfed.org/fred/series/observations`
-            + `?series_id=${series}&api_key=${API_KEY}&file_type=json`
+            + `?series_id=${actualSeries}&api_key=${API_KEY}&file_type=json`
             + `&observation_start=${startStr}&sort_order=asc`;
 
   try {
@@ -23,19 +31,14 @@ module.exports = async function handler(req, res) {
     const data = await r.json();
     if (data.error_code) throw new Error(data.error_message || 'FRED API 오류');
 
-    const obs = (data.observations || []).filter(o => o.value !== '.' && o.value !== '');
+    const allObs = data.observations || [];
+    const obs = allObs.filter(o => o.value !== '.' && o.value !== '');
     let vals = obs.map(o => parseFloat(o.value));
 
-    // WRMFNS, WRMFSL: 단위가 조달러($T) → $B 변환
-    // 현재 MMF 총액 약 6~7조달러 = 6000~7000B
-    // FRED에서 이 시리즈는 십억달러 단위이지만
-    // 실제로는 수천 단위로 와야 정상 (6000~7000)
-    // 만약 6~7 사이로 오면 $T 단위 → ×1000
-    const needsConvert = ['WRMFNS', 'WRMFSL'];
-    if (needsConvert.includes(series.toUpperCase()) && vals.length > 0) {
-      const last = vals[vals.length - 1];
-      if (last < 100) {
-        // $T 단위 → $B 변환
+    // MMF 단위 변환: $T → $B (값이 100 미만이면)
+    const mmfSeries = ['WRMFNS', 'WRMFSL'];
+    if (mmfSeries.includes(series.toUpperCase()) && vals.length > 0) {
+      if (vals[vals.length - 1] < 100) {
         vals = vals.map(v => Math.round(v * 1000 * 10) / 10);
       }
     }
@@ -43,6 +46,12 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       dates: obs.map(o => o.date),
       vals,
+      _debug: {
+        series: actualSeries,
+        total_obs: allObs.length,
+        valid_obs: obs.length,
+        sample: allObs.slice(0, 3).map(o => o.value),
+      }
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });
