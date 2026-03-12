@@ -682,8 +682,13 @@ async function renderMmf(days){
     const tMap = Object.fromEntries(total.dates.map((d,i)=>[d,total.vals[i]]));
     const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
     const dates = total.dates.filter(d=>iMap[d]!==undefined);
-    const tv = dates.map(d=>tMap[d]);
-    const iv = dates.map(d=>iMap[d]);
+    let tv = dates.map(d=>tMap[d]);
+    let iv = dates.map(d=>iMap[d]);
+    // 단위 변환: 값이 50 미만이면 $T → $B (×1000)
+    if (tv.length > 0 && tv[tv.length-1] < 50) {
+      tv = tv.map(v => Math.round(v * 1000 * 10) / 10);
+      iv = iv.map(v => Math.round(v * 1000 * 10) / 10);
+    }
     const rv = tv.map((v,i)=>+(v-iv[i]).toFixed(1));
     const {dates:td,vals:ttv}=thin(dates,tv,120);
     const {vals:tiv}=thin(dates,iv,120);
@@ -738,7 +743,25 @@ async function renderMmfWeekly(){
     const tMap=Object.fromEntries(total.dates.map((d,i)=>[d,total.vals[i]]));
     const iMap=Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
     const dates=total.dates.filter(d=>iMap[d]!==undefined);
-    const iv=dates.map(d=>iMap[d]);
+    let iv=dates.map(d=>iMap[d]);
+    // 단위 변환: 값이 50 미만이면 $T → $B (×1000)
+    if (iv.length > 0 && iv[iv.length-1] < 50) {
+      iv = iv.map(v => Math.round(v * 1000 * 10) / 10);
+      const tvRaw = dates.map(d=>tMap[d]);
+      const tvConverted = tvRaw.map(v => Math.round(v * 1000 * 10) / 10);
+      const rv=tvConverted.map((v,i)=>+(v-iv[i]).toFixed(1));
+      const id=iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
+      const rd=rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
+      const {dates:labs,vals:idv}=thin(dates.slice(1),id.slice(1),80);
+      const {vals:rdv}=thin(dates.slice(1),rd.slice(1),80);
+      const cv=cvs('w-mmfwk','c-mmfwk');kill('mmfwk');
+      const ctx=cv.getContext('2d');
+      CHARTS['mmfwk']=new Chart(ctx,{type:'bar',data:{labels:labs,datasets:[
+        {label:'기관형 유출입',data:idv,backgroundColor:idv.map(v=>v>=0?'rgba(56,189,248,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
+        {label:'리테일 유출입',data:rdv,backgroundColor:rdv.map(v=>v>=0?'rgba(251,146,60,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
+      ]},options:mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})});
+      return;
+    }
     const rv=dates.map(d=>+((tMap[d]||0)-(iMap[d]||0)).toFixed(1));
     const id=iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
     const rd=rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
@@ -758,6 +781,21 @@ async function renderMmfWeekly(){
 }
 
 
+// 뷰포트 진입 시 로드 (lazy loading)
+function observeLazy(wrapId, fn) {
+  const el = document.getElementById(wrapId);
+  if (!el) return;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        fn();
+        obs.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '200px' });
+  obs.observe(el);
+}
+
 function load(key,days,btn){
   if(btn){btn.closest('.pbs').querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
   ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga,mmf:renderMmf,mmfrrp:renderMmfRrp})[key](days);
@@ -770,11 +808,18 @@ function toast(msg,cls=''){
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
+  // 핵심 차트 먼저 순서대로 로드 (429 방지: 딜레이 추가)
   loadHero();
-  renderSofr(365);renderIorb(365);
-  renderRes(365*2);renderRrp(365*2);renderTga(365*2);
-  renderWeekly();
-  renderMmf(365*2);renderMmfRrp(365*2);renderMmfWeekly();
+  setTimeout(()=>renderSofr(365), 0);
+  setTimeout(()=>renderIorb(365), 300);
+  setTimeout(()=>renderRes(365*2), 600);
+  setTimeout(()=>renderRrp(365*2), 900);
+  setTimeout(()=>renderTga(365*2), 1200);
+  setTimeout(()=>renderWeekly(), 1500);
+  // MMF는 스크롤 시 로드 (Intersection Observer)
+  observeLazy('w-mmf',   ()=>renderMmf(365*2));
+  observeLazy('w-mmfrrp',()=>renderMmfRrp(365*2));
+  observeLazy('w-mmfwk', ()=>renderMmfWeekly());
 });
 </script>
 </body>
