@@ -93,10 +93,15 @@ header {
   padding: 4px 10px; border-radius: 5px; border: 1px solid var(--line);
   font-size: .65rem; font-weight: 500; color: var(--txt2);
   text-decoration: none; background: transparent; white-space: nowrap;
-  transition: border-color .15s, color .15s;
+  transition: all .15s;
 }
 .hdr-btn:hover { border-color: #444; color: var(--txt); }
-.hdr-btn-tg{} .hdr-btn-nv{}
+.hdr-btn-th { color: #ddd; border-color: rgba(255,255,255,.2); }
+.hdr-btn-th:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+.hdr-btn-tg { color: #29a8d8; border-color: rgba(39,167,214,.35); background: rgba(39,167,214,.08); }
+.hdr-btn-tg:hover { background: rgba(39,167,214,.16); border-color: rgba(39,167,214,.6); }
+.hdr-btn-nv { color: #03c75a; border-color: rgba(3,199,90,.35); background: rgba(3,199,90,.08); }
+.hdr-btn-nv:hover { background: rgba(3,199,90,.16); border-color: rgba(3,199,90,.6); }
 
 /* ── MAIN WRAP ── */
 .wrap { max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem; }
@@ -278,7 +283,7 @@ header {
 .fg-egreed { color: #10b981; }
 @media(max-width:700px){ .fg-wrap { grid-template-columns: 1fr; } }
 footer {
-  border-top: 1px solid var(--line); padding: 1.5rem;
+  border-top: 1px solid var(--line); padding: 1.25rem 1.5rem;
   text-align: center; font-size: .62rem; color: var(--txt3); font-family: var(--mono);
 }
 footer a { color: var(--txt2); text-decoration: none; }
@@ -705,16 +710,16 @@ footer a:hover { color: var(--txt); }
   <div class="cta-inner">
     <div class="cta-links">
       <a href="https://www.threads.com/@asset.x2" target="_blank" class="cta-btn cta-btn-th">
-        <svg width="13" height="13" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.23c8.249.053 14.474 2.452 18.502 7.13 2.932 3.405 4.893 8.11 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.741C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.206 17.11 97.015 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.204.195 97.105 0h-.113C68.977.195 47.42 9.643 32.7 28.08 19.663 44.479 12.875 67.461 12.636 96v.04c.239 28.579 7.027 51.56 20.064 68 14.72 18.437 36.277 27.885 64.326 28.08h.113c24.513-.172 41.766-6.589 55.888-20.707 18.868-18.862 18.291-42.498 12.064-57.014-4.419-10.321-12.659-18.696-23.554-24.411zm-41.036 55.309c-10.426.583-21.24-4.097-27.103-11.99-3.645-4.842-5.378-10.708-5.098-17.027.542-12.836 11.475-19.158 29.553-20.16 8.196-.473 15.888-.07 22.888 1.188-.806 24.367-9.095 47.098-20.24 47.99z"/></svg>
-        @asset.x2
+        <svg width="12" height="12" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.23c8.249.053 14.474 2.452 18.502 7.13 2.932 3.405 4.893 8.11 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.741C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.206 17.11 97.015 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.204.195 97.105 0h-.113C68.977.195 47.42 9.643 32.7 28.08 19.663 44.479 12.875 67.461 12.636 96v.04c.239 28.579 7.027 51.56 20.064 68 14.72 18.437 36.277 27.885 64.326 28.08h.113c24.513-.172 41.766-6.589 55.888-20.707 18.868-18.862 18.291-42.498 12.064-57.014-4.419-10.321-12.659-18.696-23.554-24.411zm-41.036 55.309c-10.426.583-21.24-4.097-27.103-11.99-3.645-4.842-5.378-10.708-5.098-17.027.542-12.836 11.475-19.158 29.553-20.16 8.196-.473 15.888-.07 22.888 1.188-.806 24.367-9.095 47.098-20.24 47.99z"/></svg>
+        Threads
       </a>
       <a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank" class="cta-btn cta-btn-tg">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
-        자산제곱 프로젝트방
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+        프로젝트방
       </a>
       <a href="https://contents.premium.naver.com/assetx2/assetsx2" target="_blank" class="cta-btn cta-btn-nv">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
-        네이버 프리미엄
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+        구독자료
       </a>
     </div>
   </div>
@@ -899,55 +904,44 @@ async function renderWeekly(){
 
 // Hero 수치
 async function loadHero(){
-  // 캐시된 데이터 있으면 즉시 표시, 없으면 병렬 로드
-  const tasks = [
-    // 1. 공포탐욕지수
-    fetch('/api/fng').then(r=>r.ok?r.json():null).then(j=>{
-      if(j&&!j.error&&j.current){
-        const v=j.current.score;
-        setH(1,v,v<=44?'dn':v<=55?'':'up',j.current.rating);
-      }
-    }).catch(()=>{}),
+  // 순차 로드 — 캐시 있으면 즉시, 없으면 300ms 간격으로 FRED 호출
+  const delay = (ms) => new Promise(r=>setTimeout(r,ms));
 
-    // 2~8. FRED 병렬
-    apiFetch('VIXCLS',14).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);
-      setH(2,lv.toFixed(2),dv<=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
-    }).catch(()=>{}),
+  const trySet = async (num, series, days, fn) => {
+    try {
+      const d = await apiFetch(series, days);
+      fn(d);
+    } catch(e) {}
+  };
 
-    apiFetch('T10Y2Y',14).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(3);
-      setH(3,lv.toFixed(2)+'%',lv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
-    }).catch(()=>{}),
+  // 공포탐욕은 별도 API
+  fetch('/api/fng').then(r=>r.ok?r.json():null).then(j=>{
+    if(j&&!j.error&&j.current){
+      const v=j.current.score;
+      setH(1,v,v<=44?'dn':v<=55?'':'up',j.current.rating);
+    }
+  }).catch(()=>{});
 
-    apiFetch('WALCL',14).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
-      setH(4,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
-    }).catch(()=>{}),
-
-    apiFetch('WRESBAL',60).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
-      setH(5,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
-      document.getElementById('stTxt').textContent='FRED 데이터 연결됨';
-    }).catch(()=>{}),
-
-    apiFetch('RRPONTSYD',30).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
-      setH(6,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전일 대비');
-    }).catch(()=>{}),
-
-    apiFetch('BAMLH0A0HYM2',14).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);
-      setH(7,lv.toFixed(2)+'%',dv<=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
-    }).catch(()=>{}),
-
-    apiFetch('WTREGEN',60).then(d=>{
-      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
-      setH(8,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
-    }).catch(()=>{}),
+  // FRED 시리즈 순차 로드
+  const jobs = [
+    ['VIXCLS',14,      d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2); setH(2,lv.toFixed(2),+dv<=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비'); }],
+    ['T10Y2Y',14,      d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(3); setH(3,lv.toFixed(2)+'%',lv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비'); }],
+    ['WALCL',14,       d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0); setH(4,fmtT(lv),+dv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비'); }],
+    ['WRESBAL',60,     d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0); setH(5,fmtT(lv),+dv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비'); document.getElementById('stTxt').textContent='FRED 데이터 연결됨'; }],
+    ['RRPONTSYD',30,   d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0); setH(6,fmtT(lv),+dv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전일 대비'); }],
+    ['BAMLH0A0HYM2',14,d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2); setH(7,lv.toFixed(2)+'%',+dv<=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비'); }],
+    ['WTREGEN',60,     d=>{ const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0); setH(8,fmtT(lv),+dv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비'); }],
   ];
 
-  await Promise.allSettled(tasks);
+  for(const [series, days, fn] of jobs){
+    // 캐시 있으면 딜레이 없이 즉시
+    const cached = cacheIsFresh(series, days) ? cacheGet(series, days) : null;
+    if(cached){ try{ fn(cached); }catch(e){} }
+    else {
+      await delay(250);
+      await trySet(0, series, days, fn);
+    }
+  }
 }
 
 
