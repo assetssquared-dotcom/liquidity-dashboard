@@ -1241,18 +1241,15 @@ async function renderMmf(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmf');
   try{
+    // 11번과 동일 패턴: 각각 독립 thin
     const [ins,ret]=await Promise.all([apiFetch('WRMFNS',days),apiFetch('WRMFSL',days)]);
-    const minLen=Math.min(ins.dates.length,ret.dates.length);
-    const tIns=thin(ins.dates.slice(0,minLen),ins.vals.slice(0,minLen),200);
-    const tRet=thin(ret.dates.slice(0,minLen),ret.vals.slice(0,minLen),200);
-    const dates=tIns.dates;
-    const iv=tIns.vals;
-    const rv=tRet.vals.slice(0,dates.length);
+    const{dates,vals:iv}=thin(ins.dates,ins.vals,200);
+    const rv=thin(ret.dates,ret.vals,200).vals;
     mkLine('w-mmf',dates,[
       {label:'기관형',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'리테일',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
-  }catch(e){console.error('renderMmf error:',e);showSpin('w-mmf');}
+  }catch(e){showSpin('w-mmf');}
 }
 
 async function renderSofr(days,btn){
@@ -1321,21 +1318,17 @@ async function renderMmfRrp(days,btn){
 async function renderMmfWeekly(){
   showSpin('w-mmfwk');
   try{
+    // 11번과 동일 패턴: WRMFNS 하나만 먼저 fetch해서 차분 계산
     const [ins,ret]=await Promise.all([apiFetch('WRMFNS',365*2),apiFetch('WRMFSL',365*2)]);
-    const minLen2=Math.min(ins.vals.length,ret.vals.length);
-    const iSlice=ins.vals.slice(0,minLen2);
-    const rSlice=ret.vals.slice(0,minLen2);
-    const dSlice=ins.dates.slice(0,minLen2);
-    const idiff=iSlice.slice(1).map((v,i)=>+(v-iSlice[i]).toFixed(1));
-    const rdiff=rSlice.slice(1).map((v,i)=>+(v-rSlice[i]).toFixed(1));
-    const dates=dSlice.slice(1);
-    const{dates:dd,vals:iv}=thin(dates,idiff,150);
-    const rv2=thin(dates,rdiff,150).vals.slice(0,dd.length);
+    const idiff=ins.vals.slice(1).map((v,i)=>+(v-ins.vals[i]).toFixed(1));
+    const rdiff=ret.vals.slice(1).map((v,i)=>+(v-ret.vals[i]).toFixed(1));
+    const{dates:dd,vals:iv}=thin(ins.dates.slice(1),idiff,150);
+    const rv2=thin(ret.dates.slice(1),rdiff,150).vals;
     mkLine('w-mmfwk',dd,[
       {label:'기관형 유출입',data:iv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'리테일 유출입',data:rv2,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
-  }catch(e){console.error('renderMmfWeekly error:',e);showSpin('w-mmfwk');}
+  }catch(e){showSpin('w-mmfwk');}
 }
 
 async function renderStlfsi(days,btn){
