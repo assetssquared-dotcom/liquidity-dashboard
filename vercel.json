@@ -1,5 +1,9 @@
 {
+  "outputDirectory": "public",
   "rewrites": [
-    { "source": "/api/fred", "destination": "/api/fred.js" }
+    {
+      "source": "/api/fred",
+      "destination": "/api/fred.js"
+    }
   ]
 }
