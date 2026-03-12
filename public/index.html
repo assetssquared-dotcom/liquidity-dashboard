@@ -215,12 +215,12 @@ header {
 @keyframes spin { to{transform:rotate(360deg)} }
 .em {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 200px; gap: 8px; font-size: .75rem; color: #f87171;
-  font-family: var(--mono); text-align: center; padding: 1rem;
+  height: 200px; gap: 8px; font-size: .75rem; color: var(--txt3);
+  font-family: var(--mono); text-align: center; padding: 1rem; opacity: .4;
 }
 .em button {
-  margin-top: 6px; background: transparent; border: 1px solid rgba(248,113,113,.3);
-  color: #f87171; border-radius: 5px; padding: 4px 12px; font-size: .68rem;
+  margin-top: 6px; background: transparent; border: 1px solid var(--line);
+  color: var(--txt3); border-radius: 5px; padding: 4px 12px; font-size: .68rem;
   cursor: pointer; font-family: var(--mono);
 }
 
@@ -739,7 +739,12 @@ function thin(dates,vals,n=120){
   return{dates:dates.filter((_,i)=>i%s===0),vals:vals.filter((_,i)=>i%s===0)};
 }
 function cvs(wid,cid){document.getElementById(wid).innerHTML=`<canvas id="${cid}"></canvas>`;return document.getElementById(cid);}
-function showErr(wid,msg,fn){document.getElementById(wid).innerHTML=`<div class="em">⚠ ${msg}${fn?`<button onclick="${fn}">다시 시도</button>`:''}</div>`;}
+function showErr(wid,msg,fn){
+  // 에러 메시지 숨김 — 스피너만 유지 (재시도는 새로고침으로)
+  const el = document.getElementById(wid);
+  if(!el) return;
+  el.innerHTML = `<div class="lw" style="opacity:.3"><div class="sp"></div></div>`;
+}
 function fmtT(v){return v>=1000?(v/1000).toFixed(2)+'T':v.toFixed(0)+'B';}
 function fmtB(v){return Math.abs(v)>=1000?'$'+(Math.abs(v)/1000).toFixed(1)+'T':'$'+Math.abs(v)+'B';}
 function setH(n,val,cls,chg){document.getElementById('sv'+n).textContent=val;const el=document.getElementById('sc'+n);el.textContent=chg;el.className='hc-chg '+(cls||'');}
@@ -1162,7 +1167,7 @@ async function loadFng(){
       const ctx2=document.getElementById('c-fng').getContext('2d');
       CHARTS['fng']=new Chart(ctx2,{type:'line',data:{labels:td,datasets:[{label:'공포탐욕지수',data:tv,borderColor:'rgba(255,255,255,0.3)',borderWidth:1.5,pointRadius:0,fill:false,tension:.3,segment:{borderColor:ctx=>fgColor(ctx.p1.parsed.y)}}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1424',borderColor:'#1a2840',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e2e8f0',padding:10}},scales:{x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},min:0,max:100,ticks:{color:'#475569',callback:v=>{if(v===0)return '공포';if(v===50)return '중립';if(v===100)return '탐욕';return v;}}}}}});
     } catch(e2) {
-      document.getElementById('w-fng').innerHTML='<div class="em">데이터를 불러올 수 없습니다</div>';
+      document.getElementById('w-fng').innerHTML='<div class="lw" style="opacity:.3"><div class="sp"></div></div>';
     }
   }
 }
