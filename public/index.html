@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>자산제곱 유동성 대시보드</title>
+<title>자산제곱 모니터링 대시보드</title>
 <meta name="description" content="SOFR, 지급준비금, 역레포, TGA, MMF 등 미국 유동성 핵심 지표를 실시간으로 확인하세요.">
 
 <!-- OG / SNS 공유 미리보기 -->
-<meta property="og:title" content="자산제곱 유동성 대시보드">
+<meta property="og:title" content="자산제곱 모니터링 대시보드">
 <meta property="og:description" content="SOFR, 지급준비금, 역레포, TGA, MMF 등 미국 유동성 핵심 지표를 실시간으로 확인하세요.">
 <meta property="og:image" content="https://liquidity-dashboard-rho.vercel.app/assetx2.png">
 <meta property="og:url" content="https://liquidity-dashboard-rho.vercel.app/">
@@ -16,7 +16,7 @@
 
 <!-- 트위터/X 카드 -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="자산제곱 유동성 대시보드">
+<meta name="twitter:title" content="자산제곱 모니터링 대시보드">
 <meta name="twitter:description" content="SOFR, 지급준비금, 역레포, TGA, MMF 등 미국 유동성 핵심 지표 실시간 대시보드">
 <meta name="twitter:image" content="https://liquidity-dashboard-rho.vercel.app/assetx2.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -112,6 +112,14 @@ header {
 .hc:nth-child(2) .hc-val { color: var(--c3); }
 .hc:nth-child(3) .hc-val { color: var(--c4); }
 .hc:nth-child(4) .hc-val { color: var(--c2); }
+.hc:nth-child(5) .hc-val { color: var(--c1); }
+.hc:nth-child(5)::after { background: var(--c1); }
+.hc:nth-child(6) .hc-val { color: var(--c3); }
+.hc:nth-child(6)::after { background: var(--c3); }
+.hc:nth-child(7) .hc-val { color: var(--c2); }
+.hc:nth-child(7)::after { background: var(--c2); }
+.hc:nth-child(8) .hc-val { color: #f87171; }
+.hc:nth-child(8)::after { background: #f87171; }
 .hc-chg { font-size: .7rem; font-family: var(--mono); color: var(--txt2); margin-top: .4rem; }
 .up { color: var(--c4); } .dn { color: #f87171; }
 .hc-desc { font-size: .68rem; color: var(--txt3); margin-top: .2rem; }
@@ -262,7 +270,7 @@ footer a:hover { color: var(--txt); }
 
 /* ── 반응형 ── */
 @media(max-width:900px) {
-  .hero { grid-template-columns: 1fr 1fr; }
+  .hero { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
   .g2 { grid-template-columns: 1fr; }
   .kp { grid-template-columns: 1fr; }
   .cta-inner { flex-direction: column; align-items: flex-start; }
@@ -299,8 +307,8 @@ footer a:hover { color: var(--txt); }
     <div class="brand">
       <div class="brand-icon">A²</div>
       <div>
-        <div class="brand-name">자산제곱 유동성 대시보드</div>
-        <div class="brand-sub">LIQUIDITY MONITOR · FRED REAL-TIME DATA</div>
+        <div class="brand-name">자산제곱 모니터링 대시보드</div>
+        <div class="brand-sub">MARKET MONITOR · FRED REAL-TIME DATA</div>
       </div>
     </div>
     <div class="hdr-right">
@@ -332,6 +340,10 @@ footer a:hover { color: var(--txt); }
     <div class="hc"><div class="hc-lbl">연준 지급준비금</div><div class="hc-val" id="sv2"><div class="skel"></div></div><div class="hc-chg" id="sc2">&nbsp;</div><div class="hc-desc">은행 시스템 총 준비금 잔액</div></div>
     <div class="hc"><div class="hc-lbl">역레포(RRP) 잔액</div><div class="hc-val" id="sv3"><div class="skel"></div></div><div class="hc-chg" id="sc3">&nbsp;</div><div class="hc-desc">연준 초과유동성 흡수액</div></div>
     <div class="hc"><div class="hc-lbl">TGA 잔액</div><div class="hc-val" id="sv4"><div class="skel"></div></div><div class="hc-chg" id="sc4">&nbsp;</div><div class="hc-desc">재무부 일반계정 잔고</div></div>
+    <div class="hc"><div class="hc-lbl">연준 총자산</div><div class="hc-val" id="sv5"><div class="skel"></div></div><div class="hc-chg" id="sc5">&nbsp;</div><div class="hc-desc">연준 대차대조표 규모</div></div>
+    <div class="hc"><div class="hc-lbl">장단기 금리차</div><div class="hc-val" id="sv6"><div class="skel"></div></div><div class="hc-chg" id="sc6">&nbsp;</div><div class="hc-desc">10Y - 2Y 국채 스프레드</div></div>
+    <div class="hc"><div class="hc-lbl">하이일드 스프레드</div><div class="hc-val" id="sv7"><div class="skel"></div></div><div class="hc-chg" id="sc7">&nbsp;</div><div class="hc-desc">신용시장 스트레스 지표</div></div>
+    <div class="hc"><div class="hc-lbl">금융스트레스지수</div><div class="hc-val" id="sv8"><div class="skel"></div></div><div class="hc-chg" id="sc8">&nbsp;</div><div class="hc-desc">STLFSI · 0 이상 = 스트레스</div></div>
   </div>
 
   <!-- ① SOFR/EFFR -->
@@ -505,6 +517,95 @@ footer a:hover { color: var(--txt); }
     </div>
   </div>
 
+  <!-- ⑦ 연준 대차대조표 -->
+  <div class="section">
+    <div class="sh"><div class="sn n1">10</div><div class="st">연준 대차대조표 (총자산)</div><div class="stag">WALCL</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">연준 총자산 추이</div><div class="cc-s">단위: $B · 주간</div></div>
+        <div class="pbs">
+          <button class="pb on" onclick="load('walcl',365*2,this)">2Y</button>
+          <button class="pb" onclick="load('walcl',365*5,this)">5Y</button>
+          <button class="pb" onclick="load('walcl',365*10,this)">10Y</button>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-walcl"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex1">
+      <div class="ex-t">지표 해설</div>
+      <p>연준 대차대조표는 QE·QT의 직접적인 결과물입니다. <strong>자산 증가(QE)</strong> → 시중에 유동성 공급. <strong>자산 감소(QT)</strong> → 유동성 흡수. 지급준비금·역레포·TGA는 모두 이 대차대조표의 부채 항목으로, 전체 크기를 함께 보면 유동성 흐름의 전체 그림이 보입니다.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">↑</div><div class="kt"><strong>자산 증가 (QE)</strong>국채·MBS 매입 → 시중 유동성 확대, 위험자산 상승 압력</div></div>
+        <div class="kpi"><div class="ki">↓</div><div class="kt"><strong>자산 감소 (QT)</strong>만기 미재투자 → 시중 유동성 축소, 금융시장 압박</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑪ 장단기 금리차 -->
+  <div class="section">
+    <div class="sh"><div class="sn n2">11</div><div class="st">미국 장단기 금리차 (10Y - 2Y)</div><div class="stag">T10Y2Y</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">10년물 - 2년물 국채 스프레드</div><div class="cc-s">단위: % · 일간 · 음수 = 역전</div></div>
+        <div class="pbs">
+          <button class="pb on" onclick="load('t10y2y',365*2,this)">2Y</button>
+          <button class="pb" onclick="load('t10y2y',365*5,this)">5Y</button>
+          <button class="pb" onclick="load('t10y2y',365*10,this)">10Y</button>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-t10y2y"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex2">
+      <div class="ex-t">지표 해설</div>
+      <p>장단기 금리차는 <strong>경기침체 예측의 가장 강력한 선행지표</strong>입니다. 금리차가 <strong>역전(음수)</strong>되면 과거 모든 미국 경기침체 전에 나타났습니다. 역전 후 정상화(상승)되는 시점이 실제 침체 시작과 가까운 경향이 있습니다.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">−</div><div class="kt"><strong>금리차 역전 (음수)</strong>단기금리 > 장기금리 → 경기침체 선행 신호, 역사적으로 12~24개월 내 침체</div></div>
+        <div class="kpi"><div class="ki">+</div><div class="kt"><strong>금리차 정상화 (양수 전환)</strong>역전 해소 후 상승 전환 시점이 실제 침체 진입과 맞물리는 경향</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑫⑬ 하이일드 스프레드 + 금융스트레스 -->
+  <div class="g2">
+    <div>
+      <div class="sh"><div class="sn n3">12</div><div class="st">하이일드 스프레드</div><div class="stag">BAMLH0A0HYM2</div></div>
+      <div class="cc">
+        <div class="cc-h">
+          <div><div class="cc-t">하이일드 채권 스프레드</div><div class="cc-s">단위: % · 일간</div></div>
+          <div class="pbs">
+            <button class="pb on" onclick="load('hys',365*2,this)">2Y</button>
+            <button class="pb" onclick="load('hys',365*5,this)">5Y</button>
+            <button class="pb" onclick="load('hys',365*10,this)">10Y</button>
+          </div>
+        </div>
+        <div class="cc-b"><div id="w-hys"><div class="lw"><div class="sp"></div></div></div></div>
+      </div>
+      <div class="ex ex3" style="margin-top:.75rem">
+        <div class="ex-t">지표 해설</div>
+        <p>하이일드(정크본드) 스프레드는 <strong>신용시장 스트레스의 조기경보</strong>입니다. 스프레드 급등 → 투자자들이 위험을 회피, 신용경색 우려. 평상시 3~4%, 위기 시 8% 이상으로 급등합니다.</p>
+      </div>
+    </div>
+    <div>
+      <div class="sh"><div class="sn n4">13</div><div class="st">세인트루이스 금융스트레스지수</div><div class="stag">STLFSI4</div></div>
+      <div class="cc">
+        <div class="cc-h">
+          <div><div class="cc-t">금융스트레스지수 (STLFSI)</div><div class="cc-s">단위: 표준편차 · 주간 · 0 이상 = 스트레스</div></div>
+          <div class="pbs">
+            <button class="pb on" onclick="load('stlfsi',365*2,this)">2Y</button>
+            <button class="pb" onclick="load('stlfsi',365*5,this)">5Y</button>
+            <button class="pb" onclick="load('stlfsi',365*10,this)">10Y</button>
+          </div>
+        </div>
+        <div class="cc-b"><div id="w-stlfsi"><div class="lw"><div class="sp"></div></div></div></div>
+      </div>
+      <div class="ex ex4" style="margin-top:.75rem">
+        <div class="ex-t">지표 해설</div>
+        <p>금리·신용·주식 등 18개 지표를 종합한 <strong>금융시스템 전반의 스트레스 지수</strong>입니다. <strong>0 이상</strong> → 평균 이상의 스트레스. <strong>급등 시</strong> → 금융위기 수준의 시장 경색 신호.</p>
+      </div>
+    </div>
+  </div>
+
+
 </div>
 <footer>데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a> &nbsp;·&nbsp; 본 페이지는 정보 제공 목적으로만 제공됩니다.</footer>
 <div class="toast" id="toast"></div>
@@ -647,7 +748,6 @@ async function renderWeekly(){
 // Hero 수치
 async function loadHero(){
   try{
-    // 기간을 넉넉하게 30일로 설정 (주말·공휴일 제외해도 데이터 확보)
     const[sofr,effr,res,rrp,tga]=await Promise.all([
       apiFetch('SOFR',30),apiFetch('EFFR',30),
       apiFetch('WRESBAL',60),apiFetch('RRPONTSYD',30),apiFetch('WTREGEN',60)
@@ -666,6 +766,31 @@ async function loadHero(){
   }catch(e){
     document.getElementById('stTxt').textContent='차트 데이터 로딩 중...';
   }
+  // 5~8번: 별도 순차 로드 (429 방지)
+  try{
+    await new Promise(r=>setTimeout(r,500));
+    const walcl=await apiFetch('WALCL',14);
+    const lw=walcl.vals.at(-1),pw=walcl.vals.at(-2)||lw,dw=(lw-pw).toFixed(0);
+    setH(5,fmtT(lw),dw>=0?'up':'dn',(dw>=0?'▲ ':'▼ ')+fmtB(dw)+' 전주 대비');
+  }catch(e){}
+  try{
+    await new Promise(r=>setTimeout(r,300));
+    const t10=await apiFetch('T10Y2Y',14);
+    const lv=t10.vals.at(-1),pv=t10.vals.at(-2)||lv,dv=(lv-pv).toFixed(3);
+    setH(6,lv.toFixed(2)+'%',lv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
+  }catch(e){}
+  try{
+    await new Promise(r=>setTimeout(r,300));
+    const hys=await apiFetch('BAMLH0A0HYM2',14);
+    const lh=hys.vals.at(-1),ph=hys.vals.at(-2)||lh,dh=(lh-ph).toFixed(2);
+    setH(7,lh.toFixed(2)+'%',dh<=0?'up':'dn',(dh>=0?'▲ ':'▼ ')+Math.abs(dh)+' 전일 대비');
+  }catch(e){}
+  try{
+    await new Promise(r=>setTimeout(r,300));
+    const stl=await apiFetch('STLFSI4',14);
+    const ls2=stl.vals.at(-1),ps=stl.vals.at(-2)||ls2,ds=(ls2-ps).toFixed(3);
+    setH(8,ls2.toFixed(2),ls2<=0?'up':'dn',(ds>=0?'▲ ':'▼ ')+Math.abs(ds)+' 전주 대비');
+  }catch(e){}
 }
 
 
@@ -784,9 +909,75 @@ function observeLazy(wrapId, fn) {
   obs.observe(el);
 }
 
+
+// ── 추가 지표 렌더 함수 ─────────────────────────
+
+// 연준 대차대조표 (WALCL)
+async function renderWalcl(days){
+  try{
+    const d = await apiFetch('WALCL', days);
+    const {dates:td,vals:tv} = thin(d.dates, d.vals, 130);
+    const cv=cvs('w-walcl','c-walcl'); kill('walcl');
+    const ctx=cv.getContext('2d');
+    CHARTS['walcl']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[
+      {label:'연준 총자산($B)',data:tv,borderColor:'#5b9cf6',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#5b9cf6'),tension:.4}
+    ]},options:mkOpts()});
+  }catch(e){showErr('w-walcl',e.message);}
+}
+
+// 장단기 금리차 (T10Y2Y) - 역전 구간 시각화
+async function renderT10y2y(days){
+  try{
+    const d = await apiFetch('T10Y2Y', days);
+    const {dates:td,vals:tv} = thin(d.dates, d.vals, 150);
+    const cv=cvs('w-t10y2y','c-t10y2y'); kill('t10y2y');
+    const ctx=cv.getContext('2d');
+    // 양수/음수 색상 구분
+    const posColor = 'rgba(52,211,153,0.15)';
+    const negColor = 'rgba(248,113,113,0.15)';
+    CHARTS['t10y2y']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[
+      {label:'장단기 금리차(%)',data:tv,borderColor:'#a78bfa',borderWidth:2,pointRadius:0,
+       fill:true,backgroundColor:tv.map(v=>v>=0?posColor:negColor),tension:.3,spanGaps:true},
+    ]},options:{
+      ...mkOpts(),
+      plugins:{
+        ...mkOpts().plugins,
+        annotation:{annotations:{zeroline:{type:'line',yMin:0,yMax:0,borderColor:'rgba(255,255,255,0.2)',borderWidth:1,borderDash:[4,4]}}}
+      }
+    }});
+  }catch(e){showErr('w-t10y2y',e.message);}
+}
+
+// 하이일드 스프레드 (BAMLH0A0HYM2)
+async function renderHys(days){
+  try{
+    const d = await apiFetch('BAMLH0A0HYM2', days);
+    const {dates:td,vals:tv} = thin(d.dates, d.vals, 150);
+    const cv=cvs('w-hys','c-hys'); kill('hys');
+    const ctx=cv.getContext('2d');
+    CHARTS['hys']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[
+      {label:'하이일드 스프레드(%)',data:tv,borderColor:'#f97316',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#f97316'),tension:.3}
+    ]},options:mkOpts()});
+  }catch(e){showErr('w-hys',e.message);}
+}
+
+// 금융스트레스지수 (STLFSI4)
+async function renderStlfsi(days){
+  try{
+    const d = await apiFetch('STLFSI4', days);
+    const {dates:td,vals:tv} = thin(d.dates, d.vals, 130);
+    const cv=cvs('w-stlfsi','c-stlfsi'); kill('stlfsi');
+    const ctx=cv.getContext('2d');
+    CHARTS['stlfsi']=new Chart(ctx,{type:'line',data:{labels:td,datasets:[
+      {label:'금융스트레스지수',data:tv,borderColor:'#f87171',borderWidth:2,pointRadius:0,
+       fill:true,backgroundColor:tv.map(v=>v>=0?'rgba(248,113,113,0.2)':'rgba(52,211,153,0.1)'),tension:.3,spanGaps:true}
+    ]},options:mkOpts()});
+  }catch(e){showErr('w-stlfsi',e.message);}
+}
+
 function load(key,days,btn){
   if(btn){btn.closest('.pbs').querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga,mmf:renderMmf,mmfrrp:renderMmfRrp})[key](days);
+  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga,mmf:renderMmf,mmfrrp:renderMmfRrp,walcl:renderWalcl,t10y2y:renderT10y2y,hys:renderHys,stlfsi:renderStlfsi})[key](days);
 }
 
 function toast(msg,cls=''){
@@ -808,6 +999,10 @@ window.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-mmf',   ()=>renderMmf(365*2));
   observeLazy('w-mmfrrp',()=>renderMmfRrp(365*2));
   observeLazy('w-mmfwk', ()=>renderMmfWeekly());
+  observeLazy('w-walcl', ()=>renderWalcl(365*2));
+  observeLazy('w-t10y2y',()=>renderT10y2y(365*2));
+  observeLazy('w-hys',   ()=>renderHys(365*2));
+  observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
 });
 </script>
 </body>
