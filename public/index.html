@@ -1032,13 +1032,10 @@ function toast(msg,cls=''){
 }
 
 window.addEventListener('DOMContentLoaded', async ()=>{
-  // 페이지 로드 즉시 전체 데이터 한번에 fetch
+  // BATCH와 loadHero 병렬 실행 — 서로 기다리지 않음
   let BATCH = null;
-  try {
-    const r = await fetch('/api/batch');
-    if(r.ok) BATCH = await r.json();
-  } catch(e) {}
-  // 히어로 카드 + 상단 차트만 즉시 로드
+  const batchPromise = fetch('/api/batch').then(r=>r.ok?r.json():null).then(d=>{ BATCH=d; }).catch(()=>{});
+  // 히어로 카드 즉시 로드 (BATCH 안 기다림)
   loadHero();
   // 공포탐욕지수 — BATCH 우선, 없으면 /api/fng
   (async () => {
