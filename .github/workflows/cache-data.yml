@@ -85,7 +85,7 @@ jobs:
             console.error('FNG error:', e.message);
           }
 
-          fs.writeFileSync('public/data/cache.json', JSON.stringify(cache));
+          fs.writeFileSync('public/cache.json', JSON.stringify(cache));
           console.log('Cache saved:', Object.keys(cache.fred).length, 'series');
           NODEOF
 
@@ -93,6 +93,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data/cache.json
+          git add public/cache.json
           git diff --staged --quiet || git commit -m "chore: update data cache"
           git push
