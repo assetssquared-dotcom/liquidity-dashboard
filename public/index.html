@@ -371,9 +371,10 @@ async function renderWeekly(){
 // Hero 수치
 async function loadHero(){
   try{
+    // 기간을 넉넉하게 30일로 설정 (주말·공휴일 제외해도 데이터 확보)
     const[sofr,effr,res,rrp,tga]=await Promise.all([
-      apiFetch('SOFR',10),apiFetch('EFFR',10),
-      apiFetch('WRESBAL',21),apiFetch('RRPONTSYD',10),apiFetch('WTREGEN',21)
+      apiFetch('SOFR',30),apiFetch('EFFR',30),
+      apiFetch('WRESBAL',60),apiFetch('RRPONTSYD',30),apiFetch('WTREGEN',60)
     ]);
     const ls=sofr.vals.at(-1),le=effr.vals.at(-1);
     const sp=(ls-le).toFixed(3),sp2=sofr.vals.length>1?(sofr.vals.at(-2)-effr.vals.at(-2)).toFixed(3):sp;
@@ -386,10 +387,8 @@ async function loadHero(){
     const lt=tga.vals.at(-1),pt=tga.vals.at(-2)||lt,dt=(lt-pt).toFixed(0);
     setH(4,fmtT(lt),dt>=0?'up':'dn',(dt>=0?'▲ ':'▼ ')+fmtB(dt)+' 전주 대비');
     document.getElementById('stTxt').textContent='실시간 FRED 데이터 ✓';
-    toast('✓ 실시간 데이터 로딩 완료!','ok');
   }catch(e){
-    document.getElementById('stTxt').textContent='오류: '+e.message;
-    toast('데이터 오류: '+e.message,'ng');
+    document.getElementById('stTxt').textContent='차트 데이터 로딩 중...';
   }
 }
 
