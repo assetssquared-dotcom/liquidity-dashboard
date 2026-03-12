@@ -85,14 +85,39 @@ canvas#fg-gauge-canvas{width:220px;height:120px;}
 .insight-title{font-size:.7rem;font-weight:700;color:var(--txt);margin-bottom:.4rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;opacity:.6;}
 .insight-body{margin-bottom:.75rem;}
 .signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem;}
-.signal{display:flex;gap:.7rem;align-items:flex-start;background:#111;border:1px solid var(--line);border-radius:6px;padding:.65rem .8rem;}
-.signal-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.signal{display:flex;gap:.75rem;align-items:flex-start;background:#111;border:1px solid var(--line);border-radius:8px;padding:.75rem .9rem;}
+.signal-icon{font-size:1.1rem;flex-shrink:0;line-height:1.4;width:1.4rem;text-align:center;}
+.signal-content{flex:1;min-width:0;}
+.signal-label{font-size:.72rem;font-weight:700;color:var(--txt);display:block;margin-bottom:3px;line-height:1.3;}
+.signal-desc{font-size:.67rem;color:var(--txt2);line-height:1.5;display:block;}
 .signal-body{font-size:.68rem;color:var(--txt2);line-height:1.45;}
 .signal-body strong{color:var(--txt);display:block;margin-bottom:2px;font-size:.7rem;}
-.signal.green{border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.04);}
-.signal.red{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.04);}
-.signal.blue{border-color:rgba(91,156,246,.2);background:rgba(91,156,246,.04);}
-.signal.yellow{border-color:rgba(249,115,22,.2);background:rgba(249,115,22,.04);}
+.signal.green{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.05);}
+.signal.red{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.05);}
+.signal.blue{border-color:rgba(91,156,246,.25);background:rgba(91,156,246,.05);}
+.signal.yellow{border-color:rgba(249,115,22,.25);background:rgba(249,115,22,.05);}
+
+/* 현재 수치 해석 패널 */
+.now-panel{background:#0d0d0d;border:1px solid var(--line);border-radius:8px;padding:.9rem 1.1rem;margin-top:.75rem;display:none;}
+.now-panel.show{display:block;}
+.now-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;}
+.now-badge{font-size:.58rem;font-family:var(--mono);font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;}
+.now-badge.green{background:rgba(52,211,153,.15);color:#34d399;border:1px solid rgba(52,211,153,.3);}
+.now-badge.red{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);}
+.now-badge.yellow{background:rgba(249,115,22,.15);color:#f97316;border:1px solid rgba(249,115,22,.3);}
+.now-badge.blue{background:rgba(91,156,246,.15);color:#5b9cf6;border:1px solid rgba(91,156,246,.3);}
+.now-badge.neu{background:rgba(148,163,184,.1);color:#94a3b8;border:1px solid rgba(148,163,184,.2);}
+.now-val{font-size:.85rem;font-weight:700;font-family:var(--mono);color:var(--txt);margin-left:auto;}
+.now-text{font-size:.72rem;color:var(--txt2);line-height:1.65;}
+.now-text strong{color:var(--txt);}
+
+@media(max-width:600px){
+  .signal-grid{grid-template-columns:1fr;}
+  .signal{padding:.7rem .85rem;}
+  .signal-icon{font-size:1.05rem;}
+  .signal-label{font-size:.71rem;}
+  .signal-desc{font-size:.66rem;}
+}
 
 /* TIME BTNS */
 .tbtn-wrap{display:flex;gap:.3rem;margin-bottom:.75rem;}
@@ -208,6 +233,7 @@ footer a{color:var(--txt3);}
       <div class="card-title">공포탐욕지수 추이</div>
       <div class="card-sub">0 = 극단적 공포 · 100 = 극단적 탐욕</div>
       <div class="chart-wrap" id="w-fng"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-fng"></div>
     </div>
   </div>
 </div>
@@ -225,14 +251,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderVix(365*5,this)">5Y</button>
       </div>
       <div class="chart-wrap" id="w-vix"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-vix"></div>
     <div class="insight">
   <div class="insight-title">📌 VIX란?</div>
   <div class="insight-body">VIX는 <strong>시장이 앞으로 얼마나 출렁일지 예상하는 지수</strong>예요. 쉽게 말해 투자자들의 불안감을 숫자로 표현한 것으로, 주가가 급락할 때 VIX는 급등합니다. "공포지수"라고도 불려요.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">😌</div><div class="signal-body"><strong>20 미만 — 안정</strong>시장이 조용하고 투자자들이 편안한 상태. 주식 등 위험자산 선호.</div></div>
-    <div class="signal yellow"><div class="signal-icon">😐</div><div class="signal-body"><strong>20~30 — 주의</strong>불확실성이 커지는 구간. 변동성이 높아질 수 있어 조심할 필요가 있어요.</div></div>
-    <div class="signal red"><div class="signal-icon">😱</div><div class="signal-body"><strong>30 이상 — 경계</strong>투자자들이 겁먹은 상태. 과거 주요 시장 충격 때 항상 이 구간을 넘었어요.</div></div>
-    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-body"><strong>40 이상 — 위기</strong>금융위기 수준의 패닉. 2008년 금융위기, 2020년 코로나 때 80을 넘었어요.</div></div>
+    <div class="signal green"><div class="signal-icon">😌</div><div class="signal-content"><span class="signal-label">20 미만 — 안정</span><span class="signal-desc">시장이 조용하고 투자자들이 편안한 상태. 주식 등 위험자산 선호.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">😐</div><div class="signal-content"><span class="signal-label">20~30 — 주의</span><span class="signal-desc">불확실성이 커지는 구간. 변동성이 높아질 수 있어 조심할 필요가 있어요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">😱</div><div class="signal-content"><span class="signal-label">30 이상 — 경계</span><span class="signal-desc">투자자들이 겁먹은 상태. 과거 주요 시장 충격 때 항상 이 구간을 넘었어요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-content"><span class="signal-label">40 이상 — 위기</span><span class="signal-desc">금융위기 수준의 패닉. 2008년 금융위기, 2020년 코로나 때 80을 넘었어요.</span></div></div>
   </div>
 </div>
     </div>
@@ -252,14 +279,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderT10y2y(365*10,this)">10Y</button>
       </div>
       <div class="chart-wrap" id="w-t10y2y"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-t10y2y"></div>
     <div class="insight">
   <div class="insight-title">📌 장단기 금리차란?</div>
   <div class="insight-body"><strong>10년 금리에서 2년 금리를 뺀 값</strong>이에요. 보통은 10년 금리가 더 높아 양수(+)인데, 이게 음수(-)로 뒤집히면 "역전"이라고 해요. 역전은 역사적으로 경기침체 전에 항상 나타났던 강력한 경고 신호입니다.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>양수(+) — 정상</strong>장기금리 &gt; 단기금리. 경기 확장 기대. 일반적인 건강한 상태.</div></div>
-    <div class="signal red"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>음수(-) — 역전</strong>단기금리 &gt; 장기금리. 과거 50년간 모든 미국 경기침체 전에 나타났어요.</div></div>
-    <div class="signal blue"><div class="signal-icon">📈</div><div class="signal-body"><strong>역전 후 상승 전환</strong>역전이 풀리며 올라오는 시점이 실제 침체 시작과 맞물리는 경향이 있어요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">⏱️</div><div class="signal-body"><strong>시차 주의</strong>역전 후 실제 침체까지 보통 12~24개월이 걸려요. 즉각적 위험 신호는 아니에요.</div></div>
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-content"><span class="signal-label">양수(+) — 정상</span><span class="signal-desc">장기금리 &gt; 단기금리. 경기 확장 기대. 일반적인 건강한 상태.</span></div></div>
+    <div class="signal red"><div class="signal-icon">⚠️</div><div class="signal-content"><span class="signal-label">음수(-) — 역전</span><span class="signal-desc">단기금리 &gt; 장기금리. 과거 50년간 모든 미국 경기침체 전에 나타났어요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">📈</div><div class="signal-content"><span class="signal-label">역전 후 상승 전환</span><span class="signal-desc">역전이 풀리며 올라오는 시점이 실제 침체 시작과 맞물리는 경향이 있어요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">⏱️</div><div class="signal-content"><span class="signal-label">시차 주의</span><span class="signal-desc">역전 후 실제 침체까지 보통 12~24개월이 걸려요. 즉각적 위험 신호는 아니에요.</span></div></div>
   </div>
 </div>
     </div>
@@ -279,14 +307,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderWalcl(365*10,this)">10Y</button>
       </div>
       <div class="chart-wrap" id="w-walcl"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-walcl"></div>
     <div class="insight">
   <div class="insight-title">📌 연준 대차대조표란?</div>
   <div class="insight-body">연준(미국 중앙은행)이 보유한 <strong>자산의 총합</strong>이에요. 연준이 국채 등을 사들이면(QE) 돈이 시중에 풀리고, 팔면(QT) 돈이 줄어요. 이 규모가 클수록 시중에 돈이 많다는 뜻입니다.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">💰</div><div class="signal-body"><strong>자산 증가 (QE)</strong>연준이 돈을 푸는 중. 주식·부동산 등 자산가격 상승 압력이 생겨요.</div></div>
-    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-body"><strong>자산 감소 (QT)</strong>연준이 돈을 거두는 중. 유동성 축소로 자산시장에 압박이 가해져요.</div></div>
-    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-body"><strong>2022년 고점</strong>약 9조 달러까지 늘어났다가 현재 6.6조 달러 수준으로 감소 중이에요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">🔍</div><div class="signal-body"><strong>지급준비금과 함께 보기</strong>대차대조표 크기보다 지급준비금 수준이 실제 유동성을 더 잘 보여줘요.</div></div>
+    <div class="signal green"><div class="signal-icon">💰</div><div class="signal-content"><span class="signal-label">자산 증가 (QE)</span><span class="signal-desc">연준이 돈을 푸는 중. 주식·부동산 등 자산가격 상승 압력이 생겨요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-content"><span class="signal-label">자산 감소 (QT)</span><span class="signal-desc">연준이 돈을 거두는 중. 유동성 축소로 자산시장에 압박이 가해져요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-content"><span class="signal-label">2022년 고점</span><span class="signal-desc">약 9조 달러까지 늘어났다가 현재 6.6조 달러 수준으로 감소 중이에요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">🔍</div><div class="signal-content"><span class="signal-label">지급준비금과 함께 보기</span><span class="signal-desc">대차대조표 크기보다 지급준비금 수준이 실제 유동성을 더 잘 보여줘요.</span></div></div>
   </div>
 </div>
     </div>
@@ -306,14 +335,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderRes(365*10,this)">10Y</button>
       </div>
       <div class="chart-wrap" id="w-res"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-res"></div>
     <div class="insight">
   <div class="insight-title">📌 지급준비금이란?</div>
   <div class="insight-body">은행들이 연준에 맡겨둔 <strong>현금 쿠션</strong>이에요. 이 잔액이 높을수록 은행들이 여유롭게 대출할 수 있어 금융시장이 안정적입니다. 너무 낮아지면 자금시장이 경색될 수 있어요.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">🏦</div><div class="signal-body"><strong>잔액 충분</strong>은행들이 여유 자금 보유. 대출 원활, 금융시장 안정. 3조 달러 이상이 안전 구간으로 봐요.</div></div>
-    <div class="signal red"><div class="signal-icon">⚡</div><div class="signal-body"><strong>잔액 감소</strong>QT가 진행 중이거나 재무부 자금 흡수로 줄어드는 중. 2019년엔 급감으로 단기금리 폭등이 있었어요.</div></div>
-    <div class="signal blue"><div class="signal-icon">🔗</div><div class="signal-body"><strong>RRP와 반대로 움직임</strong>역레포 잔액이 줄면 지급준비금이 늘어나는 경향이 있어요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">📉</div><div class="signal-body"><strong>임계점 주의</strong>연준은 지급준비금이 너무 낮아지면 QT를 멈추거나 속도를 줄여요.</div></div>
+    <div class="signal green"><div class="signal-icon">🏦</div><div class="signal-content"><span class="signal-label">잔액 충분</span><span class="signal-desc">은행들이 여유 자금 보유. 대출 원활, 금융시장 안정. 3조 달러 이상이 안전 구간으로 봐요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">⚡</div><div class="signal-content"><span class="signal-label">잔액 감소</span><span class="signal-desc">QT가 진행 중이거나 재무부 자금 흡수로 줄어드는 중. 2019년엔 급감으로 단기금리 폭등이 있었어요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">🔗</div><div class="signal-content"><span class="signal-label">RRP와 반대로 움직임</span><span class="signal-desc">역레포 잔액이 줄면 지급준비금이 늘어나는 경향이 있어요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">📉</div><div class="signal-content"><span class="signal-label">임계점 주의</span><span class="signal-desc">연준은 지급준비금이 너무 낮아지면 QT를 멈추거나 속도를 줄여요.</span></div></div>
   </div>
 </div>
     </div>
@@ -333,14 +363,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderRrp(365*10,this)">10Y</button>
       </div>
       <div class="chart-wrap" id="w-rrp"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-rrp"></div>
     <div class="insight">
   <div class="insight-title">📌 역레포(RRP)란?</div>
   <div class="insight-body">MMF 등 금융기관이 <strong>하루짜리로 연준에 맡기는 초단기 예금</strong>이에요. 갈 곳 없는 돈이 연준 금고에 쌓이는 것으로, 시중에 돈이 넘쳐날 때 급증해요. 이 잔액이 줄면 그 돈이 다시 시장으로 나온다는 뜻이에요.</div>
   <div class="signal-grid">
-    <div class="signal red"><div class="signal-icon">💤</div><div class="signal-body"><strong>잔액 증가</strong>시중에 돈이 넘쳐 갈 곳이 없는 상태. 2022~23년 2조 달러까지 쌓였어요.</div></div>
-    <div class="signal green"><div class="signal-icon">🌊</div><div class="signal-body"><strong>잔액 감소</strong>돈이 시장으로 재유입. 주식·채권 등에 유동성이 공급되는 긍정적 신호예요.</div></div>
-    <div class="signal blue"><div class="signal-icon">🎯</div><div class="signal-body"><strong>현재 추세</strong>2022년 고점 대비 99% 이상 소진. 거의 바닥에 도달해 추가 유동성 공급 여력이 크지 않아요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>0에 가까워지면</strong>더 이상 시장으로 나올 돈이 없어져요. 이후 유동성은 연준 QT 속도에 의존하게 돼요.</div></div>
+    <div class="signal red"><div class="signal-icon">💤</div><div class="signal-content"><span class="signal-label">잔액 증가</span><span class="signal-desc">시중에 돈이 넘쳐 갈 곳이 없는 상태. 2022~23년 2조 달러까지 쌓였어요.</span></div></div>
+    <div class="signal green"><div class="signal-icon">🌊</div><div class="signal-content"><span class="signal-label">잔액 감소</span><span class="signal-desc">돈이 시장으로 재유입. 주식·채권 등에 유동성이 공급되는 긍정적 신호예요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">🎯</div><div class="signal-content"><span class="signal-label">현재 추세</span><span class="signal-desc">2022년 고점 대비 99% 이상 소진. 거의 바닥에 도달해 추가 유동성 공급 여력이 크지 않아요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-content"><span class="signal-label">0에 가까워지면</span><span class="signal-desc">더 이상 시장으로 나올 돈이 없어져요. 이후 유동성은 연준 QT 속도에 의존하게 돼요.</span></div></div>
   </div>
 </div>
     </div>
@@ -360,14 +391,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderTga(365*10,this)">10Y</button>
       </div>
       <div class="chart-wrap" id="w-tga"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-tga"></div>
     <div class="insight">
   <div class="insight-title">📌 TGA(재무부 일반계정)란?</div>
   <div class="insight-body">미국 재무부가 연준에 갖고 있는 <strong>정부 당좌계좌</strong>예요. 세금이 걷히거나 국채를 발행하면 늘고, 정부가 지출을 하면 줄어요. TGA가 줄 때마다 그 돈이 시중에 풀리기 때문에 유동성에 큰 영향을 줘요.</div>
   <div class="signal-grid">
-    <div class="signal red"><div class="signal-icon">🏛️</div><div class="signal-body"><strong>TGA 증가 → 유동성 흡수</strong>세금 납부 시즌이나 국채 발행 때 급증. 시중 돈이 정부로 빨려 들어가요.</div></div>
-    <div class="signal green"><div class="signal-icon">💸</div><div class="signal-body"><strong>TGA 감소 → 유동성 공급</strong>정부 지출 시 돈이 시중에 풀려요. 부채한도 협상 때 TGA가 급감하면 유동성 호재.</div></div>
-    <div class="signal blue"><div class="signal-icon">⚖️</div><div class="signal-body"><strong>부채한도 협상과 연결</strong>부채한도 이슈로 국채 발행이 막히면 TGA가 급감했다가, 해결 후 재충전하며 시장에 충격을 줘요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">📅</div><div class="signal-body"><strong>계절성 있음</strong>4월(세금 납부), 연말은 증가. 1~2월, 여름은 감소 경향이 있어요.</div></div>
+    <div class="signal red"><div class="signal-icon">🏛️</div><div class="signal-content"><span class="signal-label">TGA 증가 → 유동성 흡수</span><span class="signal-desc">세금 납부 시즌이나 국채 발행 때 급증. 시중 돈이 정부로 빨려 들어가요.</span></div></div>
+    <div class="signal green"><div class="signal-icon">💸</div><div class="signal-content"><span class="signal-label">TGA 감소 → 유동성 공급</span><span class="signal-desc">정부 지출 시 돈이 시중에 풀려요. 부채한도 협상 때 TGA가 급감하면 유동성 호재.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">⚖️</div><div class="signal-content"><span class="signal-label">부채한도 협상과 연결</span><span class="signal-desc">부채한도 이슈로 국채 발행이 막히면 TGA가 급감했다가, 해결 후 재충전하며 시장에 충격을 줘요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">📅</div><div class="signal-content"><span class="signal-label">계절성 있음</span><span class="signal-desc">4월(세금 납부), 연말은 증가. 1~2월, 여름은 감소 경향이 있어요.</span></div></div>
   </div>
 </div>
     </div>
@@ -405,10 +437,10 @@ footer a{color:var(--txt3);}
   <div class="insight-title">📌 MMF(머니마켓펀드)란?</div>
   <div class="insight-body">단기 안전자산에 투자하는 펀드로, 투자자들이 <strong>"지금은 주식 말고 일단 안전한 곳에 넣자"</strong>고 판단할 때 자금이 몰려요. MMF 잔액이 급증하면 시장 불안이 크다는 신호이고, 반대로 줄면 위험자산으로 자금이 이동한다는 뜻이에요.</div>
   <div class="signal-grid">
-    <div class="signal red"><div class="signal-icon">🏃</div><div class="signal-body"><strong>잔액 급증</strong>투자자들이 위험자산 피해 안전지대로 대피 중. 불안감이 크거나 금리가 매력적일 때 증가해요.</div></div>
-    <div class="signal green"><div class="signal-icon">🔄</div><div class="signal-body"><strong>잔액 감소</strong>투자자들이 주식·채권으로 복귀 중. MMF에서 빠진 돈이 자산시장으로 유입돼요.</div></div>
-    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-body"><strong>현재 6조 달러 이상</strong>역사적 최고 수준. 잠재적으로 시장으로 유입될 수 있는 엄청난 대기 자금이에요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">💡</div><div class="signal-body"><strong>기관형 vs 리테일</strong>기관형은 주로 역레포에, 리테일은 단기채권에 투자해요. 성격이 달라요.</div></div>
+    <div class="signal red"><div class="signal-icon">🏃</div><div class="signal-content"><span class="signal-label">잔액 급증</span><span class="signal-desc">투자자들이 위험자산 피해 안전지대로 대피 중. 불안감이 크거나 금리가 매력적일 때 증가해요.</span></div></div>
+    <div class="signal green"><div class="signal-icon">🔄</div><div class="signal-content"><span class="signal-label">잔액 감소</span><span class="signal-desc">투자자들이 주식·채권으로 복귀 중. MMF에서 빠진 돈이 자산시장으로 유입돼요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-content"><span class="signal-label">현재 6조 달러 이상</span><span class="signal-desc">역사적 최고 수준. 잠재적으로 시장으로 유입될 수 있는 엄청난 대기 자금이에요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">💡</div><div class="signal-content"><span class="signal-label">기관형 vs 리테일</span><span class="signal-desc">기관형은 주로 역레포에, 리테일은 단기채권에 투자해요. 성격이 달라요.</span></div></div>
   </div>
 </div>
     </div>
@@ -458,14 +490,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderHys(365*10,this)">10Y</button>
       </div>
       <div class="chart-wrap" id="w-hys"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-hys"></div>
     <div class="insight">
   <div class="insight-title">📌 하이일드 스프레드란?</div>
   <div class="insight-body"><strong>정크본드(고위험 회사채)와 국채 금리의 차이</strong>예요. 기업이 도산할 위험이 높아질수록 이 차이(스프레드)가 벌어져요. 신용시장의 스트레스를 가장 빠르게 감지하는 지표 중 하나예요.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>3~4% — 정상</strong>기업 부도 우려가 낮고 신용시장이 건강한 상태. 경기 확장기에 주로 나타나요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>4~6% — 주의</strong>경기 둔화 우려가 생기는 구간. 투자자들이 위험을 회피하기 시작해요.</div></div>
-    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-body"><strong>8% 이상 — 위기</strong>신용경색 수준. 기업들이 자금 조달에 어려움을 겪어요. 2008년엔 20%까지 치솟았어요.</div></div>
-    <div class="signal blue"><div class="signal-icon">🔮</div><div class="signal-body"><strong>선행지표</strong>주식시장보다 먼저 위험 신호를 보내는 경향이 있어요. 스프레드 급등에 주목하세요.</div></div>
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-content"><span class="signal-label">3~4% — 정상</span><span class="signal-desc">기업 부도 우려가 낮고 신용시장이 건강한 상태. 경기 확장기에 주로 나타나요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-content"><span class="signal-label">4~6% — 주의</span><span class="signal-desc">경기 둔화 우려가 생기는 구간. 투자자들이 위험을 회피하기 시작해요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-content"><span class="signal-label">8% 이상 — 위기</span><span class="signal-desc">신용경색 수준. 기업들이 자금 조달에 어려움을 겪어요. 2008년엔 20%까지 치솟았어요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">🔮</div><div class="signal-content"><span class="signal-label">선행지표</span><span class="signal-desc">주식시장보다 먼저 위험 신호를 보내는 경향이 있어요. 스프레드 급등에 주목하세요.</span></div></div>
   </div>
 </div>
     </div>
@@ -484,14 +517,15 @@ footer a{color:var(--txt3);}
         <button class="tbtn" onclick="renderStlfsi(365*5,this)">5Y</button>
       </div>
       <div class="chart-wrap" id="w-stlfsi"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-stlfsi"></div>
       <div class="insight">
   <div class="insight-title">📌 금융스트레스지수란?</div>
   <div class="insight-body">세인트루이스 연준이 만든 지수로, <strong>금리·신용·주식 등 18개 지표를 종합</strong>해 금융시스템 전체의 스트레스를 하나의 숫자로 보여줘요. 0이 역사적 평균이에요.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">😊</div><div class="signal-body"><strong>0 미만 — 낮은 스트레스</strong>평균보다 금융시장이 안정적인 상태. 대부분의 평상시가 이 구간이에요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">😶</div><div class="signal-body"><strong>0~1 — 보통</strong>약간의 스트레스가 있지만 정상 범위. 지속 관찰이 필요한 구간이에요.</div></div>
-    <div class="signal red"><div class="signal-icon">😰</div><div class="signal-body"><strong>1 이상 — 높은 스트레스</strong>금융시장 전반에 긴장감. 과거 위기 때마다 이 구간을 넘어섰어요.</div></div>
-    <div class="signal red"><div class="signal-icon">🔥</div><div class="signal-body"><strong>3 이상 — 위기</strong>2008년 금융위기, 2020년 코로나 충격 때 이 수준에 도달했어요.</div></div>
+    <div class="signal green"><div class="signal-icon">😊</div><div class="signal-content"><span class="signal-label">0 미만 — 낮은 스트레스</span><span class="signal-desc">평균보다 금융시장이 안정적인 상태. 대부분의 평상시가 이 구간이에요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">😶</div><div class="signal-content"><span class="signal-label">0~1 — 보통</span><span class="signal-desc">약간의 스트레스가 있지만 정상 범위. 지속 관찰이 필요한 구간이에요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">😰</div><div class="signal-content"><span class="signal-label">1 이상 — 높은 스트레스</span><span class="signal-desc">금융시장 전반에 긴장감. 과거 위기 때마다 이 구간을 넘어섰어요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">🔥</div><div class="signal-content"><span class="signal-label">3 이상 — 위기</span><span class="signal-desc">2008년 금융위기, 2020년 코로나 충격 때 이 수준에 도달했어요.</span></div></div>
   </div>
 </div>
     </div>
@@ -514,10 +548,10 @@ footer a{color:var(--txt3);}
   <div class="insight-title">📌 SOFR/EFFR 스프레드란?</div>
   <div class="insight-body"><strong>SOFR</strong>은 담보를 맡기고 빌리는 금리, <strong>EFFR</strong>은 담보 없이 빌리는 금리예요. 두 금리의 차이(스프레드)가 갑자기 벌어지면 담보 자산(국채 등)을 급히 필요로 하는 수요가 생겼다는 뜻으로, 시장 스트레스 신호예요.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>스프레드 0 근처</strong>담보부·무담보 시장이 균형 잡힌 상태. 자금시장이 원활하게 돌아가고 있어요.</div></div>
-    <div class="signal red"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>스프레드 급확대</strong>담보 자산 수요 급증. 자금시장 긴장 신호. 분기 말·연말에 일시적으로 확대되기도 해요.</div></div>
-    <div class="signal blue"><div class="signal-icon">💡</div><div class="signal-body"><strong>SOFR이 더 낮은 게 정상</strong>담보가 있으면 리스크가 낮아 금리도 보통 낮아요. 역전되면 비정상 상황이에요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">📅</div><div class="signal-body"><strong>분기 말 주의</strong>분기 말에는 은행 규제로 일시적으로 스프레드가 벌어지는 현상이 반복돼요.</div></div>
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-content"><span class="signal-label">스프레드 0 근처</span><span class="signal-desc">담보부·무담보 시장이 균형 잡힌 상태. 자금시장이 원활하게 돌아가고 있어요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">⚠️</div><div class="signal-content"><span class="signal-label">스프레드 급확대</span><span class="signal-desc">담보 자산 수요 급증. 자금시장 긴장 신호. 분기 말·연말에 일시적으로 확대되기도 해요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">💡</div><div class="signal-content"><span class="signal-label">SOFR이 더 낮은 게 정상</span><span class="signal-desc">담보가 있으면 리스크가 낮아 금리도 보통 낮아요. 역전되면 비정상 상황이에요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">📅</div><div class="signal-content"><span class="signal-label">분기 말 주의</span><span class="signal-desc">분기 말에는 은행 규제로 일시적으로 스프레드가 벌어지는 현상이 반복돼요.</span></div></div>
   </div>
 </div>
     </div>
@@ -540,10 +574,10 @@ footer a{color:var(--txt3);}
   <div class="insight-title">📌 SOFR/IORB 스프레드란?</div>
   <div class="insight-body"><strong>IORB</strong>는 연준이 은행 초과준비금에 지급하는 이자율이에요. SOFR이 IORB보다 높으면 은행들이 연준 대신 시장에서 돈을 빌려주는 게 유리하다는 뜻으로, 시중 유동성이 빠듯하다는 신호예요.</div>
   <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">💧</div><div class="signal-body"><strong>SOFR &lt; IORB</strong>은행들이 시장보다 연준에 돈 맡기기를 선호. 시중에 유동성이 넉넉한 상태예요.</div></div>
-    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-body"><strong>SOFR &gt; IORB</strong>시장 금리가 연준 이자율보다 높아짐. 시중 유동성 부족 신호. QT가 과도하게 진행된다는 경고예요.</div></div>
-    <div class="signal blue"><div class="signal-icon">🎯</div><div class="signal-body"><strong>연준의 조절 기준</strong>SOFR이 IORB를 지속적으로 넘어서면 연준이 QT를 늦추거나 중단할 수 있어요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">📊</div><div class="signal-body"><strong>2019년 교훈</strong>준비금이 부족해 SOFR이 IORB를 훨씬 넘어서며 단기금리가 폭등한 사례가 있어요.</div></div>
+    <div class="signal green"><div class="signal-icon">💧</div><div class="signal-content"><span class="signal-label">SOFR &lt; IORB</span><span class="signal-desc">은행들이 시장보다 연준에 돈 맡기기를 선호. 시중에 유동성이 넉넉한 상태예요.</span></div></div>
+    <div class="signal red"><div class="signal-icon">🔴</div><div class="signal-content"><span class="signal-label">SOFR &gt; IORB</span><span class="signal-desc">시장 금리가 연준 이자율보다 높아짐. 시중 유동성 부족 신호. QT가 과도하게 진행된다는 경고예요.</span></div></div>
+    <div class="signal blue"><div class="signal-icon">🎯</div><div class="signal-content"><span class="signal-label">연준의 조절 기준</span><span class="signal-desc">SOFR이 IORB를 지속적으로 넘어서면 연준이 QT를 늦추거나 중단할 수 있어요.</span></div></div>
+    <div class="signal yellow"><div class="signal-icon">📊</div><div class="signal-content"><span class="signal-label">2019년 교훈</span><span class="signal-desc">준비금이 부족해 SOFR이 IORB를 훨씬 넘어서며 단기금리가 폭등한 사례가 있어요.</span></div></div>
   </div>
 </div>
     </div>
@@ -620,21 +654,34 @@ function setH(id,val,cls,chg,chgCol){
   }
 }
 
-// ── 24시간 localStorage 캐시 ──
+// ── FRED API 키 (무료 공개키) ──
+// https://fred.stlouisfed.org/docs/api/api_key.html 에서 무료 발급 후 아래에 입력
+const FRED_KEY='YOUR_FRED_API_KEY';
+
+// ── 세션 캐시 ──
 const TTL=864e5;
 function cKey(s,d){return`aq_${s}_${d}`;}
-function cGet(s,d){try{const r=localStorage.getItem(cKey(s,d));if(!r)return null;const p=JSON.parse(r);if(Date.now()-p.t>TTL)return null;return p.data;}catch(e){return null;}}
-function cSet(s,d,data){try{localStorage.setItem(cKey(s,d),JSON.stringify({t:Date.now(),data}));}catch(e){}}
+function cGet(s,d){try{const r=sessionStorage.getItem(cKey(s,d));if(!r)return null;const p=JSON.parse(r);if(Date.now()-p.t>TTL)return null;return p.data;}catch(e){return null;}}
+function cSet(s,d,data){try{sessionStorage.setItem(cKey(s,d),JSON.stringify({t:Date.now(),data}));}catch(e){}}
 
-// ── API fetch (캐시 → FRED) ──
+// ── FRED 직접 호출 (서버리스 함수 불필요) ──
 async function apiFetch(series,days){
   const cached=cGet(series,days);
   if(cached)return cached;
-  const r=await fetch(`/api/fred?series=${series}&days=${days}`);
+  const start=new Date();
+  start.setDate(start.getDate()-(parseInt(days)||365));
+  const startStr=start.toISOString().slice(0,10);
+  const url=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_KEY}&file_type=json&observation_start=${startStr}&sort_order=asc`;
+  const r=await fetch(url);
   if(!r.ok)throw new Error(r.status);
-  const j=await r.json();
-  if(j.error)throw new Error(j.error);
-  if(!j.dates||!j.dates.length)throw new Error('no data');
+  const data=await r.json();
+  if(data.error_code)throw new Error(data.error_message);
+  const obs=(data.observations||[]).filter(o=>o.value!=='.'&&o.value!=='');
+  let vals=obs.map(o=>parseFloat(o.value));
+  if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())&&vals.length>0&&vals[vals.length-1]<100)
+    vals=vals.map(v=>+(v*1000).toFixed(1));
+  const j={dates:obs.map(o=>o.date),vals};
+  if(!j.dates.length)throw new Error('no data');
   cSet(series,days,j);
   return j;
 }
@@ -642,6 +689,72 @@ async function apiFetch(series,days){
 // ── 색상 헬퍼 ──
 function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';}
 function fgTxt(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
+
+// ── 현재 수치 해석 패널 ──
+function showNow(id,val,badge,label,text){
+  const el=document.getElementById('now-'+id);
+  if(!el)return;
+  el.innerHTML=`<div class="now-header"><span class="now-badge ${badge}">${label}</span><span class="now-val">${val}</span></div><div class="now-text">${text}</div>`;
+  el.classList.add('show');
+}
+function interpretFng(v){
+  if(v<=24)return{badge:'red',label:'극단적 공포',text:`공포탐욕지수 <strong>${v}점</strong> — 투자자들이 매우 불안한 상태예요. 역발상 관점에서 <strong>분할 매수 기회</strong>를 탐색할 시기지만, 시장이 더 떨어질 수 있으니 한 번에 많이 사는 건 위험해요.`};
+  if(v<=44)return{badge:'red',label:'공포',text:`공포탐욕지수 <strong>${v}점</strong> — 투자자 불안이 우세해요. 섣부른 추격 매수보다 <strong>현금 비중 유지</strong>가 좋아요. 저가 매수 기회를 천천히 찾아볼 때예요.`};
+  if(v<=55)return{badge:'neu',label:'중립',text:`공포탐욕지수 <strong>${v}점</strong> — 탐욕도 공포도 아닌 균형 상태예요. 시장 방향성이 불분명하니 <strong>기존 포지션 유지</strong>와 분산투자가 적합해요.`};
+  if(v<=74)return{badge:'green',label:'탐욕',text:`공포탐욕지수 <strong>${v}점</strong> — 시장이 과열 조짐이에요. 투자자들이 적극적으로 위험자산에 베팅 중이에요. <strong>수익 일부 실현</strong>과 포지션 점검을 고려해보세요.`};
+  return{badge:'red',label:'극단적 탐욕',text:`공포탐욕지수 <strong>${v}점</strong> — 시장이 매우 과열된 상태예요. FOMO(놓칠까봐 두려움)가 극에 달한 시기예요. 이 구간 이후 조정이 온 경우가 많아 <strong>신규 매수는 매우 신중</strong>하게 해야 해요.`};
+}
+function interpretVix(v){
+  if(v<15)return{badge:'green',label:'매우 안정',text:`VIX <strong>${v.toFixed(1)}</strong> — 시장이 매우 조용해요. 변동성이 너무 낮으면 오히려 갑작스러운 급등이 올 수 있어요. <strong>"폭풍 전 고요"</strong>일 수 있으니 방심은 금물이에요.`};
+  if(v<20)return{badge:'green',label:'안정',text:`VIX <strong>${v.toFixed(1)}</strong> — 안정적인 상태예요. 투자자들이 편안하고 시장이 큰 충격 없이 움직이고 있어요. <strong>위험자산에 우호적</strong>인 환경이에요.`};
+  if(v<30)return{badge:'yellow',label:'주의',text:`VIX <strong>${v.toFixed(1)}</strong> — 불확실성이 커지고 있어요. 헤지(하락 보험) 수요가 증가하는 신호예요. <strong>포지션 규모 축소</strong>와 방어적 자산 비중 확대를 고려할 때예요.`};
+  if(v<40)return{badge:'red',label:'경계',text:`VIX <strong>${v.toFixed(1)}</strong> — 투자자들이 크게 불안해하는 상태예요. 단기적으로 시장이 크게 출렁일 수 있어요. <strong>신규 투자보다 리스크 관리</strong>가 우선이에요.`};
+  return{badge:'red',label:'위기',text:`VIX <strong>${v.toFixed(1)}</strong> — 금융위기 수준의 패닉이에요! 이런 극단적 공포 구간은 역설적으로 역사적 저점 근처인 경우가 많았어요. <strong>냉정함을 유지</strong>하는 것이 가장 중요해요.`};
+}
+function interpretSpread(v){
+  if(v>=0.5)return{badge:'green',label:'정상',text:`금리차 <strong>+${v.toFixed(2)}%</strong> — 정상 상태예요. 장기금리 > 단기금리로 경제 성장 기대가 반영된 건강한 상태예요.`};
+  if(v>=0)return{badge:'yellow',label:'주의',text:`금리차 <strong>+${v.toFixed(2)}%</strong> — 역전 직전이에요. 경기 둔화 우려가 반영되고 있어요. 향후 흐름을 <strong>주의 깊게 관찰</strong>하세요.`};
+  if(v>=-0.5)return{badge:'red',label:'역전',text:`금리차 <strong>${v.toFixed(2)}%</strong> — 역전 상태예요! 역사적으로 모든 경기침체 전에 나타났던 신호예요. 단, 실제 침체까지는 보통 <strong>12~24개월의 시차</strong>가 있어요. 즉각적인 위기 신호는 아니에요.`};
+  return{badge:'red',label:'심화 역전',text:`금리차 <strong>${v.toFixed(2)}%</strong> — 역전이 크게 심화됐어요. 시장이 경기침체 가능성을 높게 보고 있어요. <strong>방어적 자산 비중 확대</strong>를 고려할 시기예요.`};
+}
+function interpretWalcl(v){
+  if(v>8500)return{badge:'green',label:'QE 확장',text:`연준 총자산 <strong>${fmtT(v)}</strong> — 매우 많은 유동성이 시중에 공급된 상태예요. 자산가격에 우호적인 환경이에요.`};
+  if(v>7000)return{badge:'blue',label:'완만한 QT',text:`연준 총자산 <strong>${fmtT(v)}</strong> — 2022년 고점(~9조달러) 대비 줄었지만 여전히 높은 수준이에요. 유동성이 천천히 흡수되고 있어요.`};
+  if(v>6000)return{badge:'yellow',label:'QT 진행',text:`연준 총자산 <strong>${fmtT(v)}</strong> — QT(양적긴축)가 상당히 진행됐어요. 시중 유동성이 줄어드는 상황으로 자산시장에 <strong>점진적인 압박 요인</strong>이 되고 있어요.`};
+  return{badge:'red',label:'긴축 심화',text:`연준 총자산 <strong>${fmtT(v)}</strong> — 크게 줄었어요. 유동성 환경이 타이트해진 상태예요. 금융시장 자금 여건에 주의가 필요해요.`};
+}
+function interpretRes(v){
+  if(v>3500)return{badge:'green',label:'유동성 충분',text:`지급준비금 <strong>${fmtT(v)}</strong> — 충분해요. 은행들이 여유 자금을 넉넉히 보유해 대출이 원활하고 금융시장이 안정적이에요.`};
+  if(v>3000)return{badge:'blue',label:'적정 수준',text:`지급준비금 <strong>${fmtT(v)}</strong> — 적정 수준이에요. 연준은 3조달러를 안전 마지노선으로 봐요. 아직 여유가 있지만 추이를 지켜볼 필요가 있어요.`};
+  if(v>2500)return{badge:'yellow',label:'감소 주의',text:`지급준비금 <strong>${fmtT(v)}</strong> — 안전 구간 아래로 내려왔어요. 2019년처럼 단기금리가 급등했던 사례가 있어요. 연준이 <strong>QT 속도를 늦출 가능성</strong>이 높아지고 있어요.`};
+  return{badge:'red',label:'부족 경고',text:`지급준비금 <strong>${fmtT(v)}</strong> — 매우 낮아요! 자금시장 경색 위험이 있어요. 연준이 QT를 중단하거나 추가 조치를 취할 가능성이 높아요.`};
+}
+function interpretRrp(v){
+  if(v>1000)return{badge:'yellow',label:'초과유동성 잔존',text:`RRP 잔액 <strong>${fmtT(v)}</strong> — 아직 많은 초과 유동성이 연준 금고에 잠겨 있어요. 이 돈이 서서히 시장으로 나오면서 유동성 공급 효과가 있어요.`};
+  if(v>200)return{badge:'blue',label:'정상화 진행',text:`RRP 잔액 <strong>${fmtT(v)}</strong> — 2022~23년 고점 대비 크게 줄었어요. 초과 유동성이 시장으로 재유입되고 있어요. 점점 <strong>QT의 실질적 영향</strong>이 커지는 구간이에요.`};
+  if(v>50)return{badge:'yellow',label:'거의 소진',text:`RRP 잔액 <strong>${fmtT(v)}</strong> — 거의 바닥이에요. 더 이상 RRP에서 유동성 공급이 어려운 상태예요. 이후 시장 유동성은 순전히 <strong>연준 QT 속도</strong>에 달려 있어요.`};
+  return{badge:'red',label:'바닥 도달',text:`RRP 잔액 <strong>${fmtT(v)}</strong> — 사실상 소진됐어요. 초과 유동성 완충재가 없어진 상태로 <strong>QT 한 단위의 영향이 이전보다 훨씬 크게</strong> 작용해요. 연준의 향후 정책이 매우 중요해요.`};
+}
+function interpretTga(v){
+  if(v>800)return{badge:'red',label:'유동성 흡수',text:`TGA 잔액 <strong>${fmtT(v)}</strong> — 높아요. 세금·국채발행으로 자금이 정부 계좌에 쌓여 있어요. 시중 유동성이 흡수되고 있어 <strong>단기적으로 시장에 부담</strong>이 될 수 있어요.`};
+  if(v>400)return{badge:'neu',label:'보통 수준',text:`TGA 잔액 <strong>${fmtT(v)}</strong> — 보통 수준이에요. 특별한 유동성 충격 없이 안정적인 상태예요.`};
+  if(v>150)return{badge:'green',label:'낮은 수준',text:`TGA 잔액 <strong>${fmtT(v)}</strong> — 낮아요. 정부 지출이 활발한 상태로 자금이 시중에 풀리고 있어요. <strong>단기 유동성 공급 효과</strong>가 있어요.`};
+  return{badge:'green',label:'매우 낮음',text:`TGA 잔액 <strong>${fmtT(v)}</strong> — 매우 낮아요. 부채한도 협상 중이거나 정부 지출이 집중된 시기일 수 있어요. 시중에 <strong>상당한 유동성이 방출</strong>되는 효과가 있어요.`};
+}
+function interpretHys(v){
+  if(v<3.5)return{badge:'green',label:'낮음 (안정)',text:`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 매우 낮아요. 기업 부도 우려가 거의 없고 신용시장이 건강해요. 투자자들이 기꺼이 위험을 감수하는 상태예요.`};
+  if(v<5)return{badge:'blue',label:'보통',text:`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 보통 수준이에요. 경기 둔화 우려가 일부 반영됐지만 정상 범위예요. 스프레드가 더 벌어지는지 <strong>추세를 관찰</strong>하세요.`};
+  if(v<7)return{badge:'yellow',label:'확대 주의',text:`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 벌어지고 있어요. 기업 신용위험 경계 신호예요. <strong>위험자산 비중 축소</strong>를 고려할 시기예요.`};
+  if(v<10)return{badge:'red',label:'위험',text:`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 위험 구간이에요. 신용경색 조짐이 있어요. 기업 자금 조달이 어려워지고 주식시장에도 부정적 영향이 예상돼요.`};
+  return{badge:'red',label:'위기 수준',text:`하이일드 스프레드 <strong>${v.toFixed(2)}%</strong> — 위기 수준이에요! 2008년 금융위기(20%)에 근접한 상태예요. <strong>현금 비중을 최대화</strong>하고 안전자산으로 이동하세요.`};
+}
+function interpretStlfsi(v){
+  if(v<-0.5)return{badge:'green',label:'매우 안정',text:`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 매우 낮아요. 금융시장 전체가 아주 안정적이에요. 평균(0)보다 훨씬 낮은 건강한 상태예요.`};
+  if(v<0)return{badge:'green',label:'안정',text:`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 평균(0) 이하예요. 18개 지표 모두 전반적으로 안정적으로 작동하고 있어요.`};
+  if(v<1)return{badge:'yellow',label:'보통',text:`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 평균을 약간 웃돌아요. 일부 금융지표에서 긴장감이 감지되고 있어요. <strong>모니터링이 필요</strong>한 구간이에요.`};
+  if(v<2)return{badge:'red',label:'스트레스 상승',text:`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 높아요. 금융시장 전반에 스트레스가 커지고 있어요. <strong>리스크 관리에 집중</strong>할 때예요.`};
+  return{badge:'red',label:'위기 수준',text:`금융스트레스지수 <strong>${v.toFixed(2)}</strong> — 매우 높아요! 2008년 금융위기, 2020년 코로나 수준이에요. <strong>안전자산 위주로 포트폴리오를 재편</strong>하세요.`};
+}
 
 // ── 공포탐욕 ──
 function drawGauge(score){
@@ -665,9 +778,18 @@ function drawGauge(score){
 
 async function loadFng(){
   try{
-    const r=await fetch('/api/fng');
+    const fngUrl='https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+    const proxyUrl='https://api.allorigins.win/get?url='+encodeURIComponent(fngUrl);
+    const r=await fetch(proxyUrl);
     if(!r.ok)throw new Error(r.status);
-    const j=await r.json();
+    const wrapper=await r.json();
+    const data=JSON.parse(wrapper.contents);
+    const hist=data.fear_and_greed_historical?.data||[];
+    const j={
+      current:{score:Math.round(data.fear_and_greed.score),rating:data.fear_and_greed.rating},
+      dates:hist.map(d=>new Date(d.x).toISOString().slice(0,10)),
+      vals:hist.map(d=>Math.round(d.y))
+    };
     if(!j.current)throw new Error('no data');
     const v=j.current.score,len=j.vals.length;
     const w1=j.vals[Math.max(0,len-8)]??v,m1=j.vals[Math.max(0,len-31)]??v,y1=j.vals[Math.max(0,len-252)]??v;
@@ -683,6 +805,7 @@ async function loadFng(){
     });
     setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',j.current.rating,'neu');
     drawGauge(v);
+    const _fi=interpretFng(v);showNow('fng',v+'점',_fi.badge,_fi.label,_fi.text);
     const{dates:td,vals:tv}=thin(j.dates,j.vals,150);
     const wrap=document.getElementById('w-fng');
     wrap.innerHTML='<canvas></canvas>';
@@ -708,15 +831,18 @@ async function loadHero(){
     ['WTREGEN',      14, 8, v=>fmtT(v),              null ],
   ];
 
-  // FNG 병렬 시작
-  fetch('/api/fng').then(r=>r.json()).then(j=>{
-    if(!j||!j.current) return;
-    const v=j.current.score;
+  // FNG 병렬 시작 (CORS proxy 경유)
+  const _fngUrl='https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+  fetch('https://api.allorigins.win/get?url='+encodeURIComponent(_fngUrl))
+    .then(r=>r.json()).then(w=>{
+    const j=JSON.parse(w.contents);
+    if(!j||!j.fear_and_greed) return;
+    const v=Math.round(j.fear_and_greed.score);
     const col=v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';
     const hv=document.getElementById('h1');
     if(hv){hv.textContent=v;hv.style.color=col;hv.className='hcard-val';}
     const hvc=document.getElementById('h1c');
-    if(hvc){hvc.textContent=j.current.rating;hvc.style.color=col;}
+    if(hvc){hvc.textContent=j.fear_and_greed.rating;hvc.style.color=col;}
   }).catch(()=>{});
 
   // 7개 병렬 fetch
@@ -749,6 +875,7 @@ async function renderVix(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-vix',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569'}});
+    const _lv=vals.at(-1);if(_lv!=null){const _vi=interpretVix(_lv);showNow('vix',_lv.toFixed(1)+'pt',_vi.badge,_vi.label,_vi.text);}
   }catch(e){showSpin('w-vix');}
 }
 
@@ -760,6 +887,7 @@ async function renderT10y2y(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-t10y2y',dates,[{data:vals,borderWidth:1.5,pointRadius:0,fill:false,tension:.3,
       segment:{borderColor:c=>c.p1.parsed.y>=0?'#34d399':'#ef4444'}}],{ticks:{color:'#475569'}});
+    const _lt=vals.at(-1);if(_lt!=null){const _ti=interpretSpread(_lt);showNow('t10y2y',(_lt>=0?'+':'')+_lt.toFixed(2)+'%',_ti.badge,_ti.label,_ti.text);}
   }catch(e){showSpin('w-t10y2y');}
 }
 
@@ -771,6 +899,7 @@ async function renderWalcl(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-walcl',dates,[{data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(91,156,246,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lw=vals.at(-1);if(_lw!=null){const _wi=interpretWalcl(_lw);showNow('walcl','$'+fmtT(_lw),_wi.badge,_wi.label,_wi.text);}
   }catch(e){showSpin('w-walcl');}
 }
 
@@ -782,6 +911,7 @@ async function renderRes(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-res',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(167,139,250,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lr=vals.at(-1);if(_lr!=null){const _ri=interpretRes(_lr);showNow('res','$'+fmtT(_lr),_ri.badge,_ri.label,_ri.text);}
   }catch(e){showSpin('w-res');}
 }
 
@@ -793,6 +923,7 @@ async function renderRrp(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-rrp',dates,[{data:vals,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(52,211,153,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lrp=vals.at(-1);if(_lrp!=null){const _rpi=interpretRrp(_lrp);showNow('rrp','$'+fmtT(_lrp),_rpi.badge,_rpi.label,_rpi.text);}
   }catch(e){showSpin('w-rrp');}
 }
 
@@ -804,6 +935,7 @@ async function renderTga(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-tga',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const _lt2=vals.at(-1);if(_lt2!=null){const _ti2=interpretTga(_lt2);showNow('tga','$'+fmtT(_lt2),_ti2.badge,_ti2.label,_ti2.text);}
   }catch(e){showSpin('w-tga');}
 }
 
@@ -815,6 +947,7 @@ async function renderHys(days,btn){
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-hys',dates,[{data:vals,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(239,68,68,0.1)',tension:.3}],{ticks:{color:'#475569'}});
+    const _lh=vals.at(-1);if(_lh!=null){const _hi=interpretHys(_lh);showNow('hys',_lh.toFixed(2)+'%',_hi.badge,_hi.label,_hi.text);}
   }catch(e){showSpin('w-hys');}
 }
 
@@ -921,6 +1054,7 @@ async function renderStlfsi(days,btn){
     mkLine('w-stlfsi',dates,[{data:vals,borderWidth:1.5,pointRadius:0,fill:true,tension:.3,
       segment:{borderColor:c=>c.p1.parsed.y>=0?'#ef4444':'#34d399'},
       backgroundColor:'rgba(239,68,68,0.07)'}],{ticks:{color:'#475569'}});
+    const _ls=vals.at(-1);if(_ls!=null){const _si=interpretStlfsi(_ls);showNow('stlfsi',_ls.toFixed(2),_si.badge,_si.label,_si.text);}
   }catch(e){showSpin('w-stlfsi');}
 }
 
