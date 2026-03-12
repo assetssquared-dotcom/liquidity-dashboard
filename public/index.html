@@ -819,21 +819,22 @@ function drawGauge(score){
 
 async function loadFng(){
   try{
-    const r=await fetch('https://api.alternative.me/fng/?limit=365&format=json');
+    // CNN 공식 API 직접 호출 (CORS 허용됨)
+    const CNN_URL='https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+    const r=await fetch(CNN_URL);
     if(!r.ok)throw new Error(r.status);
     const data=await r.json();
-    const items=data.data||[];
-    if(!items.length)throw new Error('no data');
-    const latest=items[0];
-    const v=parseInt(latest.value);
-    const rating=latest.value_classification;
-    const sorted=[...items].reverse();
-    const dates=sorted.map(d=>new Date(parseInt(d.timestamp)*1000).toISOString().slice(0,10));
-    const vals=sorted.map(d=>parseInt(d.value));
-    const len=vals.length;
-    const w1=vals[Math.max(0,len-8)]??v;
-    const m1=vals[Math.max(0,len-31)]??v;
-    const y1=vals[0]??v;
+    const fg=data.fear_and_greed;
+    const hist=data.fear_and_greed_historical?.data||[];
+    if(!fg)throw new Error('no data');
+
+    const v=Math.round(fg.score);
+    const rating=fg.rating;
+    // CNN이 직접 이전 값 제공
+    const w1=Math.round(fg.previous_1_week||v);
+    const m1=Math.round(fg.previous_1_month||v);
+    const y1=Math.round(fg.previous_1_year||v);
+
     const col=fgCol(v);
     document.getElementById('fg-score').textContent=v;
     document.getElementById('fg-score').style.color=col;
@@ -848,6 +849,10 @@ async function loadFng(){
     drawGauge(v);
     showNow('fng', v+'점', fngBadge(v), fngLabel(v), fngText(v));
     aiInterpret('fng', `공포탐욕지수 현재값: ${v}점 (${rating}), 1주전: ${w1}, 1개월전: ${m1}, 1년전: ${y1}`);
+
+    // 차트 데이터 (히스토리)
+    const dates=hist.map(d=>new Date(d.x).toISOString().slice(0,10));
+    const vals=hist.map(d=>Math.round(d.y));
     const{dates:td,vals:tv}=thin(dates,vals,150);
     const wrap=document.getElementById('w-fng');
     wrap.innerHTML='<canvas></canvas>';
@@ -873,16 +878,16 @@ async function loadHero(){
     ['WTREGEN',      14, 8, v=>fmtT(v),           true],
   ];
 
-  // FNG (alternative.me)
-  fetch('https://api.alternative.me/fng/?limit=1&format=json')
+  // FNG (CNN 공식 API)
+  fetch('https://production.dataviz.cnn.io/index/fearandgreed/graphdata')
     .then(r=>r.json()).then(data=>{
-    const item=data.data?.[0];if(!item)return;
-    const v=parseInt(item.value);
+    const fg=data.fear_and_greed;if(!fg)return;
+    const v=Math.round(fg.score);
     const col=fgCol(v);
     const hv=document.getElementById('h1');
     if(hv){hv.textContent=v;hv.style.color=col;hv.className='hcard-val';}
     const hvc=document.getElementById('h1c');
-    if(hvc){hvc.textContent=item.value_classification;hvc.style.color=col;}
+    if(hvc){hvc.textContent=fg.rating;hvc.style.color=col;}
   }).catch(()=>{});
 
   // 7개 병렬 fetch
