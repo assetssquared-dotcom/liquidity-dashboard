@@ -41,8 +41,23 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 
 /* HERO */
 .hero{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:2.5rem;}
+.hero-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;}
+.hero-row+.hero-row{margin-top:.85rem;}
+.hero-label{font-size:.68rem;color:var(--txt3);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;padding-left:.2rem;opacity:.7;}
 .hcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;transition:border-color .2s;}
-.hcard:hover{border-color:#333;}
+.hcard:hover{border-color:#444;}
+/* 유동성 섹션 */
+.hero-row.liquidity .hcard{border-color:rgba(91,156,246,.18);background:rgba(91,156,246,.03);}
+.hero-row.liquidity .hcard:hover{border-color:rgba(91,156,246,.45);}
+.hero-row.liquidity .hcard-title{color:#5b9cf6;opacity:.85;}
+/* 시장 섹션 */
+.hero-row.market .hcard{border-color:rgba(249,115,22,.18);background:rgba(249,115,22,.03);}
+.hero-row.market .hcard:hover{border-color:rgba(249,115,22,.45);}
+.hero-row.market .hcard-title{color:#f97316;opacity:.85;}
+/* 매크로 섹션 */
+.hero-row.macro .hcard{border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);}
+.hero-row.macro .hcard:hover{border-color:rgba(167,139,250,.45);}
+.hero-row.macro .hcard-title{color:#a78bfa;opacity:.85;}
 .hcard-title{font-size:.75rem;color:var(--txt3);margin-bottom:.45rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;}
 .hcard-val{font-size:1.7rem;font-weight:700;font-family:var(--mono);letter-spacing:-.03em;min-height:2rem;line-height:1.1;}
 .hcard-chg{font-size:.78rem;margin-top:.45rem;font-family:var(--mono);font-weight:500;letter-spacing:-.01em;}
@@ -175,8 +190,19 @@ footer a{color:var(--txt3);}
 .tg-empty{text-align:center;color:var(--txt3);font-size:.82rem;padding:2rem;}
 
 /* RESPONSIVE */
-@media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
-@media(max-width:600px){.hero{grid-template-columns:repeat(2,1fr);}.cards-half{grid-template-columns:1fr;}.hdr-links .hdr-btn span{display:none;}.brand-sub{display:none;}}
+@media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.hero-row{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  .hero{grid-template-columns:repeat(2,1fr);}
+  .hero-row{grid-template-columns:repeat(2,1fr);}
+  .cards-half{grid-template-columns:1fr;}
+  .hdr-links .hdr-btn span{display:none;}
+  .brand-sub{display:none;}
+  /* 네이버 프리미엄 모바일 */
+  #naver-posts .tg-post-meta{flex-wrap:wrap;gap:.4rem;}
+  #naver-posts .tg-post-meta span:last-child{margin-left:0;}
+  #naver-posts [style*="display:flex;gap:.5rem"]{gap:.4rem;}
+  #naver-posts [style*="display:flex;align-items:center;gap:.75rem"]{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
@@ -220,15 +246,31 @@ footer a{color:var(--txt3);}
 </div>
 
 <!-- HERO -->
-<div class="hero">
-  <div class="hcard"><div class="hcard-title">공포탐욕지수</div><div class="hcard-val" id="h1"><div class="skel"></div></div><div class="hcard-chg" id="h1c">—</div><div class="hcard-desc">CNN Fear &amp; Greed Index</div></div>
-  <div class="hcard"><div class="hcard-title">VIX 변동성 지수</div><div class="hcard-val" id="h2"><div class="skel"></div></div><div class="hcard-chg" id="h2c">—</div><div class="hcard-desc">20 미만 안정 · 30 이상 경계</div></div>
-  <div class="hcard"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
-  <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard-val" id="h4"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 규모</div></div>
-  <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금 잔액</div></div>
-  <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
-  <div class="hcard"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스 지표</div></div>
-  <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
+<div class="hero" style="display:block;">
+  <!-- 1줄: 유동성 지표 -->
+  <div class="hero-label">💧 유동성</div>
+  <div class="hero-row liquidity">
+    <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard-val" id="h4"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 · QE/QT</div></div>
+    <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금</div></div>
+    <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
+    <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
+  </div>
+  <!-- 2줄: 시장 지표 -->
+  <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
+  <div class="hero-row market">
+    <div class="hcard"><div class="hcard-title">공포탐욕지수</div><div class="hcard-val" id="h1"><div class="skel"></div></div><div class="hcard-chg" id="h1c">—</div><div class="hcard-desc">CNN Fear &amp; Greed</div></div>
+    <div class="hcard"><div class="hcard-title">VIX 변동성</div><div class="hcard-val" id="h2"><div class="skel"></div></div><div class="hcard-chg" id="h2c">—</div><div class="hcard-desc">20↓ 안정 · 30↑ 경계</div></div>
+    <div class="hcard"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
+    <div class="hcard"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스</div></div>
+  </div>
+  <!-- 3줄: 매크로 지표 -->
+  <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
+  <div class="hero-row macro">
+    <div class="hcard"><div class="hcard-title">달러인덱스</div><div class="hcard-val" id="h9"><div class="skel"></div></div><div class="hcard-chg" id="h9c">—</div><div class="hcard-desc">DXY · 100 기준</div></div>
+    <div class="hcard"><div class="hcard-title">10년물 금리</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
+    <div class="hcard"><div class="hcard-title">WTI 원유</div><div class="hcard-val" id="h11"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">USD/배럴</div></div>
+    <div class="hcard"><div class="hcard-title">M2 통화량</div><div class="hcard-val" id="h12"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">미국 광의통화</div></div>
+  </div>
 </div>
 
 <!-- SEC 1: 텔레그램 채널 -->
@@ -1177,7 +1219,10 @@ async function loadFng(){
       const el=document.getElementById(id);
       if(el){el.textContent=val;el.style.color=fgCol(val);}
     });
-    setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',rating,'neu');
+    const hv=document.getElementById('h1');
+    if(hv){hv.textContent=v;hv.style.color=fgCol(v);hv.className='hcard-val';}
+    const hvc=document.getElementById('h1c');
+    if(hvc){hvc.textContent=fgTxt(v)+' · '+rating;hvc.style.color=fgCol(v);}
     drawGauge(v);
     showNow('fng', v+'점', fngBadge(v), fngLabel(v), fngText(v));
     aiInterpret('fng', `공포탐욕지수 현재값: ${v}점 (${rating}), 1주전: ${w1}, 1개월전: ${m1}, 1년전: ${y1}`);
@@ -1201,13 +1246,17 @@ async function loadFng(){
 async function loadHero(){
   // 7개 히어로 카드 병렬 fetch
   const jobs = [
-    ['VIXCLS',       5,  2, v=>v.toFixed(2),      true],
-    ['T10Y2Y',       5,  3, v=>v.toFixed(2)+'%',  true],
-    ['WALCL',        14, 4, v=>fmtT(v),           true],
-    ['WRESBAL',      14, 5, v=>fmtT(v),           true],
-    ['RRPONTSYD',    5,  6, v=>fmtT(v),           true],
-    ['BAMLH0A0HYM2', 5,  7, v=>v.toFixed(2)+'%', true],
-    ['WTREGEN',      14, 8, v=>fmtT(v),           true],
+    ['VIXCLS',       5,  2,  v=>v.toFixed(2),       true],
+    ['T10Y2Y',       5,  3,  v=>v.toFixed(2)+'%',   true],
+    ['WALCL',        14, 4,  v=>fmtT(v),            true],
+    ['WRESBAL',      14, 5,  v=>fmtT(v),            true],
+    ['RRPONTSYD',    5,  6,  v=>fmtT(v),            true],
+    ['BAMLH0A0HYM2', 5,  7,  v=>v.toFixed(2)+'%',  true],
+    ['WTREGEN',      14, 8,  v=>fmtT(v),            true],
+    ['DTWEXBGS',     5,  9,  v=>v.toFixed(2),       false],
+    ['DGS10',        5,  10, v=>v.toFixed(2)+'%',   false],
+    ['DCOILWTICO',   5,  11, v=>'$'+v.toFixed(1),   false],
+    ['M2SL',         35, 12, v=>fmtT(v),            true],
   ];
 
   // FNG (CNN 공식 API)
@@ -1216,10 +1265,10 @@ async function loadHero(){
     const fg=data.fear_and_greed;if(!fg)return;
     const v=Math.round(fg.score);
     const col=fgCol(v);
-    const hv=document.getElementById('h1');
-    if(hv){hv.textContent=v;hv.style.color=col;hv.className='hcard-val';}
-    const hvc=document.getElementById('h1c');
-    if(hvc){hvc.textContent=fg.rating;hvc.style.color=col;}
+    const hv2=document.getElementById('h1');
+    if(hv2){hv2.textContent=v;hv2.style.color=fgCol(v);hv2.className='hcard-val';}
+    const hvc2=document.getElementById('h1c');
+    if(hvc2){hvc2.textContent=fgTxt(v)+' · '+fg.rating;hvc2.style.color=fgCol(v);}
   }).catch(()=>{});
 
   // 7개 병렬 fetch
@@ -1232,7 +1281,7 @@ async function loadHero(){
       if(positive === true)  chgCol = isUp ? '#34d399' : '#f87171';
       if(positive === false) chgCol = isUp ? '#f87171' : '#34d399';
       const arrow = isUp ? '▲' : '▼';
-      const isB = ['WALCL','WRESBAL','RRPONTSYD','WTREGEN'].includes(series);
+      const isB = ['WALCL','WRESBAL','RRPONTSYD','WTREGEN','M2SL'].includes(series);
       const dvStr = isB ? '$'+fmtB(Math.abs(dv)) : Math.abs(dv).toFixed(series==='T10Y2Y'?3:2);
       const period = ['WALCL','WRESBAL','WTREGEN'].includes(series) ? '전주 대비' : '전일 대비';
       setH(idx, fmt(lv), '', `${arrow} ${dvStr} ${period}`, chgCol);
@@ -1504,6 +1553,10 @@ function updateSummary(){
     {id:'h2', label:'VIX'},
     {id:'h3', label:'금리차'},
     {id:'h7', label:'HY 스프레드'},
+    {id:'h9', label:'DXY'},
+    {id:'h10', label:'10년물'},
+    {id:'h11', label:'WTI'},
+    {id:'h12', label:'M2'},
   ];
   const chips = document.getElementById('summary-chips');
   const bar = document.getElementById('summary-bar');
