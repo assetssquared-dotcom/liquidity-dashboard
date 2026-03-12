@@ -756,7 +756,8 @@ let _staticCache = null;
 async function getStaticCache() {
   if (_staticCache) return _staticCache;
   try {
-    const r = await fetch('/cache.json');
+    // /api/batch: Vercel CDN이 6시간 캐시 → 빠름
+    const r = await fetch('/api/batch');
     if (r.ok) {
       _staticCache = await r.json();
       return _staticCache;
