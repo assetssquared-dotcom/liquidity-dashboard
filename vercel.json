@@ -1,21 +1,8 @@
 {
   "outputDirectory": "public",
   "rewrites": [
-    {
-      "source": "/api/fred",
-      "destination": "/api/fred.js"
-    },
-    {
-      "source": "/api/fng",
-      "destination": "/api/fng.js"
-    },
-    {
-      "source": "/api/batch",
-      "destination": "/api/batch.js"
-    },
-    {
-      "source": "/api/cache-refresh",
-      "destination": "/api/cache-refresh.js"
-    }
+    { "source": "/api/fred",  "destination": "/api/fred.js"  },
+    { "source": "/api/fng",   "destination": "/api/fng.js"   },
+    { "source": "/api/batch", "destination": "/api/batch.js" }
   ]
 }
