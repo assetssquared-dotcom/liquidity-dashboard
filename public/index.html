@@ -169,6 +169,8 @@ footer a{color:var(--txt3);}
 .tg-post-link{font-size:.72rem;color:var(--c1);text-decoration:none;margin-left:auto;font-family:var(--mono);}
 .tg-post-link:hover{text-decoration:underline;}
 .tg-post-text{font-size:.85rem;color:#e8e8e8!important;line-height:1.75;white-space:pre-wrap;word-break:break-word;}
+.tg-post-text a{color:#7eb8f7!important;text-decoration:underline;}
+.tg-post>a[style*="inset"]{color:transparent!important;}
 .tg-post-img{margin-top:.75rem;border-radius:6px;max-width:100%;max-height:300px;object-fit:cover;}
 .tg-empty{text-align:center;color:var(--txt3);font-size:.82rem;padding:2rem;}
 
@@ -1421,16 +1423,15 @@ async function loadTelegram(){
     // 해시태그 강조
     const formattedText=linkedText.replace(/#([^\s#]+)/g,'<span style="color:var(--c3)">#$1</span>');
 
-    el.innerHTML=`<div class="tg-post" style="cursor:pointer;transition:border-color .2s;position:relative;"
+    el.innerHTML=`<div class="tg-post" style="cursor:pointer;transition:border-color .2s;"
       onmouseover="this.style.borderColor='var(--c1)'"
-      onmouseout="this.style.borderColor=''">
-        <a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank"
-          style="position:absolute;inset:0;z-index:0;" aria-label="채널 바로가기"></a>
-        <div class="tg-post-meta" style="position:relative;z-index:1;">
+      onmouseout="this.style.borderColor=''"
+      onclick="window.open('https://t.me/+2Qw1cAZTm8FjMGNl','_blank')">
+        <div class="tg-post-meta">
           <span class="tg-post-date">🕐 ${date}</span>
           <span class="tg-post-link">채널 바로가기 →</span>
         </div>
-        <div class="tg-post-text" style="position:relative;z-index:1;color:#e8e8e8!important;">${formattedText}</div>
+        <div class="tg-post-text">${formattedText}</div>
       </div>`;
 
   }catch(e){
