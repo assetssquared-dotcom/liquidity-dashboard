@@ -1422,24 +1422,27 @@ async function loadTelegram(){
       hour:'2-digit',minute:'2-digit'
     });
     const text=p.text||'';
-    const linkedText=text.replace(
-      /(https?:\/\/[^\s]+)/g,
-      '<a href="$1" target="_blank" style="color:var(--c1);text-decoration:none;">$1</a>'
-    );
-    const formattedText=linkedText.replace(
-      /#(\S+)/g,
-      '<span style="color:var(--c3)">#$1</span>'
-    );
+    // URL → 링크 변환 (끝 문장부호 분리)
+    const linkedText=text.replace(/(https?:\/\/[^\s\)\]\>\"']+)/g, url=>{
+      const clean=url.replace(/[.,!?;:]+$/,'');
+      const trail=url.slice(clean.length);
+      return `<a href="${clean}" target="_blank" onclick="event.stopPropagation()" style="color:#7eb8f7;text-decoration:underline;text-decoration-color:rgba(126,184,247,.35);word-break:break-all;">${clean}</a>${trail}`;
+    });
+    // 해시태그 강조
+    const formattedText=linkedText.replace(/#([^\s#]+)/g,'<span style="color:var(--c3)">#$1</span>');
 
-    el.innerHTML=`<a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank" style="text-decoration:none;display:block;">
-      <div class="tg-post" style="cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--c1)'" onmouseout="this.style.borderColor=''">
+    el.innerHTML=`<div class="tg-post" style="cursor:pointer;transition:border-color .2s;"
+      onmouseover="this.style.borderColor='var(--c1)'"
+      onmouseout="this.style.borderColor=''"
+      onclick="window.open('https://t.me/+2Qw1cAZTm8FjMGNl','_blank')">
         <div class="tg-post-meta">
           <span class="tg-post-date">🕐 ${date}</span>
-          <span class="tg-post-link">채널 바로가기 →</span>
+          <a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank"
+            onclick="event.stopPropagation()"
+            class="tg-post-link">채널 바로가기 →</a>
         </div>
-        <div class="tg-post-text">${formattedText}</div>
-      </div>
-    </a>`;
+        <div class="tg-post-text" style="color:#e8e8e8;">${formattedText}</div>
+      </div>`;
 
   }catch(e){
     el.innerHTML=`<div class="tg-empty">
