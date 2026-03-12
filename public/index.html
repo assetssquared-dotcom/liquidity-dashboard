@@ -737,8 +737,12 @@ async function apiFetch(series,days){
         if(!obs.length)throw new Error('no data');
         if(raw.error_code)throw new Error(raw.error_message);
         vals=obs.map(o=>parseFloat(o.value));
-        if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())&&vals.at(-1)<100)
-          vals=vals.map(v=>+(v*1000).toFixed(1));
+        // WRMFNS/WRMFSL: FRED는 조달러(T) 단위 제공 → B로 변환
+        // 500 미만이면 T단위(예: 6.5T), 이상이면 이미 B단위
+        if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())){
+          const last=vals.at(-1);
+          if(last!=null&&last<500) vals=vals.map(v=>+(v*1000).toFixed(1));
+        }
         dates=obs.map(o=>o.date);
       }
       if(!dates||!dates.length)throw new Error('no data');
