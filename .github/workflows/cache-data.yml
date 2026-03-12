@@ -2,49 +2,49 @@ name: Cache FRED Data
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 6시간마다
-  workflow_dispatch:         # 수동 실행도 가능
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   fetch-and-cache:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch FRED & FNG data
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
-          mkdir -p public/data
-
           fetch_fred() {
             local series=$1
             local days=$2
-            local start=$(date -d "$days days ago" +%Y-%m-%d 2>/dev/null || date -v-${days}d +%Y-%m-%d)
+            local start=$(date -d "$days days ago" +%Y-%m-%d)
             curl -s "https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_API_KEY}&file_type=json&observation_start=${start}&sort_order=asc"
           }
 
-          # 각 시리즈 수집
-          for series in SOFR EFFR IORB WRESBAL RRPONTSYD WTREGEN WALCL T10Y2Y BAMLH0A0HYM2 STLFSI4 VIXCLS WRMFNS WRMFSL; do
-            days=730
-            [ "$series" = "SOFR" ] || [ "$series" = "EFFR" ] || [ "$series" = "IORB" ] || [ "$series" = "VIXCLS" ] && days=365
+          for entry in "SOFR:365" "EFFR:365" "IORB:365" "VIXCLS:365" "WRESBAL:730" "RRPONTSYD:730" "WTREGEN:730" "WALCL:730" "T10Y2Y:730" "BAMLH0A0HYM2:730" "STLFSI4:730" "WRMFNS:730" "WRMFSL:730"; do
+            series="${entry%%:*}"
+            days="${entry##*:}"
             echo "Fetching $series ($days days)..."
-            data=$(fetch_fred $series $days)
-            echo "$data" > /tmp/${series}.json
+            fetch_fred $series $days > /tmp/${series}_${days}.json
             sleep 0.5
           done
 
-          # FNG 데이터
           curl -s "https://production.dataviz.cnn.io/index/fearandgreed/graphdata" \
-            -H "Referer: https://edition.cnn.com/" > /tmp/fng.json
+            -H "Referer: https://edition.cnn.com/" \
+            -H "User-Agent: Mozilla/5.0" > /tmp/fng.json
 
-          # Node.js로 가공
           node << 'NODEOF'
           const fs = require('fs');
 
-          function process(series, days) {
+          function processFred(series, days) {
             try {
-              const raw = JSON.parse(fs.readFileSync(`/tmp/${series}.json`));
+              const raw = JSON.parse(fs.readFileSync(`/tmp/${series}_${days}.json`));
               const obs = (raw.observations || []).filter(o => o.value !== '.' && o.value !== '');
               let vals = obs.map(o => parseFloat(o.value));
               if (['WRMFNS','WRMFSL'].includes(series) && vals.length > 0 && vals[vals.length-1] < 100) {
@@ -52,41 +52,31 @@ jobs:
               }
               return { dates: obs.map(o => o.date), vals };
             } catch(e) {
-              console.error(`Error processing ${series}:`, e.message);
               return { dates: [], vals: [] };
             }
           }
 
-          const cache = {
-            updatedAt: new Date().toISOString(),
-            fred: {}
-          };
+          const cache = { updatedAt: new Date().toISOString(), fred: {}, fng: {} };
 
-          const series = ['SOFR','EFFR','IORB','WRESBAL','RRPONTSYD','WTREGEN','WALCL','T10Y2Y','BAMLH0A0HYM2','STLFSI4','VIXCLS','WRMFNS','WRMFSL'];
-          const days =  [365,  365,   365,  730,      730,        730,      730,   730,   730,           730,     365,    730,     730];
-          series.forEach((s, i) => {
-            cache.fred[`${s}_${days[i]}`] = process(s, days[i]);
-          });
+          const series = [
+            ['SOFR',365],['EFFR',365],['IORB',365],['VIXCLS',365],
+            ['WRESBAL',730],['RRPONTSYD',730],['WTREGEN',730],['WALCL',730],
+            ['T10Y2Y',730],['BAMLH0A0HYM2',730],['STLFSI4',730],['WRMFNS',730],['WRMFSL',730]
+          ];
+          series.forEach(([s,d]) => { cache.fred[`${s}_${d}`] = processFred(s, d); });
 
-          // FNG
           try {
             const fng = JSON.parse(fs.readFileSync('/tmp/fng.json'));
             const hist = fng.fear_and_greed_historical?.data || [];
             cache.fng = {
-              current: {
-                score: Math.round(fng.fear_and_greed.score),
-                rating: fng.fear_and_greed.rating,
-                timestamp: fng.fear_and_greed.timestamp
-              },
+              current: { score: Math.round(fng.fear_and_greed.score), rating: fng.fear_and_greed.rating, timestamp: fng.fear_and_greed.timestamp },
               dates: hist.map(d => new Date(d.x).toISOString().slice(0,10)),
               vals: hist.map(d => Math.round(d.y))
             };
-          } catch(e) {
-            console.error('FNG error:', e.message);
-          }
+          } catch(e) { console.error('FNG:', e.message); }
 
           fs.writeFileSync('public/cache.json', JSON.stringify(cache));
-          console.log('Cache saved:', Object.keys(cache.fred).length, 'series');
+          console.log('Done:', Object.keys(cache.fred).length, 'series');
           NODEOF
 
       - name: Commit cache
@@ -94,5 +84,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/cache.json
-          git diff --staged --quiet || git commit -m "chore: update data cache"
+          git diff --staged --quiet || git commit -m "chore: update data cache [skip ci]"
           git push
