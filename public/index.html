@@ -41,12 +41,14 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 
 /* HERO */
 .hero{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2.5rem;}
-.hcard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem 1.1rem;}
-.hcard-title{font-size:.7rem;color:var(--txt2);margin-bottom:.5rem;}
-.hcard-val{font-size:1.5rem;font-weight:700;font-family:var(--mono);letter-spacing:-.03em;min-height:2rem;}
-.hcard-chg{font-size:.68rem;color:var(--txt2);margin-top:.3rem;font-family:var(--mono);}
-.hcard-desc{font-size:.62rem;color:var(--txt3);margin-top:.6rem;}
-.up{color:var(--c4)!important;} .dn{color:#ef4444!important;} .neu{color:var(--txt2)!important;}
+.hcard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem 1.1rem;transition:border-color .2s;}
+.hcard:hover{border-color:#333;}
+.hcard-title{font-size:.68rem;color:var(--txt3);margin-bottom:.4rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;}
+.hcard-val{font-size:1.6rem;font-weight:700;font-family:var(--mono);letter-spacing:-.03em;min-height:2rem;line-height:1.1;}
+.hcard-chg{font-size:.7rem;margin-top:.4rem;font-family:var(--mono);font-weight:500;letter-spacing:-.01em;}
+.hcard-desc{font-size:.6rem;color:var(--txt3);margin-top:.5rem;border-top:1px solid var(--line);padding-top:.5rem;}
+.up{color:#34d399!important;} .dn{color:#f87171!important;} .neu{color:#94a3b8!important;}
+.hcard-chg.up{color:#34d399!important;} .hcard-chg.dn{color:#f87171!important;} .hcard-chg.neu{color:#94a3b8!important;}
 .skel{height:1.4rem;background:#1a1a1a;border-radius:4px;width:80%;animation:shimmer 1.5s infinite;}
 @keyframes shimmer{0%{opacity:.5;}50%{opacity:1;}100%{opacity:.5;}}
 
@@ -110,6 +112,18 @@ canvas#fg-gauge-canvas{width:220px;height:120px;}
 footer{border-top:1px solid var(--line);padding:1rem 1.5rem;text-align:center;font-size:.62rem;color:var(--txt3);font-family:var(--mono);}
 footer a{color:var(--txt3);}
 
+/* SUMMARY BAR */
+.summary-bar{background:#0d0d0d;border:1px solid var(--line);border-radius:8px;padding:.85rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.summary-title{font-size:.65rem;color:var(--txt3);font-family:var(--mono);white-space:nowrap;margin-right:.25rem;}
+.summary-chips{display:flex;gap:.4rem;flex-wrap:wrap;flex:1;}
+.chip{display:flex;align-items:center;gap:.35rem;padding:3px 9px;border-radius:20px;font-size:.65rem;font-family:var(--mono);border:1px solid var(--line);background:rgba(255,255,255,.03);white-space:nowrap;}
+.chip-label{color:var(--txt3);}
+.chip-val{font-weight:600;}
+.chip.up{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06);}
+.chip.dn{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06);}
+.chip.neu{border-color:rgba(148,163,184,.2);background:rgba(148,163,184,.04);}
+.summary-time{font-size:.58rem;color:var(--txt3);font-family:var(--mono);white-space:nowrap;margin-left:auto;}
+
 /* RESPONSIVE */
 @media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
 @media(max-width:600px){.hero{grid-template-columns:repeat(2,1fr);}.cards-half{grid-template-columns:1fr;}.hdr-links .hdr-btn span{display:none;}.brand-sub{display:none;}}
@@ -147,6 +161,13 @@ footer a{color:var(--txt3);}
 </header>
 
 <div class="wrap">
+
+<!-- SUMMARY BAR -->
+<div class="summary-bar" id="summary-bar" style="display:none;">
+  <span class="summary-title">📊 현재 시장</span>
+  <div class="summary-chips" id="summary-chips"></div>
+  <span class="summary-time" id="summary-time"></span>
+</div>
 
 <!-- HERO -->
 <div class="hero">
@@ -398,27 +419,6 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 9: MMF -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS · WRMFSL</div></div>
-  <div class="cards-full">
-    <div class="card">
-      <div class="card-title">MMF 총 잔액 추이</div>
-      <div class="card-sub">단위: $B · 주간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderMmf(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderMmf(365*5,this)">5Y</button>
-        <button class="tbtn" onclick="renderMmf(365*10,this)">10Y</button>
-      </div>
-      <div class="chart-wrap" id="w-mmf"><div class="lw"><div class="sp"></div></div></div>
-    <div class="insight">
-      MMF 잔액이 급증하면 투자자들이 위험자산을 회피하고 안전자산을 선호한다는 신호입니다.
-      <strong>기관형 MMF</strong>는 주로 역레포(RRP)에 투자하며, <strong>리테일 MMF</strong>는 개인 투자자 자금을 반영합니다.
-    </div>
-    </div>
-  </div>
-</div>
-
-<!-- SEC 13: 금융스트레스지수 -->
-<div class="sec">
   <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
   <div class="cards-full">
     <div class="card">
@@ -531,7 +531,7 @@ function setH(id,val,cls,chg){
   const el=document.getElementById('h'+id);
   if(el){el.innerHTML='';el.textContent=val;el.className='hcard-val '+(cls||'');}
   const ec=document.getElementById('h'+id+'c');
-  if(ec&&chg)ec.textContent=chg;
+  if(ec&&chg){ec.textContent=chg;ec.className='hcard-chg '+(cls||'');}
 }
 
 // ── 24시간 localStorage 캐시 ──
@@ -579,15 +579,18 @@ function drawGauge(score){
 
 async function loadFng(){
   try{
-    // localStorage 캐시 확인 (1시간)
-    const fngCached=cGet('FNG','1h');
-    let j=fngCached;
+    // localStorage 캐시 (1시간)
+    let j = null;
+    try{
+      const raw = localStorage.getItem('aq_fng');
+      if(raw){const p=JSON.parse(raw);if(Date.now()-p.t<36e5)j=p.data;}
+    }catch(e){}
     if(!j){
       const r=await fetch('/api/fng');
       if(!r.ok)throw new Error(r.status);
       j=await r.json();
       if(!j.current)throw new Error('no data');
-      try{localStorage.setItem('aq_FNG_1h',JSON.stringify({t:Date.now(),data:j}));}catch(e){}
+      try{localStorage.setItem('aq_fng',JSON.stringify({t:Date.now(),data:j}));}catch(e){}
     }
     const v=j.current.score,len=j.vals.length;
     const w1=j.vals[Math.max(0,len-8)]??v,m1=j.vals[Math.max(0,len-31)]??v,y1=j.vals[Math.max(0,len-252)]??v;
@@ -619,7 +622,7 @@ async function loadFng(){
 async function loadHero(){
   const delay=ms=>new Promise(r=>setTimeout(r,ms));
   // VIX
-  try{const d=await apiFetch('VIXCLS',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);setH(2,lv.toFixed(2),+dv>0?'dn':'up',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');}catch(e){}
+  try{const d=await apiFetch('VIXCLS',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);const vixCls=lv>=30?'dn':lv>=20?'neu':'up';setH(2,lv.toFixed(2),vixCls,(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');}catch(e){}
   await delay(200);
   // T10Y2Y
   try{const d=await apiFetch('T10Y2Y',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(3);setH(3,lv.toFixed(2)+'%',lv>=0?'up':'dn',(+dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');}catch(e){}
@@ -638,6 +641,7 @@ async function loadHero(){
   await delay(200);
   // WTREGEN
   try{const d=await apiFetch('WTREGEN',14);const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=lv-pv;setH(8,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ $':'▼ $')+fmtB(Math.abs(dv))+' 전주 대비');}catch(e){}
+  setTimeout(updateSummary, 500);
 }
 
 // ── 차트 렌더 함수들 ──
@@ -822,6 +826,32 @@ async function renderStlfsi(days,btn){
       segment:{borderColor:c=>c.p1.parsed.y>=0?'#ef4444':'#34d399'},
       backgroundColor:'rgba(239,68,68,0.07)'}],{ticks:{color:'#475569'}});
   }catch(e){showSpin('w-stlfsi');}
+}
+
+
+// ── 요약 배너 ──
+function updateSummary(){
+  const items = [
+    {id:'h1', label:'공포탐욕'},
+    {id:'h2', label:'VIX'},
+    {id:'h3', label:'금리차'},
+    {id:'h7', label:'HY 스프레드'},
+  ];
+  const chips = document.getElementById('summary-chips');
+  const bar = document.getElementById('summary-bar');
+  if(!chips||!bar) return;
+  const html = items.map(({id,label})=>{
+    const el = document.getElementById(id);
+    if(!el||!el.textContent||el.textContent==='—') return '';
+    const val = el.textContent.trim();
+    const cls = el.className.includes('up')?'up':el.className.includes('dn')?'dn':'neu';
+    return `<span class="chip ${cls}"><span class="chip-label">${label}</span><span class="chip-val">${val}</span></span>`;
+  }).filter(Boolean).join('');
+  if(html){
+    chips.innerHTML = html;
+    bar.style.display = 'flex';
+    document.getElementById('summary-time').textContent = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준';
+  }
 }
 
 // ── lazy loading ──
