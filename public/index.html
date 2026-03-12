@@ -767,16 +767,25 @@ function cacheIsFresh(s,d){
 }
 
 async function apiFetch(series, days){
-  // 1. localStorage 신선 캐시 → 즉시 반환
+  // 1. localStorage 신선 캐시
   if(cacheIsFresh(series,days)){
     const c=cacheGet(series,days);
     if(c) return c;
   }
-  // 2. FRED API 호출 (최대 3회 재시도)
+  // 2. 이미 로드된 BATCH 데이터 사용 (가장 빠름)
+  if(typeof BATCH !== 'undefined' && BATCH && BATCH.fred){
+    const key = `${series}_${days}`;
+    const d = BATCH.fred[key] || BATCH.fred[Object.keys(BATCH.fred).find(k=>k.startsWith(series+'_'))];
+    if(d && d.dates && d.dates.length > 0){
+      cacheSet(series, days, d);
+      return d;
+    }
+  }
+  // 3. FRED API 직접 호출 (폴백)
   let lastErr=null;
   for(let i=0;i<3;i++){
     try{
-      const r=await fetch(`/api/fred?series=${series}&days=${days}&t=${Date.now()}`);
+      const r=await fetch(`/api/fred?series=${series}&days=${days}`);
       if(r.status===429){ await new Promise(r=>setTimeout(r,2000*(i+1))); continue; }
       if(!r.ok) throw new Error(`${r.status}`);
       const j=await r.json();
@@ -786,9 +795,8 @@ async function apiFetch(series, days){
       return j;
     }catch(e){ lastErr=e; if(i<2) await new Promise(r=>setTimeout(r,600*(i+1))); }
   }
-  // 3. 만료 캐시라도 반환
   const stale=cacheGet(series,days);
-  if(stale){ document.getElementById('stTxt').textContent='이전 데이터 표시 중'; return stale; }
+  if(stale) return stale;
   throw lastErr;
 }
 
@@ -1024,12 +1032,22 @@ function toast(msg,cls=''){
 }
 
 window.addEventListener('DOMContentLoaded', async ()=>{
+  // 페이지 로드 즉시 전체 데이터 한번에 fetch
+  let BATCH = null;
+  try {
+    const r = await fetch('/api/batch');
+    if(r.ok) BATCH = await r.json();
+  } catch(e) {}
   // 히어로 카드 + 상단 차트만 즉시 로드
   loadHero();
-  // 공포탐욕지수 인라인 로드
+  // 공포탐욕지수 — BATCH 우선, 없으면 /api/fng
   (async () => {
     let j = null;
-    try { const r = await fetch('/api/fng'); j = await r.json(); } catch(e) {}
+    if(BATCH && BATCH.fng && BATCH.fng.current) {
+      j = BATCH.fng;
+    } else {
+      try { const r = await fetch('/api/fng'); j = await r.json(); } catch(e) {}
+    }
     if(!j || !j.current) return;
     ((j) => {
     const v=j.current.score, len=j.vals.length;
