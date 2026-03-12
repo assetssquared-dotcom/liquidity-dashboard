@@ -13,77 +13,78 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: main
 
-      - name: Fetch FRED & FNG data
+      - name: Fetch & Save cache
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
           fetch_fred() {
-            local series=$1
-            local days=$2
+            local series=$1 days=$2
             local start=$(date -d "$days days ago" +%Y-%m-%d)
-            curl -s "https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_API_KEY}&file_type=json&observation_start=${start}&sort_order=asc"
+            curl -sf "https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_API_KEY}&file_type=json&observation_start=${start}&sort_order=asc" || echo '{"observations":[]}'
           }
 
           for entry in "SOFR:365" "EFFR:365" "IORB:365" "VIXCLS:365" "WRESBAL:730" "RRPONTSYD:730" "WTREGEN:730" "WALCL:730" "T10Y2Y:730" "BAMLH0A0HYM2:730" "STLFSI4:730" "WRMFNS:730" "WRMFSL:730"; do
-            series="${entry%%:*}"
-            days="${entry##*:}"
-            echo "Fetching $series ($days days)..."
+            series="${entry%%:*}"; days="${entry##*:}"
+            echo "Fetching $series..."
             fetch_fred $series $days > /tmp/${series}_${days}.json
-            sleep 0.5
+            sleep 0.4
           done
 
-          curl -s "https://production.dataviz.cnn.io/index/fearandgreed/graphdata" \
+          curl -sf "https://production.dataviz.cnn.io/index/fearandgreed/graphdata" \
             -H "Referer: https://edition.cnn.com/" \
-            -H "User-Agent: Mozilla/5.0" > /tmp/fng.json
+            -H "User-Agent: Mozilla/5.0" > /tmp/fng.json || echo '{}' > /tmp/fng.json
 
           node << 'NODEOF'
           const fs = require('fs');
 
-          function processFred(series, days) {
+          function processFred(s, d) {
             try {
-              const raw = JSON.parse(fs.readFileSync(`/tmp/${series}_${days}.json`));
-              const obs = (raw.observations || []).filter(o => o.value !== '.' && o.value !== '');
-              let vals = obs.map(o => parseFloat(o.value));
-              if (['WRMFNS','WRMFSL'].includes(series) && vals.length > 0 && vals[vals.length-1] < 100) {
-                vals = vals.map(v => Math.round(v * 1000 * 10) / 10);
-              }
-              return { dates: obs.map(o => o.date), vals };
-            } catch(e) { return { dates: [], vals: [] }; }
+              const raw = JSON.parse(fs.readFileSync(`/tmp/${s}_${d}.json`));
+              const obs = (raw.observations||[]).filter(o=>o.value!=='.'&&o.value!=='');
+              let vals = obs.map(o=>parseFloat(o.value));
+              if(['WRMFNS','WRMFSL'].includes(s)&&vals.length>0&&vals[vals.length-1]<100)
+                vals=vals.map(v=>Math.round(v*1000*10)/10);
+              return {dates:obs.map(o=>o.date),vals};
+            } catch(e){return{dates:[],vals:[]};}
           }
 
-          const cache = { updatedAt: new Date().toISOString(), fred: {}, fng: {} };
-          const series = [
-            ['SOFR',365],['EFFR',365],['IORB',365],['VIXCLS',365],
-            ['WRESBAL',730],['RRPONTSYD',730],['WTREGEN',730],['WALCL',730],
-            ['T10Y2Y',730],['BAMLH0A0HYM2',730],['STLFSI4',730],['WRMFNS',730],['WRMFSL',730]
-          ];
-          series.forEach(([s,d]) => { cache.fred[`${s}_${d}`] = processFred(s, d); });
+          const cache={updatedAt:new Date().toISOString(),fred:{},fng:{}};
+          [['SOFR',365],['EFFR',365],['IORB',365],['VIXCLS',365],
+           ['WRESBAL',730],['RRPONTSYD',730],['WTREGEN',730],['WALCL',730],
+           ['T10Y2Y',730],['BAMLH0A0HYM2',730],['STLFSI4',730],['WRMFNS',730],['WRMFSL',730]
+          ].forEach(([s,d])=>{cache.fred[`${s}_${d}`]=processFred(s,d);});
 
           try {
-            const fng = JSON.parse(fs.readFileSync('/tmp/fng.json'));
-            const hist = fng.fear_and_greed_historical?.data || [];
-            cache.fng = {
-              current: { score: Math.round(fng.fear_and_greed.score), rating: fng.fear_and_greed.rating, timestamp: fng.fear_and_greed.timestamp },
-              dates: hist.map(d => new Date(d.x).toISOString().slice(0,10)),
-              vals: hist.map(d => Math.round(d.y))
+            const fng=JSON.parse(fs.readFileSync('/tmp/fng.json'));
+            const hist=fng.fear_and_greed_historical?.data||[];
+            cache.fng={
+              current:{score:Math.round(fng.fear_and_greed.score),rating:fng.fear_and_greed.rating,timestamp:fng.fear_and_greed.timestamp},
+              dates:hist.map(d=>new Date(d.x).toISOString().slice(0,10)),
+              vals:hist.map(d=>Math.round(d.y))
             };
-          } catch(e) { console.error('FNG:', e.message); }
+          } catch(e){console.error('FNG:',e.message);}
 
-          fs.writeFileSync('public/cache.json', JSON.stringify(cache));
-          console.log('Done:', Object.keys(cache.fred).length, 'series');
+          fs.writeFileSync('/tmp/cache.json', JSON.stringify(cache));
+          console.log('Done:', Object.keys(cache.fred).length, 'series,', cache.fng?.current?.score, 'FNG');
           NODEOF
 
-      - name: Commit cache
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git reset --soft origin/main
-          git add public/cache.json
-          git diff --staged --quiet && echo "No changes" && exit 0
-          git commit -m "chore: update data cache [skip ci]"
-          git push origin HEAD:main
+          # GitHub API로 직접 파일 업데이트 (git 충돌 없음)
+          CONTENT=$(base64 -w 0 /tmp/cache.json)
+          SHA=$(curl -sf -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/$REPO/contents/public/cache.json" | \
+            node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(JSON.parse(d).sha)}catch(e){}})")
+          
+          PAYLOAD="{\"message\":\"chore: update data cache [skip ci]\",\"content\":\"$CONTENT\""
+          [ -n "$SHA" ] && PAYLOAD="$PAYLOAD,\"sha\":\"$SHA\""
+          PAYLOAD="$PAYLOAD}"
+          
+          curl -sf -X PUT \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "https://api.github.com/repos/$REPO/contents/public/cache.json"
+          
+          echo "Cache updated via GitHub API!"
