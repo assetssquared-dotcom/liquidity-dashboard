@@ -1025,7 +1025,46 @@ function toast(msg,cls=''){
 window.addEventListener('DOMContentLoaded', async ()=>{
   // 히어로 카드 + 상단 차트만 즉시 로드
   loadHero();
-  loadFng();
+  // 공포탐욕지수 인라인 로드
+  fetch('/api/fng').then(r=>r.json()).then(j=>{
+    if(j.error||!j.current) return;
+    const v=j.current.score, len=j.vals.length;
+    const w1=j.vals[Math.max(0,len-8)]??v, m1=j.vals[Math.max(0,len-31)]??v, y1=j.vals[Math.max(0,len-366)]??v;
+    const fc=v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';
+    const ft=v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';
+    document.getElementById('fg-score').textContent=v;
+    document.getElementById('fg-score').style.color=fc;
+    document.getElementById('fg-label').textContent=ft+' · '+j.current.rating;
+    document.getElementById('fg-label').style.color=fc;
+    const el1=document.getElementById('fg-1w'), el2=document.getElementById('fg-1m'), el3=document.getElementById('fg-1y');
+    if(el1){el1.textContent=w1; el1.style.color=w1<=44?'#f87171':w1<=55?'#94a3b8':'#34d399';}
+    if(el2){el2.textContent=m1; el2.style.color=m1<=44?'#f87171':m1<=55?'#94a3b8':'#34d399';}
+    if(el3){el3.textContent=y1; el3.style.color=y1<=44?'#f87171':y1<=55?'#94a3b8':'#34d399';}
+    // 게이지
+    const canvas=document.getElementById('fg-gauge-canvas');
+    if(canvas){
+      const ctx=canvas.getContext('2d'),cx=110,cy=105,r=90;
+      ctx.clearRect(0,0,220,120);
+      [{f:Math.PI,t:Math.PI*1.2,c:'#7f1d1d'},{f:Math.PI*1.2,t:Math.PI*1.4,c:'#ef4444'},{f:Math.PI*1.4,t:Math.PI*1.6,c:'#64748b'},{f:Math.PI*1.6,t:Math.PI*1.8,c:'#34d399'},{f:Math.PI*1.8,t:Math.PI*2,c:'#10b981'}].forEach(s=>{
+        ctx.beginPath();ctx.arc(cx,cy,r,s.f,s.t);ctx.arc(cx,cy,r-18,s.t,s.f,true);ctx.fillStyle=s.c+'55';ctx.fill();
+        ctx.beginPath();ctx.arc(cx,cy,r,s.f,s.t);ctx.strokeStyle=s.c;ctx.lineWidth=4;ctx.stroke();
+      });
+      const a=Math.PI+(v/100)*Math.PI;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-9)*Math.cos(a),cy+(r-9)*Math.sin(a));
+      ctx.strokeStyle=fc;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+      ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=fc;ctx.fill();
+      ctx.fillStyle='#475569';ctx.font='9px IBM Plex Mono,monospace';ctx.textAlign='center';
+      ctx.fillText('공포',cx-65,cy+14);ctx.fillText('탐욕',cx+65,cy+14);
+    }
+    // 차트
+    const {dates:td,vals:tv}=thin(j.dates,j.vals,150);
+    const wrap=document.getElementById('w-fng');
+    if(wrap){
+      wrap.innerHTML='<canvas id="c-fng"></canvas>';
+      const ctx2=document.getElementById('c-fng').getContext('2d');
+      CHARTS['fng']=new Chart(ctx2,{type:'line',data:{labels:td,datasets:[{label:'공포탐욕지수',data:tv,borderColor:'rgba(255,255,255,0.3)',borderWidth:1.5,pointRadius:0,fill:false,tension:.3,segment:{borderColor:c=>c.p1.parsed.y<=24?'#ef4444':c.p1.parsed.y<=44?'#f87171':c.p1.parsed.y<=55?'#94a3b8':c.p1.parsed.y<=74?'#34d399':'#10b981'}}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#111',borderColor:'#333',borderWidth:1,titleColor:'#888',bodyColor:'#eee',padding:10}},scales:{x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},min:0,max:100,ticks:{color:'#475569'}}}}});
+    }
+  }).catch(()=>{});
 
   // 나머지 모두 뷰포트 진입 시 로드 (lazy)
   // 차트마다 딜레이 줘서 429 방지
