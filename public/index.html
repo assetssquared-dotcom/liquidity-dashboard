@@ -749,8 +749,7 @@ function mkOpts(scales){
   };
 }
 
-// ── API 호출 (Vercel 서버리스 함수 경유) ──────────────────
-async // ── 캐시 + 재시도 apiFetch ──────────────────────
+// ── 캐시 + 재시도 apiFetch ──────────────────────
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24시간
 
 function cacheKey(s,d){ return `aq_${s}_${d}`; }
