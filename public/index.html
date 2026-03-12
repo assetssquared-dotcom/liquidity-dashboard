@@ -675,32 +675,37 @@ async function loadHero(){
 // 리테일 = 전체 - 기관형
 async function renderMmf(days){
   try{
-    const [total, inst] = await Promise.all([
+    // WRMFNS=리테일, WRMFSL=기관형 — 각각 독립 로드 후 합산
+    const [ret, inst] = await Promise.all([
       apiFetch('WRMFNS', days),
       apiFetch('WRMFSL', days)
     ]);
-    const tMap = Object.fromEntries(total.dates.map((d,i)=>[d,total.vals[i]]));
+    // 두 시리즈 모두 정상인지 확인
+    if(!ret.dates.length && !inst.dates.length) throw new Error('MMF 데이터 없음');
+
+    // 날짜 합집합으로 전체 구성
+    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d,ret.vals[i]]));
     const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
-    const dates = total.dates.filter(d=>iMap[d]!==undefined);
-    let tv = dates.map(d=>tMap[d]);
-    let iv = dates.map(d=>iMap[d]);
-    // 단위 변환: 값이 50 미만이면 $T → $B (×1000)
-    if (tv.length > 0 && tv[tv.length-1] < 50) {
-      tv = tv.map(v => Math.round(v * 1000 * 10) / 10);
-      iv = iv.map(v => Math.round(v * 1000 * 10) / 10);
-    }
-    const rv = tv.map((v,i)=>+(v-iv[i]).toFixed(1));
-    const {dates:td,vals:ttv}=thin(dates,tv,120);
-    const {vals:tiv}=thin(dates,iv,120);
-    const {vals:trv}=thin(dates,rv,120);
+
+    // 두 시리즈 중 더 긴 것의 날짜 기준
+    const allDates = [...new Set([...ret.dates, ...inst.dates])].sort();
+    const rv = allDates.map(d=>rMap[d]??null);
+    const iv = allDates.map(d=>iMap[d]??null);
+    // 전체 = 리테일 + 기관형 (둘 다 있는 날짜만)
+    const tv = allDates.map((d,i)=>(rv[i]!==null&&iv[i]!==null)?+(rv[i]+iv[i]).toFixed(1):null);
+
+    const {dates:td,vals:ttv}=thin(allDates,tv,120);
+    const {vals:riv}=thin(allDates,iv,120);
+    const {vals:rrv}=thin(allDates,rv,120);
+
     const cv=cvs('w-mmf','c-mmf');kill('mmf');
     const ctx=cv.getContext('2d');
     CHARTS['mmf']=new Chart(ctx,{
       type:'line',
       data:{labels:td,datasets:[
-        {label:'전체 MMF($B)',data:ttv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4},
-        {label:'기관형($B)',data:tiv,borderColor:'#38bdf8',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
-        {label:'리테일($B)',data:trv,borderColor:'#fb923c',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
+        {label:'전체 MMF($B)',data:ttv,borderColor:'#34d399',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#34d399'),tension:.4,spanGaps:true},
+        {label:'기관형($B)',data:riv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[4,2],spanGaps:true},
+        {label:'리테일($B)',data:rrv,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[4,2],spanGaps:true},
       ]},
       options:mkOpts()
     });
@@ -736,46 +741,36 @@ async function renderMmfRrp(days){
 // ⑨ MMF 주간 증감폭
 async function renderMmfWeekly(){
   try{
-    const [total,inst]=await Promise.all([
-      apiFetch('WRMFNS',365*2),
-      apiFetch('WRMFSL',365*2)
+    const [ret, inst] = await Promise.all([
+      apiFetch('WRMFNS', 365*2),
+      apiFetch('WRMFSL', 365*2)
     ]);
-    const tMap=Object.fromEntries(total.dates.map((d,i)=>[d,total.vals[i]]));
-    const iMap=Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
-    const dates=total.dates.filter(d=>iMap[d]!==undefined);
-    let iv=dates.map(d=>iMap[d]);
-    // 단위 변환: 값이 50 미만이면 $T → $B (×1000)
-    if (iv.length > 0 && iv[iv.length-1] < 50) {
-      iv = iv.map(v => Math.round(v * 1000 * 10) / 10);
-      const tvRaw = dates.map(d=>tMap[d]);
-      const tvConverted = tvRaw.map(v => Math.round(v * 1000 * 10) / 10);
-      const rv=tvConverted.map((v,i)=>+(v-iv[i]).toFixed(1));
-      const id=iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
-      const rd=rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
-      const {dates:labs,vals:idv}=thin(dates.slice(1),id.slice(1),80);
-      const {vals:rdv}=thin(dates.slice(1),rd.slice(1),80);
-      const cv=cvs('w-mmfwk','c-mmfwk');kill('mmfwk');
-      const ctx=cv.getContext('2d');
-      CHARTS['mmfwk']=new Chart(ctx,{type:'bar',data:{labels:labs,datasets:[
-        {label:'기관형 유출입',data:idv,backgroundColor:idv.map(v=>v>=0?'rgba(56,189,248,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
-        {label:'리테일 유출입',data:rdv,backgroundColor:rdv.map(v=>v>=0?'rgba(251,146,60,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
-      ]},options:mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})});
-      return;
-    }
-    const rv=dates.map(d=>+((tMap[d]||0)-(iMap[d]||0)).toFixed(1));
-    const id=iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
-    const rd=rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
-    const {dates:labs,vals:idv}=thin(dates.slice(1),id.slice(1),80);
-    const {vals:rdv}=thin(dates.slice(1),rd.slice(1),80);
-    const cv=cvs('w-mmfwk','c-mmfwk');kill('mmfwk');
+    if(!ret.dates.length && !inst.dates.length) throw new Error('MMF 데이터 없음');
+
+    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d,ret.vals[i]]));
+    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
+    // 두 시리즈 공통 날짜만
+    const dates = ret.dates.filter(d=>iMap[d]!==undefined);
+    if(!dates.length) throw new Error('날짜 매칭 실패');
+
+    const rv = dates.map(d=>rMap[d]); // 리테일
+    const iv = dates.map(d=>iMap[d]); // 기관형
+    const rd = rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
+    const id = iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
+    const {dates:labs, vals:rdv} = thin(dates.slice(1), rd.slice(1), 80);
+    const {vals:idv} = thin(dates.slice(1), id.slice(1), 80);
+    const cv=cvs('w-mmfwk','c-mmfwk'); kill('mmfwk');
     const ctx=cv.getContext('2d');
     CHARTS['mmfwk']=new Chart(ctx,{
       type:'bar',
       data:{labels:labs,datasets:[
-        {label:'기관형 유출입',data:idv,backgroundColor:idv.map(v=>v>=0?'rgba(56,189,248,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
-        {label:'리테일 유출입',data:rdv,backgroundColor:rdv.map(v=>v>=0?'rgba(251,146,60,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
+        {label:'기관형 유출입',data:idv,backgroundColor:idv.map(v=>v>=0?'rgba(91,156,246,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
+        {label:'리테일 유출입',data:rdv,backgroundColor:rdv.map(v=>v>=0?'rgba(249,115,22,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
       ]},
-      options:mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})
+      options:mkOpts({
+        x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},
+        y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}
+      })
     });
   }catch(e){showErr('w-mmfwk',e.message);}
 }
