@@ -786,30 +786,7 @@ function trend(vals){
 }
 
 // ── Claude AI 실시간 해석 ──
-async function aiInterpret(id, context){
-  const el=document.getElementById('ai-'+id);
-  if(!el)return;
-  try{
-    const prompt = `당신은 초보 투자자를 위한 금융 지표 해설가입니다. 아래 데이터를 보고 지금 시장 상황이 어떤지, 초보 투자자가 어떻게 받아들이면 좋은지 2~3문장으로 친근하게 설명하세요. 전문 용어는 쉬운 말로 풀어주세요. 투자 권유는 하지 마세요.
-
-데이터: ${context}`;
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:300,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    if(!resp.ok)throw new Error(resp.status);
-    const d=await resp.json();
-    const text=d.content?.[0]?.text||'';
-    if(text) el.innerHTML=`<span style="color:#5b9cf6;font-size:.6rem;font-family:var(--mono);opacity:.7;">✦ AI 해석</span><br>${text}`;
-  }catch(e){
-    el.innerHTML='';
-  }
-}
+function aiInterpret(id, context){ /* CORS 이슈로 비활성화 */ }
 
 // ── 지표별 정적 해석 함수 ──
 function fngBadge(v){return v<=24?'red':v<=44?'red':v<=55?'neu':v<=74?'green':'red';}
