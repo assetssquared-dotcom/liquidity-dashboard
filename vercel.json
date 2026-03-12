@@ -1,11 +1,5 @@
 {
   "outputDirectory": "public",
-  "crons": [
-    {
-      "path": "/api/cache-refresh",
-      "schedule": "0 */2 * * *"
-    }
-  ],
   "rewrites": [
     { "source": "/api/fred", "destination": "/api/fred.js" },
     { "source": "/api/fng",  "destination": "/api/fng.js"  },
