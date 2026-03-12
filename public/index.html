@@ -749,8 +749,21 @@ function mkOpts(scales){
   };
 }
 
-// ── 캐시 + 재시도 apiFetch ──────────────────────
-const CACHE_TTL = 24 * 60 * 60 * 1000; // 24시간
+// ── 데이터 캐시 (GitHub Actions JSON 우선) ──────
+const CACHE_TTL = 24 * 60 * 60 * 1000;
+let _staticCache = null;
+
+async function getStaticCache() {
+  if (_staticCache) return _staticCache;
+  try {
+    const r = await fetch('/data/cache.json');
+    if (r.ok) {
+      _staticCache = await r.json();
+      return _staticCache;
+    }
+  } catch(e) {}
+  return null;
+}
 
 function cacheKey(s,d){ return `aq_${s}_${d}`; }
 
@@ -767,12 +780,32 @@ function cacheIsFresh(s,d){
 }
 
 async function apiFetch(series, days){
-  // 캐시 신선하면 즉시 반환
+  // 1. localStorage 신선 캐시
   if(cacheIsFresh(series,days)){
     const c=cacheGet(series,days);
     if(c) return c;
   }
-  // API 호출 (최대 3회 재시도)
+
+  // 2. GitHub Actions 정적 캐시 (가장 빠름)
+  const sc = await getStaticCache();
+  if(sc && sc.fred) {
+    const key = `${series}_${days}`;
+    if(sc.fred[key] && sc.fred[key].dates.length > 0) {
+      cacheSet(series, days, sc.fred[key]);
+      return sc.fred[key];
+    }
+    // 가장 가까운 days 찾기
+    const keys = Object.keys(sc.fred).filter(k => k.startsWith(series+'_'));
+    if(keys.length > 0) {
+      const data = sc.fred[keys[0]];
+      if(data.dates.length > 0) {
+        cacheSet(series, days, data);
+        return data;
+      }
+    }
+  }
+
+  // 3. FRED API 직접 호출 (폴백)
   let lastErr=null;
   for(let i=0;i<3;i++){
     try{
@@ -786,7 +819,6 @@ async function apiFetch(series, days){
       return j;
     }catch(e){ lastErr=e; if(i<2) await new Promise(r=>setTimeout(r,600*(i+1))); }
   }
-  // 만료 캐시라도 반환
   const stale=cacheGet(series,days);
   if(stale){ document.getElementById('stTxt').textContent='이전 데이터 표시 중'; return stale; }
   throw lastErr;
@@ -919,7 +951,8 @@ async function loadHero(){
       const v=j.current.score;
       setH(1,v,v<=44?'dn':v<=55?'':'up',j.current.rating);
     }
-  }).catch(()=>{});
+    })(j);
+  })();
 
   // FRED 시리즈 순차 로드
   const jobs = [
@@ -1025,9 +1058,17 @@ function toast(msg,cls=''){
 window.addEventListener('DOMContentLoaded', async ()=>{
   // 히어로 카드 + 상단 차트만 즉시 로드
   loadHero();
-  // 공포탐욕지수 인라인 로드
-  fetch('/api/fng').then(r=>r.json()).then(j=>{
-    if(j.error||!j.current) return;
+  // 공포탐욕지수 인라인 로드 (정적 캐시 우선)
+  (async () => {
+    let j = null;
+    const sc = await getStaticCache();
+    if(sc && sc.fng && sc.fng.current) {
+      j = sc.fng;
+    } else {
+      try { const r = await fetch('/api/fng'); j = await r.json(); } catch(e) {}
+    }
+    if(!j || !j.current) return;
+    ((j) => {
     const v=j.current.score, len=j.vals.length;
     const w1=j.vals[Math.max(0,len-8)]??v, m1=j.vals[Math.max(0,len-31)]??v, y1=j.vals[Math.max(0,len-366)]??v;
     const fc=v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';
