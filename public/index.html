@@ -1302,7 +1302,7 @@ async function renderWeekly(btn){
 }
 
 async function renderMmfRrp(days,btn){
-  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  if(btn&&btn.closest){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-mmfrrp');
   try{
     // WRMFNS는 9번(renderMmf) 캐시 재사용, RRPONTSYD만 fetch
@@ -1457,10 +1457,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-rrp',   ()=>renderRrp(365*2));
   observeLazy('w-tga',   ()=>renderTga(365*2));
   observeLazy('w-hys',   ()=>renderHys(365*2));
-  observeLazy('w-mmf',   ()=>renderMmf(365*2));
-  observeLazy('w-wk',    ()=>renderWeekly());
-  // w-mmfrrp는 renderMmf 완료 후 자동 호출됨
-  // w-mmfwk는 renderMmf 완료 후 자동 호출됨
+  observeLazy('w-mmf',    ()=>renderMmf(365*2)); // 10번, 12번은 renderMmf 완료 후 자동 호출
+  observeLazy('w-mmfrrp', ()=>{if(!_mmfCache)renderMmf(365*2);}); // 9번 아직 안됐으면 트리거
+  observeLazy('w-mmfwk',  ()=>{if(!_mmfCache)renderMmf(365*2);}); // 9번 아직 안됐으면 트리거
+  observeLazy('w-wk',     ()=>renderWeekly());
   observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
   observeLazy('w-sofr',  ()=>renderSofr(365));
   observeLazy('w-iorb',  ()=>renderIorb(365));
