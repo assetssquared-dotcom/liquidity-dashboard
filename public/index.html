@@ -83,7 +83,7 @@ header {
 }
 .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--c4); animation: blink 2s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-#stTxt { font-size: .6rem; font-family: var(--mono); color: var(--txt3); }
+#stTxt { font-size: .6rem; font-family: var(--mono); color: var(--txt3); opacity: .7; }
 
 /* 헤더 링크 버튼 */
 .hdr-links { display: flex; align-items: center; gap: 5px; }
@@ -855,9 +855,9 @@ async function loadHero(){
     setH(3,fmtT(lrp),drp>=0?'up':'dn',(drp>=0?'▲ ':'▼ ')+fmtB(drp)+' 전일 대비');
     const lt=tga.vals.at(-1),pt=tga.vals.at(-2)||lt,dt=(lt-pt).toFixed(0);
     setH(4,fmtT(lt),dt>=0?'up':'dn',(dt>=0?'▲ ':'▼ ')+fmtB(dt)+' 전주 대비');
-    document.getElementById('stTxt').textContent='실시간 FRED 데이터 ✓';
+    document.getElementById('stTxt').textContent='FRED 데이터 연결됨';
   }catch(e){
-    document.getElementById('stTxt').textContent='차트 데이터 로딩 중...';
+    // 에러 시 조용히 처리
   }
   // 5~8번: 별도 순차 로드 (429 방지)
   try{
@@ -1293,6 +1293,8 @@ function load(key,days,btn){
 }
 
 function toast(msg,cls=''){
+  // 에러 토스트 비활성화
+  if(cls==='ng') return;
   const el=document.getElementById('toast');
   el.textContent=msg;el.className='toast show '+cls;
   setTimeout(()=>el.className='toast',3500);
