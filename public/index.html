@@ -778,35 +778,43 @@ function drawGauge(score){
 
 async function loadFng(){
   try{
-    const fngUrl='https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
-    const proxyUrl='https://api.allorigins.win/get?url='+encodeURIComponent(fngUrl);
-    const r=await fetch(proxyUrl);
+    // Alternative.me 무료 FNG API (CORS 허용, 키 불필요, 최대 365일)
+    const r=await fetch('https://api.alternative.me/fng/?limit=365&format=json');
     if(!r.ok)throw new Error(r.status);
-    const wrapper=await r.json();
-    const data=JSON.parse(wrapper.contents);
-    const hist=data.fear_and_greed_historical?.data||[];
-    const j={
-      current:{score:Math.round(data.fear_and_greed.score),rating:data.fear_and_greed.rating},
-      dates:hist.map(d=>new Date(d.x).toISOString().slice(0,10)),
-      vals:hist.map(d=>Math.round(d.y))
-    };
-    if(!j.current)throw new Error('no data');
-    const v=j.current.score,len=j.vals.length;
-    const w1=j.vals[Math.max(0,len-8)]??v,m1=j.vals[Math.max(0,len-31)]??v,y1=j.vals[Math.max(0,len-252)]??v;
+    const data=await r.json();
+    const items=data.data||[];
+    if(!items.length)throw new Error('no data');
+
+    // items[0]이 최신, 역순 정렬
+    const latest=items[0];
+    const v=parseInt(latest.value);
+    const rating=latest.value_classification;
+
+    // 날짜순 정렬 (오래된 것 먼저)
+    const sorted=[...items].reverse();
+    const dates=sorted.map(d=>new Date(parseInt(d.timestamp)*1000).toISOString().slice(0,10));
+    const vals=sorted.map(d=>parseInt(d.value));
+    const len=vals.length;
+
+    // 과거 비교값
+    const w1=vals[Math.max(0,len-8)]??v;
+    const m1=vals[Math.max(0,len-31)]??v;
+    const y1=vals[0]??v;
+
     const col=fgCol(v);
     document.getElementById('fg-score').textContent=v;
     document.getElementById('fg-score').style.color=col;
-    document.getElementById('fg-label').textContent=fgTxt(v)+' · '+j.current.rating;
+    document.getElementById('fg-label').textContent=fgTxt(v)+' · '+rating;
     document.getElementById('fg-label').style.color=col;
     ['fg-1w','fg-1m','fg-1y'].forEach((id,i)=>{
       const val=[w1,m1,y1][i];
       const el=document.getElementById(id);
       if(el){el.textContent=val;el.style.color=fgCol(val);}
     });
-    setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',j.current.rating,'neu');
+    setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',rating,'neu');
     drawGauge(v);
     const _fi=interpretFng(v);showNow('fng',v+'점',_fi.badge,_fi.label,_fi.text);
-    const{dates:td,vals:tv}=thin(j.dates,j.vals,150);
+    const{dates:td,vals:tv}=thin(dates,vals,150);
     const wrap=document.getElementById('w-fng');
     wrap.innerHTML='<canvas></canvas>';
     CHARTS['fng']=new Chart(wrap.querySelector('canvas').getContext('2d'),{
@@ -822,27 +830,26 @@ async function loadFng(){
 async function loadHero(){
   // 7개 히어로 카드 병렬 fetch
   const jobs = [
-    ['VIXCLS',       5,  2, v=>v.toFixed(2),        false],
-    ['T10Y2Y',       5,  3, v=>v.toFixed(2)+'%',     true ],
-    ['WALCL',        14, 4, v=>fmtT(v),              null ],
-    ['WRESBAL',      14, 5, v=>fmtT(v),              true ],
-    ['RRPONTSYD',    5,  6, v=>fmtT(v),              null ],
-    ['BAMLH0A0HYM2', 5,  7, v=>v.toFixed(2)+'%',     false],
-    ['WTREGEN',      14, 8, v=>fmtT(v),              null ],
+    ['VIXCLS',       5,  2, v=>v.toFixed(2),       true],
+    ['T10Y2Y',       5,  3, v=>v.toFixed(2)+'%',   true],
+    ['WALCL',        14, 4, v=>fmtT(v),            true],
+    ['WRESBAL',      14, 5, v=>fmtT(v),            true],
+    ['RRPONTSYD',    5,  6, v=>fmtT(v),            true],
+    ['BAMLH0A0HYM2', 5,  7, v=>v.toFixed(2)+'%',  true],
+    ['WTREGEN',      14, 8, v=>fmtT(v),            true],
   ];
 
-  // FNG 병렬 시작 (CORS proxy 경유)
-  const _fngUrl='https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
-  fetch('https://api.allorigins.win/get?url='+encodeURIComponent(_fngUrl))
-    .then(r=>r.json()).then(w=>{
-    const j=JSON.parse(w.contents);
-    if(!j||!j.fear_and_greed) return;
-    const v=Math.round(j.fear_and_greed.score);
+  // FNG (alternative.me 무료 API)
+  fetch('https://api.alternative.me/fng/?limit=1&format=json')
+    .then(r=>r.json()).then(data=>{
+    const item=data.data?.[0];
+    if(!item) return;
+    const v=parseInt(item.value);
     const col=v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';
     const hv=document.getElementById('h1');
     if(hv){hv.textContent=v;hv.style.color=col;hv.className='hcard-val';}
     const hvc=document.getElementById('h1c');
-    if(hvc){hvc.textContent=j.fear_and_greed.rating;hvc.style.color=col;}
+    if(hvc){hvc.textContent=item.value_classification;hvc.style.color=col;}
   }).catch(()=>{});
 
   // 7개 병렬 fetch
