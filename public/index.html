@@ -160,6 +160,18 @@ footer a{color:var(--txt3);}
   .hcard-chg{font-size:.75rem;}
   .hcard-desc{font-size:.68rem;}
 }
+/* 텔레그램 포스트 */
+.tg-post{background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:.75rem;transition:border-color .2s;}
+.tg-post:hover{border-color:#333;}
+.tg-post:last-child{margin-bottom:0;}
+.tg-post-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;}
+.tg-post-date{font-size:.72rem;color:var(--txt3);font-family:var(--mono);}
+.tg-post-link{font-size:.72rem;color:var(--c1);text-decoration:none;margin-left:auto;font-family:var(--mono);}
+.tg-post-link:hover{text-decoration:underline;}
+.tg-post-text{font-size:.85rem;color:var(--txt);line-height:1.75;white-space:pre-wrap;word-break:break-word;}
+.tg-post-img{margin-top:.75rem;border-radius:6px;max-width:100%;max-height:300px;object-fit:cover;}
+.tg-empty{text-align:center;color:var(--txt3);font-size:.82rem;padding:2rem;}
+
 /* RESPONSIVE */
 @media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
 @media(max-width:600px){.hero{grid-template-columns:repeat(2,1fr);}.cards-half{grid-template-columns:1fr;}.hdr-links .hdr-btn span{display:none;}.brand-sub{display:none;}}
@@ -585,6 +597,22 @@ footer a{color:var(--txt3);}
     <div class="signal yellow"><div class="signal-icon">📊</div><div class="signal-body"><strong>2019년 교훈</strong>준비금이 부족해 SOFR이 IORB를 훨씬 넘어서며 단기금리가 폭등한 사례가 있어요.</div></div>
   </div>
 </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 16: 텔레그램 채널 -->
+<div class="sec">
+  <div class="sec-hdr">
+    <div class="sec-num">16</div>
+    <div class="sec-title">자산제곱 최근 포스트</div>
+    <div class="sec-tag">@assets_x2</div>
+  </div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">최근 채널 글</div>
+      <div class="card-sub">텔레그램 @assets_x2 · 최신순</div>
+      <div id="tg-posts"><div class="lw" style="height:120px"><div class="sp"></div></div></div>
     </div>
   </div>
 </div>
@@ -1264,6 +1292,76 @@ function observeLazy(id,fn){
   obs.observe(el);
 }
 
+// ── 텔레그램 채널 로드 ──
+async function loadTelegram(){
+  const el=document.getElementById('tg-posts');
+  if(!el)return;
+  try{
+    // 공개 채널 RSS → corsproxy 경유
+    const channel='assets_x2';
+    const rssUrl=`https://rsshub.app/telegram/channel/${channel}`;
+    const proxyUrl=`https://corsproxy.io/?url=${encodeURIComponent(rssUrl)}`;
+    const r=await fetch(proxyUrl);
+    if(!r.ok)throw new Error(r.status);
+    const xml=await r.text();
+    const parser=new DOMParser();
+    const doc=parser.parseFromString(xml,'application/xml');
+    const items=Array.from(doc.querySelectorAll('item')).slice(0,10);
+
+    if(!items.length)throw new Error('no items');
+
+    el.innerHTML=items.map(item=>{
+      const title=item.querySelector('title')?.textContent||'';
+      const desc=item.querySelector('description')?.textContent||'';
+      const link=item.querySelector('link')?.textContent||'';
+      const pubDate=item.querySelector('pubDate')?.textContent||'';
+      const date=pubDate?new Date(pubDate).toLocaleDateString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+
+      // HTML 태그 제거 + 이미지 추출
+      const tmp=document.createElement('div');
+      tmp.innerHTML=desc;
+      const img=tmp.querySelector('img');
+      const imgHtml=img?`<img class="tg-post-img" src="${img.src}" loading="lazy">`:'';
+      const text=tmp.textContent.trim();
+      const displayText=text.length>500?text.slice(0,500)+'…':text;
+
+      return `<div class="tg-post">
+        <div class="tg-post-meta">
+          <span class="tg-post-date">📅 ${date}</span>
+          ${link?`<a class="tg-post-link" href="${link}" target="_blank">텔레그램에서 보기 →</a>`:''}
+        </div>
+        <div class="tg-post-text">${displayText}</div>
+        ${imgHtml}
+      </div>`;
+    }).join('');
+
+  }catch(e){
+    // RSS 실패시 Bot API 폴백
+    try{
+      const r2=await fetch('/api/telegram?limit=10');
+      if(!r2.ok)throw new Error(r2.status);
+      const data=await r2.json();
+      const posts=data.posts||[];
+      if(!posts.length)throw new Error('empty');
+
+      el.innerHTML=posts.map(p=>{
+        const date=new Date(p.date*1000).toLocaleDateString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+        const text=(p.text||p.caption||'').slice(0,500);
+        const msgUrl=`https://t.me/assets_x2/${p.message_id}`;
+        return `<div class="tg-post">
+          <div class="tg-post-meta">
+            <span class="tg-post-date">📅 ${date}</span>
+            <a class="tg-post-link" href="${msgUrl}" target="_blank">텔레그램에서 보기 →</a>
+          </div>
+          <div class="tg-post-text">${text}</div>
+        </div>`;
+      }).join('');
+    }catch(e2){
+      el.innerHTML=`<div class="tg-empty">채널 글을 불러오지 못했어요.<br><a href="https://t.me/assets_x2" target="_blank" style="color:var(--c1)">텔레그램에서 직접 보기 →</a></div>`;
+    }
+  }
+}
+
 // ── 초기화 ──
 document.addEventListener('DOMContentLoaded',()=>{
   loadHero();
@@ -1282,6 +1380,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-stlfsi',()=>renderStlfsi(365*2));
   observeLazy('w-sofr',  ()=>renderSofr(365));
   observeLazy('w-iorb',  ()=>renderIorb(365));
+  observeLazy('tg-posts', ()=>loadTelegram());
 });
 </script>
 </body>
