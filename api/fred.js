@@ -1,13 +1,12 @@
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { series, days } = req.query;
   if (!series) return res.status(400).json({ error: 'series 필요' });
 
-  const API_KEY = process.env.FRED_API_KEY;
-  if (!API_KEY) return res.status(500).json({ error: 'FRED_API_KEY 없음' });
+  const API_KEY = process.env.FRED_API_KEY || '38a4c9938e82be4200fd122b8fe645a1';
 
   const start = new Date();
   start.setDate(start.getDate() - (parseInt(days) || 365));
