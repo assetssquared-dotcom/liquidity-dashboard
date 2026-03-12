@@ -1052,6 +1052,53 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   lazyChart('w-sofr',   ()=>renderSofr(365));
   lazyChart('w-iorb',   ()=>renderIorb(365));
 });
+
+// ── 공포탐욕지수 ──────────────────────────────────
+function fgColor(v){ if(v<=24)return '#ef4444'; if(v<=44)return '#f87171'; if(v<=55)return '#94a3b8'; if(v<=74)return '#34d399'; return '#10b981'; }
+function fgTextKo(v){ if(v<=24)return '극단적 공포'; if(v<=44)return '공포'; if(v<=55)return '중립'; if(v<=74)return '탐욕'; return '극단적 탐욕'; }
+
+function drawGauge(score){
+  const canvas=document.getElementById('fg-gauge-canvas'); if(!canvas)return;
+  const ctx=canvas.getContext('2d'),cx=110,cy=105,r=90;
+  ctx.clearRect(0,0,220,120);
+  [{from:Math.PI,to:Math.PI*1.2,c:'#7f1d1d'},{from:Math.PI*1.2,to:Math.PI*1.4,c:'#ef4444'},{from:Math.PI*1.4,to:Math.PI*1.6,c:'#64748b'},{from:Math.PI*1.6,to:Math.PI*1.8,c:'#34d399'},{from:Math.PI*1.8,to:Math.PI*2,c:'#10b981'}].forEach(s=>{
+    ctx.beginPath();ctx.arc(cx,cy,r,s.from,s.to);ctx.arc(cx,cy,r-18,s.to,s.from,true);ctx.fillStyle=s.c+'55';ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,r,s.from,s.to);ctx.strokeStyle=s.c;ctx.lineWidth=4;ctx.stroke();
+  });
+  const a=Math.PI+(score/100)*Math.PI;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-9)*Math.cos(a),cy+(r-9)*Math.sin(a));
+  ctx.strokeStyle=fgColor(score);ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=fgColor(score);ctx.fill();
+  ctx.fillStyle='#475569';ctx.font='9px IBM Plex Mono,monospace';ctx.textAlign='center';
+  ctx.fillText('공포',cx-65,cy+14);ctx.fillText('탐욕',cx+65,cy+14);
+}
+
+async function loadFng(){
+  try{
+    const r=await fetch('/api/fng'); if(!r.ok) throw new Error(r.status);
+    const j=await r.json(); if(j.error) throw new Error(j.error);
+    const v=j.current.score, len=j.vals.length;
+    const w1=j.vals[Math.max(0,len-8)]??v, m1=j.vals[Math.max(0,len-31)]??v, y1=j.vals[Math.max(0,len-366)]??v;
+    document.getElementById('fg-score').textContent=v;
+    document.getElementById('fg-score').style.color=fgColor(v);
+    document.getElementById('fg-label').textContent=fgTextKo(v)+' · '+j.current.rating;
+    document.getElementById('fg-label').style.color=fgColor(v);
+    document.getElementById('fg-1w').textContent=w1; document.getElementById('fg-1w').style.color=fgColor(w1);
+    document.getElementById('fg-1m').textContent=m1; document.getElementById('fg-1m').style.color=fgColor(m1);
+    document.getElementById('fg-1y').textContent=y1; document.getElementById('fg-1y').style.color=fgColor(y1);
+    drawGauge(v);
+    const {dates:td,vals:tv}=thin(j.dates,j.vals,150);
+    const wrap=document.getElementById('w-fng');
+    wrap.innerHTML='<canvas id="c-fng"></canvas>';
+    const ctx2=document.getElementById('c-fng').getContext('2d');
+    CHARTS['fng']=new Chart(ctx2,{type:'line',data:{labels:td,datasets:[{label:'공포탐욕지수',data:tv,borderColor:'rgba(255,255,255,0.3)',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,220);g.addColorStop(0,'rgba(239,68,68,0.25)');g.addColorStop(0.5,'rgba(148,163,184,0.08)');g.addColorStop(1,'rgba(16,185,129,0.25)');return g;},tension:.3,segment:{borderColor:c=>fgColor(c.p1.parsed.y)}}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1424',borderColor:'#1a2840',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e2e8f0',padding:10}},scales:{x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},min:0,max:100,ticks:{color:'#475569',callback:v=>{if(v===0)return '공포';if(v===50)return '중립';if(v===100)return '탐욕';return v;}}}}}});
+  }catch(e){
+    console.warn('FNG 오류:',e.message);
+    const w=document.getElementById('w-fng'); if(w) w.innerHTML='<div class="lw" style="opacity:.3"><div class="sp"></div></div>';
+  }
+}
+
+
 </script>
 </body>
 </html>
