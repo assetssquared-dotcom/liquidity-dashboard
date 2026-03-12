@@ -249,6 +249,33 @@ header {
 .cta-threads{} .cta-telegram{} .cta-naver{}
 
 /* ── FOOTER ── */
+
+/* ── 공포탐욕지수 ── */
+.fg-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; }
+.fg-gauge-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 1.25rem; display: flex; flex-direction: column; align-items: center; gap: .5rem;
+}
+.fg-now-lbl { font-size: .62rem; font-family: var(--mono); color: var(--txt3); text-transform: uppercase; letter-spacing: .06em; }
+.fg-score { font-size: 3rem; font-weight: 600; font-family: var(--mono); line-height: 1; letter-spacing: -.03em; }
+.fg-label { font-size: .78rem; font-weight: 600; letter-spacing: .02em; }
+.fg-gauge { width: 220px; }
+.fg-prev { display: flex; gap: 1rem; margin-top: .5rem; }
+.fg-prev-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.fg-prev-item span { font-size: .6rem; color: var(--txt3); font-family: var(--mono); }
+.fg-prev-item strong { font-size: .82rem; font-family: var(--mono); color: var(--txt2); }
+.fg-chart-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+}
+.fg-chart-hdr { padding: 1rem 1.25rem .75rem; border-bottom: 1px solid var(--line); }
+#w-fng { padding: 1rem 1.25rem; }
+#w-fng canvas { width: 100% !important; height: 220px !important; }
+.fg-fear { color: #f87171; }
+.fg-efear { color: #ef4444; }
+.fg-neutral { color: #94a3b8; }
+.fg-greed { color: #34d399; }
+.fg-egreed { color: #10b981; }
+@media(max-width:700px){ .fg-wrap { grid-template-columns: 1fr; } }
 footer {
   border-top: 1px solid var(--line); padding: 1.5rem;
   text-align: center; font-size: .62rem; color: var(--txt3); font-family: var(--mono);
@@ -514,6 +541,72 @@ footer a:hover { color: var(--txt); }
     <div class="ex ex1">
       <div class="ex-t">지표 해설</div>
       <p>주간 MMF 자금 흐름은 <strong>시장 심리의 단기 변화</strong>를 빠르게 보여줍니다. <strong>대규모 유입(+)</strong> → 위험 회피, 안전자산 선호. <strong>대규모 유출(-)</strong> → 투자자들이 주식·채권 등 위험자산으로 이동 중인 신호.</p>
+    </div>
+  </div>
+
+
+  <!-- 공포탐욕지수 -->
+  <div class="section">
+    <div class="sh"><div class="sn n2">FG</div><div class="st">공포 & 탐욕 지수</div><div class="stag">CNN FEAR & GREED</div></div>
+
+    <!-- 현재 지수 게이지 -->
+    <div class="fg-wrap">
+      <div class="fg-gauge-card">
+        <div class="fg-now-lbl">현재</div>
+        <div class="fg-score" id="fg-score">—</div>
+        <div class="fg-label" id="fg-label">로딩 중...</div>
+        <div class="fg-gauge">
+          <canvas id="fg-gauge-canvas" width="220" height="120"></canvas>
+        </div>
+        <div class="fg-prev">
+          <div class="fg-prev-item"><span>1주 전</span><strong id="fg-1w">—</strong></div>
+          <div class="fg-prev-item"><span>1개월 전</span><strong id="fg-1m">—</strong></div>
+          <div class="fg-prev-item"><span>1년 전</span><strong id="fg-1y">—</strong></div>
+        </div>
+      </div>
+      <div class="fg-chart-card">
+        <div class="fg-chart-hdr">
+          <div class="cc-t">공포탐욕지수 추이</div>
+          <div class="cc-s">0 = 극단적 공포 · 100 = 극단적 탐욕</div>
+        </div>
+        <div id="w-fng"><div class="lw"><div class="sp"></div></div></div>
+      </div>
+    </div>
+
+    <div class="ex ex2">
+      <div class="ex-t">지표 해설</div>
+      <p>CNN의 공포탐욕지수는 7개 시장 지표(모멘텀, 52주 고저, 풋/콜 비율, VIX, 정크본드 수요, 안전자산 수요 등)를 종합해 투자 심리를 0~100으로 표현합니다. <strong>0~24 극단적 공포</strong>는 역발상 매수 기회, <strong>75~100 극단적 탐욕</strong>은 과열 경고 신호로 활용됩니다.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">0–24</div><div class="kt"><strong>극단적 공포 (Extreme Fear)</strong>시장 과매도 → 역발상 매수 기회로 활용</div></div>
+        <div class="kpi"><div class="ki">25–44</div><div class="kt"><strong>공포 (Fear)</strong>투자자 불안 우세 → 신중한 접근 필요</div></div>
+        <div class="kpi"><div class="ki">56–74</div><div class="kt"><strong>탐욕 (Greed)</strong>위험 선호 심리 강화 → 포지션 점검</div></div>
+        <div class="kpi"><div class="ki">75+</div><div class="kt"><strong>극단적 탐욕 (Extreme Greed)</strong>시장 과열 → 조정 가능성 경고</div></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- VIX 지수 -->
+  <div class="section">
+    <div class="sh"><div class="sn n4">VIX</div><div class="st">VIX 변동성 지수</div><div class="stag">VIXCLS · CBOE</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">VIX 공포지수 추이</div><div class="cc-s">단위: 포인트 · 일간 · 20 이상 = 경계</div></div>
+        <div class="pbs">
+          <button class="pb on" onclick="load('vix',365,this)">1Y</button>
+          <button class="pb" onclick="load('vix',365*3,this)">3Y</button>
+          <button class="pb" onclick="load('vix',365*5,this)">5Y</button>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-vix"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex4">
+      <div class="ex-t">지표 해설</div>
+      <p>VIX는 S&P 500 옵션 가격에서 도출한 <strong>향후 30일 시장 변동성 예측치</strong>입니다. 흔히 '공포지수'로 불리며, 시장 불안이 커질수록 급등합니다. <strong>20 미만</strong>은 안정적 시장, <strong>30 이상</strong>은 높은 불안 상태, <strong>40+</strong>는 금융위기 수준입니다.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">&lt;20</div><div class="kt"><strong>안정 구간</strong>시장 변동성 낮음 → 투자자 심리 안정, 위험자산 선호</div></div>
+        <div class="kpi"><div class="ki">&gt;30</div><div class="kt"><strong>경계 구간</strong>불안 심화 → 헤지 수요 급증, 시장 급락 가능성</div></div>
+      </div>
     </div>
   </div>
 
@@ -894,6 +987,225 @@ async function renderMmfWeekly(){
 
 
 
+
+// ── 공포탐욕지수 (Alternative.me API) ─────────────────
+function fgColor(v){
+  if(v<=24) return '#ef4444';
+  if(v<=44) return '#f87171';
+  if(v<=55) return '#94a3b8';
+  if(v<=74) return '#34d399';
+  return '#10b981';
+}
+function fgText(v){
+  if(v<=24) return 'Extreme Fear';
+  if(v<=44) return 'Fear';
+  if(v<=55) return 'Neutral';
+  if(v<=74) return 'Greed';
+  return 'Extreme Greed';
+}
+function fgTextKo(v){
+  if(v<=24) return '극단적 공포';
+  if(v<=44) return '공포';
+  if(v<=55) return '중립';
+  if(v<=74) return '탐욕';
+  return '극단적 탐욕';
+}
+
+function drawGauge(score){
+  const canvas = document.getElementById('fg-gauge-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const w=220, h=120, cx=110, cy=105, r=90;
+  ctx.clearRect(0,0,w,h);
+  // 배경 반원
+  const segments = [
+    {from:Math.PI, to:Math.PI*1.2, color:'#7f1d1d'},
+    {from:Math.PI*1.2, to:Math.PI*1.4, color:'#ef4444'},
+    {from:Math.PI*1.4, to:Math.PI*1.6, color:'#64748b'},
+    {from:Math.PI*1.6, to:Math.PI*1.8, color:'#34d399'},
+    {from:Math.PI*1.8, to:Math.PI*2, color:'#10b981'},
+  ];
+  segments.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,s.from,s.to);
+    ctx.arc(cx,cy,r-18,s.to,s.from,true);
+    ctx.fillStyle=s.color+'55';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,s.from,s.to);
+    ctx.strokeStyle=s.color;
+    ctx.lineWidth=4;
+    ctx.stroke();
+  });
+  // 바늘
+  const angle = Math.PI + (score/100)*Math.PI;
+  const nx = cx + (r-9)*Math.cos(angle);
+  const ny = cy + (r-9)*Math.sin(angle);
+  ctx.beginPath();
+  ctx.moveTo(cx,cy);
+  ctx.lineTo(nx,ny);
+  ctx.strokeStyle=fgColor(score);
+  ctx.lineWidth=3;
+  ctx.lineCap='round';
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx,cy,5,0,Math.PI*2);
+  ctx.fillStyle=fgColor(score);
+  ctx.fill();
+  // 레이블
+  ctx.fillStyle='#475569'; ctx.font='9px IBM Plex Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('공포',cx-65,cy+14);
+  ctx.fillText('탐욕',cx+65,cy+14);
+}
+
+async function loadFng(){
+  try{
+    // limit=400으로 약 1년치 데이터
+    const r = await fetch('https://api.alternative.me/fng/?limit=400&format=json');
+    const j = await r.json();
+    const data = j.data || [];
+    if(!data.length) throw new Error('데이터 없음');
+
+    const current = parseInt(data[0].value);
+    const w1 = parseInt(data[Math.min(7,data.length-1)].value);
+    const m1 = parseInt(data[Math.min(30,data.length-1)].value);
+    const y1 = parseInt(data[Math.min(365,data.length-1)].value);
+
+    // 현재값 표시
+    document.getElementById('fg-score').textContent = current;
+    document.getElementById('fg-score').style.color = fgColor(current);
+    document.getElementById('fg-label').textContent = fgTextKo(current) + ' · ' + fgText(current);
+    document.getElementById('fg-label').style.color = fgColor(current);
+    document.getElementById('fg-1w').textContent = w1;
+    document.getElementById('fg-1w').style.color = fgColor(w1);
+    document.getElementById('fg-1m').textContent = m1;
+    document.getElementById('fg-1m').style.color = fgColor(m1);
+    document.getElementById('fg-1y').textContent = y1;
+    document.getElementById('fg-1y').style.color = fgColor(y1);
+
+    drawGauge(current);
+
+    // 차트: 날짜 오름차순으로 뒤집기
+    const reversed = [...data].reverse();
+    const dates = reversed.map(d=>{
+      const ts = parseInt(d.timestamp)*1000;
+      return new Date(ts).toISOString().slice(0,10);
+    });
+    const vals = reversed.map(d=>parseInt(d.value));
+    const {dates:td,vals:tv} = thin(dates,vals,150);
+
+    const wrap = document.getElementById('w-fng');
+    wrap.innerHTML = '<canvas id="c-fng"></canvas>';
+    const ctx2 = document.getElementById('c-fng').getContext('2d');
+    CHARTS['fng'] = new Chart(ctx2,{
+      type:'line',
+      data:{labels:td,datasets:[{
+        label:'공포탐욕지수',
+        data:tv,
+        borderColor:'rgba(255,255,255,0.3)',
+        borderWidth:1.5,
+        pointRadius:0,
+        fill:true,
+        backgroundColor:(ctx)=>{
+          const g=ctx.chart.ctx.createLinearGradient(0,0,0,220);
+          g.addColorStop(0,'rgba(239,68,68,0.3)');
+          g.addColorStop(0.5,'rgba(148,163,184,0.1)');
+          g.addColorStop(1,'rgba(16,185,129,0.3)');
+          return g;
+        },
+        tension:.3,
+        segment:{
+          borderColor:ctx=>fgColor(ctx.p1.parsed.y),
+        }
+      }]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{display:false},
+          tooltip:{backgroundColor:'#0d1424',borderColor:'#1a2840',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e2e8f0',padding:10}
+        },
+        scales:{
+          x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
+          y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'},min:0,max:100,
+             ticks:{callback:v=>{
+               if(v===0) return '공포';
+               if(v===50) return '중립';
+               if(v===100) return '탐욕';
+               return v;
+             },color:'#475569'}}
+        }
+      }
+    });
+  }catch(e){
+    document.getElementById('w-fng').innerHTML=`<div class="em">⚠ ${e.message}</div>`;
+  }
+}
+
+
+// VIX 변동성 지수 (VIXCLS)
+async function renderVix(days){
+  try{
+    const d = await apiFetch('VIXCLS', days);
+    const {dates:td,vals:tv} = thin(d.dates, d.vals, 150);
+    const cv=cvs('w-vix','c-vix'); kill('vix');
+    const ctx=cv.getContext('2d');
+    // 20 이상 경계선 강조
+    CHARTS['vix']=new Chart(ctx,{
+      type:'line',
+      data:{labels:td,datasets:[
+        {
+          label:'VIX',
+          data:tv,
+          borderWidth:1.8,
+          pointRadius:0,
+          fill:true,
+          tension:.3,
+          spanGaps:true,
+          borderColor: ctx => {
+            const v = ctx.raw;
+            if(v>=40) return '#ef4444';
+            if(v>=30) return '#f97316';
+            if(v>=20) return '#fbbf24';
+            return '#34d399';
+          },
+          segment:{
+            borderColor: ctx => {
+              const v = ctx.p1.parsed.y;
+              if(v>=40) return '#ef4444';
+              if(v>=30) return '#f97316';
+              if(v>=20) return '#fbbf24';
+              return '#34d399';
+            },
+            backgroundColor: ctx => {
+              const v = ctx.p1.parsed.y;
+              if(v>=40) return 'rgba(239,68,68,0.15)';
+              if(v>=30) return 'rgba(249,115,22,0.12)';
+              if(v>=20) return 'rgba(251,191,36,0.08)';
+              return 'rgba(52,211,153,0.08)';
+            },
+          },
+          backgroundColor:'rgba(52,211,153,0.08)',
+        }
+      ]},
+      options:{
+        ...mkOpts(),
+        plugins:{
+          ...mkOpts().plugins,
+        },
+        scales:{
+          x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
+          y:{
+            grid:{color:GRID,drawBorder:false},
+            ticks:{color:'#475569'},
+            afterDataLimits(scale){ scale.min=0; }
+          }
+        }
+      }
+    });
+  }catch(e){showErr('w-vix',e.message);}
+}
+
 // 뷰포트 진입 시 로드 (lazy loading)
 function observeLazy(wrapId, fn) {
   const el = document.getElementById(wrapId);
@@ -977,7 +1289,7 @@ async function renderStlfsi(days){
 
 function load(key,days,btn){
   if(btn){btn.closest('.pbs').querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga,mmf:renderMmf,mmfrrp:renderMmfRrp,walcl:renderWalcl,t10y2y:renderT10y2y,hys:renderHys,stlfsi:renderStlfsi})[key](days);
+  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga,mmf:renderMmf,mmfrrp:renderMmfRrp,walcl:renderWalcl,t10y2y:renderT10y2y,hys:renderHys,stlfsi:renderStlfsi,vix:renderVix})[key](days);
 }
 
 function toast(msg,cls=''){
@@ -999,6 +1311,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-mmf',   ()=>renderMmf(365*2));
   observeLazy('w-mmfrrp',()=>renderMmfRrp(365*2));
   observeLazy('w-mmfwk', ()=>renderMmfWeekly());
+  loadFng();
+  observeLazy('w-vix',   ()=>renderVix(365));
   observeLazy('w-walcl', ()=>renderWalcl(365*2));
   observeLazy('w-t10y2y',()=>renderT10y2y(365*2));
   observeLazy('w-hys',   ()=>renderHys(365*2));
