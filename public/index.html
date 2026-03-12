@@ -1060,21 +1060,25 @@ function drawGauge(score){
 
 async function loadFng(){
   try{
-    // limit=400으로 약 1년치 데이터
-    const r = await fetch('https://api.alternative.me/fng/?limit=400&format=json');
+    // Vercel 서버리스 함수 경유 → CNN 공식 데이터
+    const r = await fetch('/api/fng');
+    if(!r.ok) throw new Error(`${r.status}`);
     const j = await r.json();
-    const data = j.data || [];
-    if(!data.length) throw new Error('데이터 없음');
+    if(j.error) throw new Error(j.error);
 
-    const current = parseInt(data[0].value);
-    const w1 = parseInt(data[Math.min(7,data.length-1)].value);
-    const m1 = parseInt(data[Math.min(30,data.length-1)].value);
-    const y1 = parseInt(data[Math.min(365,data.length-1)].value);
+    const current = j.current.score;
+    const rating  = j.current.rating;
+
+    // 이전값: 히스토리 배열에서 추출
+    const len = j.vals.length;
+    const w1 = j.vals[Math.max(0, len-8)]  ?? current;
+    const m1 = j.vals[Math.max(0, len-31)] ?? current;
+    const y1 = j.vals[Math.max(0, len-366)] ?? current;
 
     // 현재값 표시
     document.getElementById('fg-score').textContent = current;
     document.getElementById('fg-score').style.color = fgColor(current);
-    document.getElementById('fg-label').textContent = fgTextKo(current) + ' · ' + fgText(current);
+    document.getElementById('fg-label').textContent = fgTextKo(current) + ' · ' + rating;
     document.getElementById('fg-label').style.color = fgColor(current);
     document.getElementById('fg-1w').textContent = w1;
     document.getElementById('fg-1w').style.color = fgColor(w1);
@@ -1085,21 +1089,14 @@ async function loadFng(){
 
     drawGauge(current);
 
-    // 차트: 날짜 오름차순으로 뒤집기
-    const reversed = [...data].reverse();
-    const dates = reversed.map(d=>{
-      const ts = parseInt(d.timestamp)*1000;
-      return new Date(ts).toISOString().slice(0,10);
-    });
-    const vals = reversed.map(d=>parseInt(d.value));
-    const {dates:td,vals:tv} = thin(dates,vals,150);
-
+    // 차트
+    const {dates:td, vals:tv} = thin(j.dates, j.vals, 150);
     const wrap = document.getElementById('w-fng');
     wrap.innerHTML = '<canvas id="c-fng"></canvas>';
     const ctx2 = document.getElementById('c-fng').getContext('2d');
-    CHARTS['fng'] = new Chart(ctx2,{
+    CHARTS['fng'] = new Chart(ctx2, {
       type:'line',
-      data:{labels:td,datasets:[{
+      data:{labels:td, datasets:[{
         label:'공포탐욕지수',
         data:tv,
         borderColor:'rgba(255,255,255,0.3)',
@@ -1108,15 +1105,13 @@ async function loadFng(){
         fill:true,
         backgroundColor:(ctx)=>{
           const g=ctx.chart.ctx.createLinearGradient(0,0,0,220);
-          g.addColorStop(0,'rgba(239,68,68,0.3)');
-          g.addColorStop(0.5,'rgba(148,163,184,0.1)');
-          g.addColorStop(1,'rgba(16,185,129,0.3)');
+          g.addColorStop(0,'rgba(239,68,68,0.25)');
+          g.addColorStop(0.5,'rgba(148,163,184,0.08)');
+          g.addColorStop(1,'rgba(16,185,129,0.25)');
           return g;
         },
         tension:.3,
-        segment:{
-          borderColor:ctx=>fgColor(ctx.p1.parsed.y),
-        }
+        segment:{ borderColor:ctx=>fgColor(ctx.p1.parsed.y) }
       }]},
       options:{
         responsive:true, maintainAspectRatio:false,
@@ -1127,18 +1122,48 @@ async function loadFng(){
         },
         scales:{
           x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
-          y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'},min:0,max:100,
-             ticks:{callback:v=>{
-               if(v===0) return '공포';
-               if(v===50) return '중립';
-               if(v===100) return '탐욕';
-               return v;
-             },color:'#475569'}}
+          y:{
+            grid:{color:GRID,drawBorder:false},
+            min:0, max:100,
+            ticks:{
+              color:'#475569',
+              callback:v=>{ if(v===0)return '공포'; if(v===50)return '중립'; if(v===100)return '탐욕'; return v; }
+            }
+          }
         }
       }
     });
-  }catch(e){
-    document.getElementById('w-fng').innerHTML=`<div class="em">⚠ ${e.message}</div>`;
+
+  } catch(e) {
+    // CNN API 실패 시 alternative.me 폴백
+    try {
+      const r2 = await fetch('https://api.alternative.me/fng/?limit=400&format=json');
+      const j2 = await r2.json();
+      const data = j2.data || [];
+      if(!data.length) throw new Error('데이터 없음');
+      const cur = parseInt(data[0].value);
+      document.getElementById('fg-score').textContent = cur;
+      document.getElementById('fg-score').style.color = fgColor(cur);
+      document.getElementById('fg-label').textContent = fgTextKo(cur) + ' · ' + fgText(cur);
+      document.getElementById('fg-label').style.color = fgColor(cur);
+      const w1=parseInt(data[Math.min(7,data.length-1)].value);
+      const m1=parseInt(data[Math.min(30,data.length-1)].value);
+      const y1=parseInt(data[Math.min(365,data.length-1)].value);
+      document.getElementById('fg-1w').textContent=w1; document.getElementById('fg-1w').style.color=fgColor(w1);
+      document.getElementById('fg-1m').textContent=m1; document.getElementById('fg-1m').style.color=fgColor(m1);
+      document.getElementById('fg-1y').textContent=y1; document.getElementById('fg-1y').style.color=fgColor(y1);
+      drawGauge(cur);
+      const rev=[...data].reverse();
+      const dates=rev.map(d=>new Date(parseInt(d.timestamp)*1000).toISOString().slice(0,10));
+      const vals=rev.map(d=>parseInt(d.value));
+      const {dates:td,vals:tv}=thin(dates,vals,150);
+      const wrap=document.getElementById('w-fng');
+      wrap.innerHTML='<canvas id="c-fng"></canvas>';
+      const ctx2=document.getElementById('c-fng').getContext('2d');
+      CHARTS['fng']=new Chart(ctx2,{type:'line',data:{labels:td,datasets:[{label:'공포탐욕지수',data:tv,borderColor:'rgba(255,255,255,0.3)',borderWidth:1.5,pointRadius:0,fill:false,tension:.3,segment:{borderColor:ctx=>fgColor(ctx.p1.parsed.y)}}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d1424',borderColor:'#1a2840',borderWidth:1,titleColor:'#94a3b8',bodyColor:'#e2e8f0',padding:10}},scales:{x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},min:0,max:100,ticks:{color:'#475569',callback:v=>{if(v===0)return '공포';if(v===50)return '중립';if(v===100)return '탐욕';return v;}}}}}});
+    } catch(e2) {
+      document.getElementById('w-fng').innerHTML='<div class="em">데이터를 불러올 수 없습니다</div>';
+    }
   }
 }
 
