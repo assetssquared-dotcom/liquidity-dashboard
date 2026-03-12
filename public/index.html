@@ -710,16 +710,16 @@ async function apiFetch(series,days){
   const startStr=start.toISOString().slice(0,10);
   const fredUrl=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_KEY}&file_type=json&observation_start=${startStr}&sort_order=asc`;
 
-  // 방법1: corsproxy.io
-  // 방법2: /api/fred 서버 함수
-  // 방법3: allorigins proxy
+  // 방법1: /api/fred 서버 함수 (Vercel 서버리스 - 가장 안정적)
+  // 방법2: allorigins proxy
+  // 방법3: corsproxy.io (fallback)
   const proxies=[
-    ()=>fetch(`https://corsproxy.io/?url=${encodeURIComponent(fredUrl)}`),
     ()=>fetch(`/api/fred?series=${series}&days=${days}`),
     ()=>fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(fredUrl)}`).then(async r=>{
-      const w=await r.json(); 
+      const w=await r.json();
       return new Response(w.contents,{headers:{'Content-Type':'application/json'}});
     }),
+    ()=>fetch(`https://corsproxy.io/?url=${encodeURIComponent(fredUrl)}`),
   ];
 
   let lastErr;
