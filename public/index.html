@@ -127,9 +127,10 @@ header {
   border-bottom: 1px solid var(--line);
 }
 .sn {
-  width: 22px; height: 22px; border-radius: 4px;
-  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
-  font-size: .68rem; font-family: var(--mono); color: var(--txt3); flex-shrink: 0;
+  width: 20px; height: 20px; border-radius: 3px;
+  background: var(--card2); border: 1px solid #333;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem; font-family: var(--mono); color: #888; flex-shrink: 0;
 }
 .n1{} .n2{} .n3{} .n4{}
 .st { font-size: .9rem; font-weight: 600; letter-spacing: -.01em; }
@@ -292,7 +293,13 @@ footer a:hover { color: var(--txt); }
 <header>
   <div class="hdr">
     <div class="brand">
-      <div class="brand-icon"><img src="assetx2.png" alt="자산제곱" style="width:100%;height:100%;object-fit:cover;"></div>
+      <div class="brand-icon">
+  <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+    <rect width="60" height="60" fill="#000"/>
+    <path d="M14 46 L30 12 L46 46 M20 35 L40 35" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="38" y="22" font-family="Georgia,serif" font-size="14" font-weight="700" fill="#fff">2</text>
+  </svg>
+</div>
       <div>
         <div class="brand-name">자산제곱 유동성 대시보드</div>
         <div class="brand-sub">LIQUIDITY MONITOR · FRED REAL-TIME DATA</div>
@@ -331,7 +338,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ① SOFR/EFFR -->
   <div class="section">
-    <div class="sh"><div class="sn n1">①</div><div class="st">SOFR / EFFR 스프레드</div><div class="stag">SECURED vs UNSECURED</div></div>
+    <div class="sh"><div class="sn n1">1</div><div class="st">SOFR / EFFR 스프레드</div><div class="stag">SECURED vs UNSECURED</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">SOFR · EFFR 금리 및 스프레드 추이</div><div class="cc-s">단위: % · 일간</div></div>
@@ -354,7 +361,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ② SOFR/IORB -->
   <div class="section">
-    <div class="sh"><div class="sn n2">②</div><div class="st">SOFR / IORB 스프레드</div><div class="stag">MARKET RATE vs FED RATE</div></div>
+    <div class="sh"><div class="sn n2">2</div><div class="st">SOFR / IORB 스프레드</div><div class="stag">MARKET RATE vs FED RATE</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">SOFR · IORB 금리 및 스프레드 추이</div><div class="cc-s">단위: % · 일간</div></div>
@@ -378,7 +385,7 @@ footer a:hover { color: var(--txt); }
   <!-- ③④ -->
   <div class="g2">
     <div>
-      <div class="sh"><div class="sn n3">③</div><div class="st">연준 지급준비금 잔액</div><div class="stag">WRESBAL</div></div>
+      <div class="sh"><div class="sn n3">3</div><div class="st">연준 지급준비금 잔액</div><div class="stag">WRESBAL</div></div>
       <div class="cc">
         <div class="cc-h"><div><div class="cc-t">총 지급준비금 잔액</div><div class="cc-s">단위: $B · 주간</div></div><div class="pbs"><button class="pb on" onclick="load('res',365*2,this)">2Y</button><button class="pb" onclick="load('res',365*5,this)">5Y</button><button class="pb" onclick="load('res',365*10,this)">10Y</button></div></div>
         <div class="cc-b"><div id="w-res"><div class="lw"><div class="sp"></div></div></div></div>
@@ -386,7 +393,7 @@ footer a:hover { color: var(--txt); }
       <div class="ex ex3" style="margin-top:.85rem"><div class="ex-t">지표 해설</div><p><strong>QE(양적완화)</strong> → 잔액 증가, <strong>QT(양적긴축)</strong> → 잔액 감소. 잔액이 낮아지면 금융시장 유동성 부족 위험이 증가합니다.</p></div>
     </div>
     <div>
-      <div class="sh"><div class="sn n4">④</div><div class="st">연준 역레포(RRP) 잔액</div><div class="stag">RRPONTSYD</div></div>
+      <div class="sh"><div class="sn n4">4</div><div class="st">연준 역레포(RRP) 잔액</div><div class="stag">RRPONTSYD</div></div>
       <div class="cc">
         <div class="cc-h"><div><div class="cc-t">역레포 잔액 추이</div><div class="cc-s">단위: $B · 일간</div></div><div class="pbs"><button class="pb on" onclick="load('rrp',365*2,this)">2Y</button><button class="pb" onclick="load('rrp',365*5,this)">5Y</button><button class="pb" onclick="load('rrp',365*10,this)">10Y</button></div></div>
         <div class="cc-b"><div id="w-rrp"><div class="lw"><div class="sp"></div></div></div></div>
@@ -397,7 +404,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ⑤ TGA -->
   <div class="section">
-    <div class="sh"><div class="sn n1">⑤</div><div class="st">미국 재무부 TGA 잔액</div><div class="stag">WTREGEN</div></div>
+    <div class="sh"><div class="sn n1">5</div><div class="st">미국 재무부 TGA 잔액</div><div class="stag">WTREGEN</div></div>
     <div class="cc">
       <div class="cc-h"><div><div class="cc-t">재무부 일반계정(TGA) 잔액</div><div class="cc-s">단위: $B · 주간</div></div><div class="pbs"><button class="pb on" onclick="load('tga',365*2,this)">2Y</button><button class="pb" onclick="load('tga',365*5,this)">5Y</button><button class="pb" onclick="load('tga',365*10,this)">10Y</button></div></div>
       <div class="cc-b"><div id="w-tga"><div class="lw"><div class="sp"></div></div></div></div>
@@ -414,7 +421,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ⑥ 주간 변동폭 -->
   <div class="section">
-    <div class="sh"><div class="sn n2">⑥</div><div class="st">지급준비금 &amp; TGA — 전주 대비 증감폭</div><div class="stag">WEEKLY CHANGE</div></div>
+    <div class="sh"><div class="sn n2">6</div><div class="st">지급준비금 &amp; TGA — 전주 대비 증감폭</div><div class="stag">WEEKLY CHANGE</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">주간 변동폭 (지급준비금 vs TGA)</div><div class="cc-s">단위: $B</div></div>
@@ -427,7 +434,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ⑦ MMF 총 잔액 -->
   <div class="section">
-    <div class="sh"><div class="sn n3">⑦</div><div class="st">MMF(머니마켓펀드) 총 잔액</div><div class="stag">WRMFSL · WRMFNS</div></div>
+    <div class="sh"><div class="sn n3">7</div><div class="st">MMF(머니마켓펀드) 총 잔액</div><div class="stag">WRMFSL · WRMFNS</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">MMF 총 잔액 추이</div><div class="cc-s">단위: $B · 주간</div></div>
@@ -458,7 +465,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ⑧ MMF vs 역레포 비교 -->
   <div class="section">
-    <div class="sh"><div class="sn n4">⑧</div><div class="st">MMF vs 역레포(RRP) 비교</div><div class="stag">CORRELATION</div></div>
+    <div class="sh"><div class="sn n4">8</div><div class="st">MMF vs 역레포(RRP) 비교</div><div class="stag">CORRELATION</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">MMF 잔액 vs 역레포 잔액 동시 비교</div><div class="cc-s">단위: $B · MMF는 주간, RRP는 일간</div></div>
@@ -483,7 +490,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ⑨ MMF 전주 대비 증감폭 -->
   <div class="section">
-    <div class="sh"><div class="sn n1">⑨</div><div class="st">MMF 전주 대비 증감폭</div><div class="stag">WEEKLY FLOW</div></div>
+    <div class="sh"><div class="sn n1">9</div><div class="st">MMF 전주 대비 증감폭</div><div class="stag">WEEKLY FLOW</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">MMF 주간 자금 유출입</div><div class="cc-s">전주 대비 증감 · 단위: $B</div></div>
