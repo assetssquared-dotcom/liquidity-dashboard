@@ -28,24 +28,18 @@ module.exports = async function handler(req, res) {
     const obs = (data.observations || []).filter(o => o.value !== '.' && o.value !== '');
     let vals = obs.map(o => parseFloat(o.value));
 
-    // MMF 시리즈는 단위가 $B이지만 실제로는 수천 단위로 나옴
-    // 값이 소수점 이하(0~2 사이)면 $T 단위 → $B 변환 (×1000)
-    // 값이 1000 이상이면 이미 $B
-    // 값이 1~100 사이면 $T 단위 → $B 변환
-    if (vals.length > 0) {
-      const sample = vals[vals.length - 1];
-      if (sample > 0 && sample < 50) {
-        // $T 단위 → $B로 변환
-        vals = vals.map(v => +(v * 1000).toFixed(2));
-      }
+    // MMF 시리즈(WRMFNS, WRMFSL)는 FRED에서 조달러($T) 단위로 반환됨
+    // 예: 6.5 = $6.5T = $6500B
+    // 값이 0~50 사이면 $T 단위로 판단 → $B로 변환(×1000)
+    const MMF_SERIES = ['WRMFNS', 'WRMFSL', 'WRMFSL', 'MMMFFAQ027S'];
+    const isMmf = MMF_SERIES.includes(series.toUpperCase());
+    if (isMmf && vals.length > 0 && vals[vals.length - 1] < 50) {
+      vals = vals.map(v => Math.round(v * 1000 * 100) / 100);
     }
 
     return res.status(200).json({
       dates: obs.map(o => o.date),
       vals,
-      // 디버그용: 원본 마지막 값
-      _raw_last: obs.length > 0 ? obs[obs.length-1].value : null,
-      _series: series,
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });
