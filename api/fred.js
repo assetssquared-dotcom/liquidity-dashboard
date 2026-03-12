@@ -1,11 +1,12 @@
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { series, days } = req.query;
   if (!series) return res.status(400).json({ error: 'series 필요' });
 
+  // 환경변수 없으면 하드코딩 키 폴백
   const API_KEY = process.env.FRED_API_KEY || '38a4c9938e82be4200fd122b8fe645a1';
 
   const start = new Date();
@@ -14,13 +15,15 @@ module.exports = async function handler(req, res) {
 
   try {
     const r = await fetch(url);
-    if (!r.ok) throw new Error(`${r.status}`);
+    if (!r.ok) throw new Error(`FRED ${r.status}`);
     const data = await r.json();
     if (data.error_code) throw new Error(data.error_message);
     const obs = (data.observations||[]).filter(o=>o.value!=='.'&&o.value!=='');
+    if (!obs.length) throw new Error('no data');
     let vals = obs.map(o=>parseFloat(o.value));
-    if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())&&vals.length>0&&vals[vals.length-1]<100)
-      vals=vals.map(v=>+(v*1000).toFixed(1));
+    // WRMFNS/WRMFSL: T단위 → B단위 변환
+    if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())&&vals.length>0&&vals[vals.length-1]<500)
+      vals = vals.map(v=>+(v*1000).toFixed(1));
     return res.status(200).json({ dates: obs.map(o=>o.date), vals });
   } catch(e) {
     return res.status(500).json({ error: e.message });
