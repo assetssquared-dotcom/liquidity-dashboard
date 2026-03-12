@@ -657,35 +657,23 @@ function setH(id,val,cls,chg,chgCol){
 function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';}
 function fgTxt(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
 
-// ── FRED API 키 (https://fred.stlouisfed.org 에서 무료 발급) ──
-const FRED_KEY = (typeof window!=='undefined' && window.FRED_API_KEY) || '38a4c9938e82be4200fd122b8fe645a1';
-
 // ── 세션 캐시 (1시간) ──
 const CACHE_TTL = 36e5;
 function cKey(s,d){return`aq2_${s}_${d}`;}
 function cGet(s,d){try{const r=sessionStorage.getItem(cKey(s,d));if(!r)return null;const p=JSON.parse(r);if(Date.now()-p.t>CACHE_TTL)return null;return p.v;}catch(e){return null;}}
 function cSet(s,d,v){try{sessionStorage.setItem(cKey(s,d),JSON.stringify({t:Date.now(),v}));}catch(e){}}
 
-// ── FRED 직접 호출 ──
+// ── FRED: /api/fred 서버 함수 경유 (CORS 우회) ──
 async function apiFetch(series,days){
   const cached=cGet(series,days);
   if(cached)return cached;
-  const start=new Date();
-  start.setDate(start.getDate()-(parseInt(days)||365));
-  const s=start.toISOString().slice(0,10);
-  const url=`https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_KEY}&file_type=json&observation_start=${s}&sort_order=asc`;
-  const r=await fetch(url);
+  const r=await fetch(`/api/fred?series=${series}&days=${days}`);
   if(!r.ok)throw new Error(`FRED ${r.status}`);
   const data=await r.json();
-  if(data.error_code)throw new Error(data.error_message||'FRED error');
-  const obs=(data.observations||[]).filter(o=>o.value!=='.'&&o.value!=='');
-  if(!obs.length)throw new Error('no data');
-  let vals=obs.map(o=>parseFloat(o.value));
-  if(['WRMFNS','WRMFSL'].includes(series.toUpperCase())&&vals.at(-1)<100)
-    vals=vals.map(v=>+(v*1000).toFixed(1));
-  const j={dates:obs.map(o=>o.date),vals};
-  cSet(series,days,j);
-  return j;
+  if(data.error)throw new Error(data.error);
+  if(!data.dates||!data.dates.length)throw new Error('no data');
+  cSet(series,days,data);
+  return data;
 }
 
 // ── now-panel 표시 ──
