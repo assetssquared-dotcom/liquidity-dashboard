@@ -752,6 +752,10 @@ function mkOpts(scales){
 // ── 캐시 설정 ──────────────────────────────────
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24시간
 
+// 전역 BATCH 캐시 — 페이지 로드 즉시 fetch
+let BATCH = null;
+fetch('/api/batch').then(r=>r.ok?r.json():null).then(d=>{ BATCH=d; }).catch(()=>{});
+
 function cacheKey(s,d){ return `aq_${s}_${d}`; }
 
 function cacheGet(s,d){
@@ -1031,11 +1035,7 @@ function toast(msg,cls=''){
   setTimeout(()=>el.className='toast',3500);
 }
 
-window.addEventListener('DOMContentLoaded', async ()=>{
-  // BATCH와 loadHero 병렬 실행 — 서로 기다리지 않음
-  let BATCH = null;
-  const batchPromise = fetch('/api/batch').then(r=>r.ok?r.json():null).then(d=>{ BATCH=d; }).catch(()=>{});
-  // 히어로 카드 즉시 로드 (BATCH 안 기다림)
+window.addEventListener('DOMContentLoaded', ()=>{
   loadHero();
   // 공포탐욕지수 — BATCH 우선, 없으면 /api/fng
   (async () => {
