@@ -517,92 +517,94 @@ async function loadHero(){
 }
 
 
-// ⑦ MMF 총 잔액 (전체 + 기관 + 리테일)
+// ⑦ MMF 총 잔액
+// WRMFNS = 전체 MMF (Retail Money Market Funds, 주간, 십억달러)
+// WRMFSL = 기관형 MMF (Institutional, 주간, 십억달러)
+// 리테일 = 전체 - 기관형
 async function renderMmf(days){
   try{
-    // WRMFSL = 기관형 MMF, WRMFNS = 리테일 MMF
-    const [inst, ret] = await Promise.all([
-      apiFetch('WRMFSL', days),
-      apiFetch('WRMFNS', days)
+    const [total, inst] = await Promise.all([
+      apiFetch('WRMFNS', days),
+      apiFetch('WRMFSL', days)
     ]);
-    // 날짜 정렬 및 합산
-    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d, inst.vals[i]]));
-    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d, ret.vals[i]]));
-    const dates = inst.dates.filter(d => rMap[d] !== undefined);
-    const iv = dates.map(d => iMap[d]);
-    const rv = dates.map(d => rMap[d]);
-    const tv = iv.map((v,i) => +(v + rv[i]).toFixed(1));
-    const {dates:td, vals:tiv} = thin(dates, iv, 120);
-    const {vals:trv} = thin(dates, rv, 120);
-    const {vals:ttv} = thin(dates, tv, 120);
-    const cv = cvs('w-mmf','c-mmf'); kill('mmf');
-    const ctx = cv.getContext('2d');
-    CHARTS['mmf'] = new Chart(ctx, {
+    const tMap = Object.fromEntries(total.dates.map((d,i)=>[d,total.vals[i]]));
+    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
+    const dates = total.dates.filter(d=>iMap[d]!==undefined);
+    const tv = dates.map(d=>tMap[d]);
+    const iv = dates.map(d=>iMap[d]);
+    const rv = tv.map((v,i)=>+(v-iv[i]).toFixed(1));
+    const {dates:td,vals:ttv}=thin(dates,tv,120);
+    const {vals:tiv}=thin(dates,iv,120);
+    const {vals:trv}=thin(dates,rv,120);
+    const cv=cvs('w-mmf','c-mmf');kill('mmf');
+    const ctx=cv.getContext('2d');
+    CHARTS['mmf']=new Chart(ctx,{
       type:'line',
-      data:{labels:td, datasets:[
-        {label:'전체 MMF',data:ttv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4},
-        {label:'기관형',data:tiv,borderColor:'#38bdf8',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
-        {label:'리테일',data:trv,borderColor:'#fb923c',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
+      data:{labels:td,datasets:[
+        {label:'전체 MMF($B)',data:ttv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4},
+        {label:'기관형($B)',data:tiv,borderColor:'#38bdf8',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
+        {label:'리테일($B)',data:trv,borderColor:'#fb923c',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
       ]},
-      options: mkOpts()
+      options:mkOpts()
     });
-  } catch(e){ showErr('w-mmf', e.message); }
+  }catch(e){showErr('w-mmf',e.message);}
 }
 
 // ⑧ MMF vs 역레포 비교
 async function renderMmfRrp(days){
   try{
-    const [inst, ret, rrp] = await Promise.all([
-      apiFetch('WRMFSL', days),
-      apiFetch('WRMFNS', days),
-      apiFetch('RRPONTSYD', days)
+    const [total,rrp]=await Promise.all([
+      apiFetch('WRMFNS',days),
+      apiFetch('RRPONTSYD',days)
     ]);
-    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d, inst.vals[i]]));
-    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d, ret.vals[i]]));
-    const dates = inst.dates.filter(d => rMap[d] !== undefined);
-    const tv = dates.map(d => +((iMap[d]||0) + (rMap[d]||0)).toFixed(1));
-    const {dates:td, vals:ttv} = thin(dates, tv, 120);
-    const {dates:rd, vals:rrpv} = thin(rrp.dates, rrp.vals, 150);
-    const cv = cvs('w-mmfrrp','c-mmfrrp'); kill('mmfrrp');
-    const ctx = cv.getContext('2d');
-    CHARTS['mmfrrp'] = new Chart(ctx, {
+    const {dates:td,vals:ttv}=thin(total.dates,total.vals,120);
+    const {dates:rd,vals:rrpv}=thin(rrp.dates,rrp.vals,150);
+    const cv=cvs('w-mmfrrp','c-mmfrrp');kill('mmfrrp');
+    const ctx=cv.getContext('2d');
+    CHARTS['mmfrrp']=new Chart(ctx,{
       type:'line',
-      data:{labels:td, datasets:[
+      data:{labels:td,datasets:[
         {label:'MMF 총잔액($B)',data:ttv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4,yAxisID:'y'},
-        {label:'역레포($B)',data:rrpv.slice(0,ttv.length),borderColor:'#fb923c',borderWidth:2,pointRadius:0,fill:false,tension:.4,yAxisID:'y2'},
+        {label:'역레포($B)',data:rrpv,borderColor:'#fb923c',borderWidth:2,pointRadius:0,fill:false,tension:.4,yAxisID:'y2'},
       ]},
-      options: mkOpts({
+      options:mkOpts({
         x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
         y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#4ade80',font:{size:9}},title:{display:true,text:'MMF ($B)',color:'#4ade80',font:{size:10}}},
         y2:{position:'right',grid:{display:false},ticks:{color:'#fb923c',font:{size:9}},title:{display:true,text:'RRP ($B)',color:'#fb923c',font:{size:10}}}
       })
     });
-  } catch(e){ showErr('w-mmfrrp', e.message); }
+  }catch(e){showErr('w-mmfrrp',e.message);}
 }
 
 // ⑨ MMF 주간 증감폭
 async function renderMmfWeekly(){
   try{
-    const [inst, ret] = await Promise.all([
-      apiFetch('WRMFSL', 365*2),
-      apiFetch('WRMFNS', 365*2)
+    const [total,inst]=await Promise.all([
+      apiFetch('WRMFNS',365*2),
+      apiFetch('WRMFSL',365*2)
     ]);
-    const id = inst.vals.map((v,i)=>i===0?0:+(v-inst.vals[i-1]).toFixed(1));
-    const rd = ret.vals.map((v,i)=>i===0?0:+(v-ret.vals[i-1]).toFixed(1));
-    const {dates:labs, vals:iv} = thin(inst.dates.slice(1), id.slice(1), 80);
-    const {vals:rv} = thin(ret.dates.slice(1), rd.slice(1), 80);
-    const cv = cvs('w-mmfwk','c-mmfwk'); kill('mmfwk');
-    const ctx = cv.getContext('2d');
-    CHARTS['mmfwk'] = new Chart(ctx, {
+    const tMap=Object.fromEntries(total.dates.map((d,i)=>[d,total.vals[i]]));
+    const iMap=Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
+    const dates=total.dates.filter(d=>iMap[d]!==undefined);
+    const iv=dates.map(d=>iMap[d]);
+    const rv=dates.map(d=>+((tMap[d]||0)-(iMap[d]||0)).toFixed(1));
+    const id=iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
+    const rd=rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
+    const {dates:labs,vals:idv}=thin(dates.slice(1),id.slice(1),80);
+    const {vals:rdv}=thin(dates.slice(1),rd.slice(1),80);
+    const cv=cvs('w-mmfwk','c-mmfwk');kill('mmfwk');
+    const ctx=cv.getContext('2d');
+    CHARTS['mmfwk']=new Chart(ctx,{
       type:'bar',
-      data:{labels:labs, datasets:[
-        {label:'기관형 유출입',data:iv,backgroundColor:iv.map(v=>v>=0?'rgba(74,222,128,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
-        {label:'리테일 유출입',data:rv,backgroundColor:rv.map(v=>v>=0?'rgba(251,146,60,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
+      data:{labels:labs,datasets:[
+        {label:'기관형 유출입',data:idv,backgroundColor:idv.map(v=>v>=0?'rgba(56,189,248,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
+        {label:'리테일 유출입',data:rdv,backgroundColor:rdv.map(v=>v>=0?'rgba(251,146,60,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
       ]},
-      options: mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})
+      options:mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})
     });
-  } catch(e){ showErr('w-mmfwk', e.message); }
+  }catch(e){showErr('w-mmfwk',e.message);}
 }
+
 
 function load(key,days,btn){
   if(btn){btn.closest('.pbs').querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
