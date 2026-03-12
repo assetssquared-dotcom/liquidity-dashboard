@@ -100,6 +100,40 @@ header{position:sticky;top:0;z-index:50;background:rgba(7,12,20,.97);border-bott
 .toast.show{opacity:1;transform:none;}
 .toast.ok{border-color:#4ade80;color:#4ade80;}
 .toast.ng{border-color:#f87171;color:#f87171;}
+
+
+/* ── 헤더 링크 버튼 ── */
+.hdr-links{display:flex;align-items:center;gap:6px;}
+.hdr-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:.68rem;font-weight:600;text-decoration:none;transition:all .15s;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--dim);white-space:nowrap;}
+.hdr-btn:hover{background:rgba(255,255,255,.1);color:var(--text);border-color:rgba(255,255,255,.2);}
+.hdr-btn-tg{border-color:rgba(39,167,214,.25);background:rgba(39,167,214,.08);color:#29a8d8;}
+.hdr-btn-tg:hover{background:rgba(39,167,214,.18);}
+.hdr-btn-nv{border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.08);color:#03c75a;}
+.hdr-btn-nv:hover{background:rgba(3,199,90,.18);}
+@media(max-width:768px){.hdr-btn span,.hdr-btn{font-size:.6rem;padding:3px 7px;}.hdr-links{gap:4px;}}
+@media(max-width:520px){.hdr-btn{padding:4px 6px;font-size:0;width:28px;height:28px;justify-content:center;border-radius:50%;}}
+/* ── CTA 배너 ── */
+.cta-bar{background:linear-gradient(135deg,#0d1f35 0%,#111827 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.25rem 2rem;}
+.cta-inner{max-width:1360px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
+.cta-left{display:flex;align-items:center;gap:12px;}
+.cta-logo{width:40px;height:40px;background:linear-gradient(135deg,#38bdf8,#c084fc);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.cta-title{font-size:.95rem;font-weight:700;letter-spacing:-.01em;}
+.cta-sub{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.cta-links{display:flex;gap:.6rem;flex-wrap:wrap;}
+.cta-btn{display:flex;align-items:center;gap:7px;padding:.5rem 1rem;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;transition:all .18s;border:1px solid transparent;}
+.cta-threads{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--text);}
+.cta-threads:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);}
+.cta-telegram{background:rgba(39,167,214,.12);border-color:rgba(39,167,214,.3);color:#29a8d8;}
+.cta-telegram:hover{background:rgba(39,167,214,.22);border-color:rgba(39,167,214,.5);}
+.cta-naver{background:rgba(3,199,90,.12);border-color:rgba(3,199,90,.3);color:#03c75a;}
+.cta-naver:hover{background:rgba(3,199,90,.22);border-color:rgba(3,199,90,.5);}
+
+/* ── 헤더 아이콘 링크 ── */
+.hdr-links{display:flex;align-items:center;gap:6px;}
+.hdr-link{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none;transition:all .15s;}
+.hdr-link:hover{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.3);color:var(--c1);}
+
+@media(max-width:700px){.cta-inner{flex-direction:column;align-items:flex-start;}.cta-links{width:100%;}}
 footer{border-top:1px solid var(--border);padding:1.2rem 2rem;text-align:center;font-size:.65rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
 footer a{color:var(--c1);text-decoration:none;}
 @media(max-width:900px){.hero{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}.kp{grid-template-columns:1fr;}}
@@ -120,6 +154,21 @@ footer a{color:var(--c1);text-decoration:none;}
     <div class="hdr-right">
       <div class="badge"><div class="dot"></div>LIVE</div>
       <div id="stTxt">연결 중...</div>
+      <div class="hdr-links">
+        <a href="https://www.threads.com/@asset.x2" target="_blank" class="hdr-btn">
+          <svg width="13" height="13" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.23c8.249.053 14.474 2.452 18.502 7.13 2.932 3.405 4.893 8.11 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.35-22.809-.169-40.06-7.484-51.275-21.741C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.206 17.11 97.015 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.204.195 97.105 0h-.113C68.977.195 47.42 9.643 32.7 28.08 19.663 44.479 12.875 67.461 12.636 96v.04c.239 28.579 7.027 51.56 20.064 68 14.72 18.437 36.277 27.885 64.326 28.08h.113c24.513-.172 41.766-6.589 55.888-20.707 18.868-18.862 18.291-42.498 12.064-57.014-4.419-10.321-12.659-18.696-23.554-24.411zm-41.036 55.309c-10.426.583-21.24-4.097-27.103-11.99-3.645-4.842-5.378-10.708-5.098-17.027.542-12.836 11.475-19.158 29.553-20.16 8.196-.473 15.888-.07 22.888 1.188-.806 24.367-9.095 47.098-20.24 47.99z"/></svg>
+          Threads
+        </a>
+        <a href="https://t.me/+2Qw1cAZTm8FjMGNl" target="_blank" class="hdr-btn hdr-btn-tg">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+          프로젝트방
+        </a>
+        <a href="https://contents.premium.naver.com/assetx2/assetsx2" target="_blank" class="hdr-btn hdr-btn-nv">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z"/></svg>
+          구독자료
+        </a>
+      </div>
+
     </div>
   </div>
 </header>
@@ -227,6 +276,81 @@ footer a{color:var(--c1);text-decoration:none;}
       <div class="cc-b"><div id="w-wk"><div class="lw"><div class="sp"></div></div></div></div>
     </div>
     <div class="ex ex2"><div class="ex-t">📌 지표 해설</div><p><strong>지급준비금↓ + TGA↑</strong> → 긴축 국면. <strong>지급준비금↑ + TGA↓</strong> → 유동성 공급 국면.</p></div>
+  </div>
+
+  <!-- ⑦ MMF 총 잔액 -->
+  <div class="section">
+    <div class="sh"><div class="sn n3">⑦</div><div class="st">MMF(머니마켓펀드) 총 잔액</div><div class="stag">WRMFSL · WRMFNS</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">MMF 총 잔액 추이</div><div class="cc-s">단위: $B · 주간</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
+          <div class="leg">
+            <div class="li"><div class="ll" style="background:#4ade80"></div>전체 MMF</div>
+            <div class="li"><div class="ll" style="background:#38bdf8"></div>기관형</div>
+            <div class="li"><div class="ll" style="background:#fb923c"></div>리테일</div>
+          </div>
+          <div class="pbs">
+            <button class="pb on" onclick="load('mmf',365*2,this)">2Y</button>
+            <button class="pb" onclick="load('mmf',365*5,this)">5Y</button>
+            <button class="pb" onclick="load('mmf',365*10,this)">10Y</button>
+          </div>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-mmf"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex3">
+      <div class="ex-t">📌 지표 해설</div>
+      <p><strong>MMF(머니마켓펀드)</strong>는 단기 안전자산에 투자하는 펀드로, 시중 초과 유동성의 대표적인 피난처입니다. MMF 잔액이 급증하면 투자자들이 위험자산을 회피하고 안전자산을 선호한다는 신호입니다. <strong>기관형 MMF</strong>는 주로 역레포(RRP)에 투자하며, <strong>리테일 MMF</strong>는 개인 투자자 자금을 반영합니다.</p>
+      <div class="kp">
+        <div class="kpi"><div class="ki">📈</div><div class="kt"><strong>MMF 잔액 증가</strong>시장 불확실성 증가 또는 고금리로 인한 안전자산 선호 강화</div></div>
+        <div class="kpi"><div class="ki">📉</div><div class="kt"><strong>MMF 잔액 감소</strong>투자자들이 위험자산으로 이동 → 주식·채권 시장 유동성 공급 신호</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ MMF vs 역레포 비교 -->
+  <div class="section">
+    <div class="sh"><div class="sn n4">⑧</div><div class="st">MMF vs 역레포(RRP) 비교</div><div class="stag">CORRELATION</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">MMF 잔액 vs 역레포 잔액 동시 비교</div><div class="cc-s">단위: $B · MMF는 주간, RRP는 일간</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px">
+          <div class="leg">
+            <div class="li"><div class="ll" style="background:#4ade80"></div>MMF 총잔액</div>
+            <div class="li"><div class="ll" style="background:#fb923c"></div>역레포(RRP)</div>
+          </div>
+          <div class="pbs">
+            <button class="pb on" onclick="load('mmfrrp',365*2,this)">2Y</button>
+            <button class="pb" onclick="load('mmfrrp',365*5,this)">5Y</button>
+          </div>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-mmfrrp"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex4">
+      <div class="ex-t">📌 지표 해설</div>
+      <p>기관형 MMF는 초과 현금을 주로 <strong>연준 역레포(RRP)</strong>에 예치합니다. 두 지표는 강한 양의 상관관계를 보이며, RRP 잔액 감소는 MMF 자금이 국채·CP 등 시장으로 이동했음을 뜻합니다. <strong>RRP 잔액이 바닥에 가까워질수록</strong> MMF의 투자처 다변화 압력이 커져 시장 유동성에 영향을 줄 수 있습니다.</p>
+    </div>
+  </div>
+
+  <!-- ⑨ MMF 전주 대비 증감폭 -->
+  <div class="section">
+    <div class="sh"><div class="sn n1">⑨</div><div class="st">MMF 전주 대비 증감폭</div><div class="stag">WEEKLY FLOW</div></div>
+    <div class="cc">
+      <div class="cc-h">
+        <div><div class="cc-t">MMF 주간 자금 유출입</div><div class="cc-s">전주 대비 증감 · 단위: $B</div></div>
+        <div class="leg">
+          <div class="li"><div class="ll" style="background:#4ade80"></div>기관형 유출입</div>
+          <div class="li"><div class="ll" style="background:#fb923c"></div>리테일 유출입</div>
+        </div>
+      </div>
+      <div class="cc-b"><div id="w-mmfwk"><div class="lw"><div class="sp"></div></div></div></div>
+    </div>
+    <div class="ex ex1">
+      <div class="ex-t">📌 지표 해설</div>
+      <p>주간 MMF 자금 흐름은 <strong>시장 심리의 단기 변화</strong>를 빠르게 보여줍니다. <strong>대규모 유입(+)</strong> → 위험 회피, 안전자산 선호. <strong>대규모 유출(-)</strong> → 투자자들이 주식·채권 등 위험자산으로 이동 중인 신호.</p>
+    </div>
   </div>
 
 </div>
@@ -392,9 +516,97 @@ async function loadHero(){
   }
 }
 
+
+// ⑦ MMF 총 잔액 (전체 + 기관 + 리테일)
+async function renderMmf(days){
+  try{
+    // WRMFSL = 기관형 MMF, WRMFNS = 리테일 MMF
+    const [inst, ret] = await Promise.all([
+      apiFetch('WRMFSL', days),
+      apiFetch('WRMFNS', days)
+    ]);
+    // 날짜 정렬 및 합산
+    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d, inst.vals[i]]));
+    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d, ret.vals[i]]));
+    const dates = inst.dates.filter(d => rMap[d] !== undefined);
+    const iv = dates.map(d => iMap[d]);
+    const rv = dates.map(d => rMap[d]);
+    const tv = iv.map((v,i) => +(v + rv[i]).toFixed(1));
+    const {dates:td, vals:tiv} = thin(dates, iv, 120);
+    const {vals:trv} = thin(dates, rv, 120);
+    const {vals:ttv} = thin(dates, tv, 120);
+    const cv = cvs('w-mmf','c-mmf'); kill('mmf');
+    const ctx = cv.getContext('2d');
+    CHARTS['mmf'] = new Chart(ctx, {
+      type:'line',
+      data:{labels:td, datasets:[
+        {label:'전체 MMF',data:ttv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4},
+        {label:'기관형',data:tiv,borderColor:'#38bdf8',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
+        {label:'리테일',data:trv,borderColor:'#fb923c',borderWidth:1.5,pointRadius:0,fill:false,tension:.4,borderDash:[3,2]},
+      ]},
+      options: mkOpts()
+    });
+  } catch(e){ showErr('w-mmf', e.message); }
+}
+
+// ⑧ MMF vs 역레포 비교
+async function renderMmfRrp(days){
+  try{
+    const [inst, ret, rrp] = await Promise.all([
+      apiFetch('WRMFSL', days),
+      apiFetch('WRMFNS', days),
+      apiFetch('RRPONTSYD', days)
+    ]);
+    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d, inst.vals[i]]));
+    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d, ret.vals[i]]));
+    const dates = inst.dates.filter(d => rMap[d] !== undefined);
+    const tv = dates.map(d => +((iMap[d]||0) + (rMap[d]||0)).toFixed(1));
+    const {dates:td, vals:ttv} = thin(dates, tv, 120);
+    const {dates:rd, vals:rrpv} = thin(rrp.dates, rrp.vals, 150);
+    const cv = cvs('w-mmfrrp','c-mmfrrp'); kill('mmfrrp');
+    const ctx = cv.getContext('2d');
+    CHARTS['mmfrrp'] = new Chart(ctx, {
+      type:'line',
+      data:{labels:td, datasets:[
+        {label:'MMF 총잔액($B)',data:ttv,borderColor:'#4ade80',borderWidth:2,pointRadius:0,fill:true,backgroundColor:gFill(ctx,'#4ade80'),tension:.4,yAxisID:'y'},
+        {label:'역레포($B)',data:rrpv.slice(0,ttv.length),borderColor:'#fb923c',borderWidth:2,pointRadius:0,fill:false,tension:.4,yAxisID:'y2'},
+      ]},
+      options: mkOpts({
+        x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:8,color:'#475569'}},
+        y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#4ade80',font:{size:9}},title:{display:true,text:'MMF ($B)',color:'#4ade80',font:{size:10}}},
+        y2:{position:'right',grid:{display:false},ticks:{color:'#fb923c',font:{size:9}},title:{display:true,text:'RRP ($B)',color:'#fb923c',font:{size:10}}}
+      })
+    });
+  } catch(e){ showErr('w-mmfrrp', e.message); }
+}
+
+// ⑨ MMF 주간 증감폭
+async function renderMmfWeekly(){
+  try{
+    const [inst, ret] = await Promise.all([
+      apiFetch('WRMFSL', 365*2),
+      apiFetch('WRMFNS', 365*2)
+    ]);
+    const id = inst.vals.map((v,i)=>i===0?0:+(v-inst.vals[i-1]).toFixed(1));
+    const rd = ret.vals.map((v,i)=>i===0?0:+(v-ret.vals[i-1]).toFixed(1));
+    const {dates:labs, vals:iv} = thin(inst.dates.slice(1), id.slice(1), 80);
+    const {vals:rv} = thin(ret.dates.slice(1), rd.slice(1), 80);
+    const cv = cvs('w-mmfwk','c-mmfwk'); kill('mmfwk');
+    const ctx = cv.getContext('2d');
+    CHARTS['mmfwk'] = new Chart(ctx, {
+      type:'bar',
+      data:{labels:labs, datasets:[
+        {label:'기관형 유출입',data:iv,backgroundColor:iv.map(v=>v>=0?'rgba(74,222,128,0.7)':'rgba(248,113,113,0.6)'),borderRadius:2,barPercentage:.5},
+        {label:'리테일 유출입',data:rv,backgroundColor:rv.map(v=>v>=0?'rgba(251,146,60,0.7)':'rgba(192,132,252,0.6)'),borderRadius:2,barPercentage:.5},
+      ]},
+      options: mkOpts({x:{grid:{color:GRID,drawBorder:false},ticks:{maxTicksLimit:12,color:'#475569'}},y:{grid:{color:GRID,drawBorder:false},ticks:{color:'#475569'}}})
+    });
+  } catch(e){ showErr('w-mmfwk', e.message); }
+}
+
 function load(key,days,btn){
   if(btn){btn.closest('.pbs').querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga})[key](days);
+  ({sofr:renderSofr,iorb:renderIorb,res:renderRes,rrp:renderRrp,tga:renderTga,mmf:renderMmf,mmfrrp:renderMmfRrp})[key](days);
 }
 
 function toast(msg,cls=''){
@@ -408,6 +620,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderSofr(365);renderIorb(365);
   renderRes(365*2);renderRrp(365*2);renderTga(365*2);
   renderWeekly();
+  renderMmf(365*2);renderMmfRrp(365*2);renderMmfWeekly();
 });
 </script>
 </body>
