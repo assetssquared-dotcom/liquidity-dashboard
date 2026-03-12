@@ -1293,73 +1293,56 @@ function observeLazy(id,fn){
   obs.observe(el);
 }
 
-// ── 텔레그램 채널 로드 ──
+// ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
 async function loadTelegram(){
   const el=document.getElementById('tg-posts');
   if(!el)return;
   try{
-    // 공개 채널 RSS → corsproxy 경유
-    const channel='assets_x2';
-    const rssUrl=`https://rsshub.app/telegram/channel/${channel}`;
-    const proxyUrl=`https://corsproxy.io/?url=${encodeURIComponent(rssUrl)}`;
-    const r=await fetch(proxyUrl);
+    const r=await fetch('/api/telegram?limit=15');
     if(!r.ok)throw new Error(r.status);
-    const xml=await r.text();
-    const parser=new DOMParser();
-    const doc=parser.parseFromString(xml,'application/xml');
-    const items=Array.from(doc.querySelectorAll('item')).slice(0,10);
+    const data=await r.json();
+    const posts=data.posts||[];
 
-    if(!items.length)throw new Error('no items');
+    if(!posts.length){
+      el.innerHTML=`<div class="tg-empty">
+        <div style="font-size:1.5rem;margin-bottom:.75rem">📨</div>
+        <div style="font-weight:600;margin-bottom:.4rem;color:var(--txt)">아직 포워드된 글이 없어요</div>
+        <div style="font-size:.8rem;color:var(--txt3);line-height:1.7">채널에 글을 올린 후 <strong style="color:var(--txt)">@assetx2bot</strong> 에게 해당 메시지를 포워드하면<br>이 대시보드에 자동으로 표시돼요.</div>
+      </div>`;
+      return;
+    }
 
-    el.innerHTML=items.map(item=>{
-      const title=item.querySelector('title')?.textContent||'';
-      const desc=item.querySelector('description')?.textContent||'';
-      const link=item.querySelector('link')?.textContent||'';
-      const pubDate=item.querySelector('pubDate')?.textContent||'';
-      const date=pubDate?new Date(pubDate).toLocaleDateString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
-
-      // HTML 태그 제거 + 이미지 추출
-      const tmp=document.createElement('div');
-      tmp.innerHTML=desc;
-      const img=tmp.querySelector('img');
-      const imgHtml=img?`<img class="tg-post-img" src="${img.src}" loading="lazy">`:'';
-      const text=tmp.textContent.trim();
-      const displayText=text.length>500?text.slice(0,500)+'…':text;
-
+    el.innerHTML=posts.map(p=>{
+      const date=new Date(p.date*1000).toLocaleDateString('ko-KR',{
+        year:'numeric',month:'short',day:'numeric',
+        hour:'2-digit',minute:'2-digit'
+      });
+      const text=p.text||'';
+      // URL을 링크로 변환
+      const linkedText=text.replace(
+        /(https?:\/\/[^\s]+)/g,
+        '<a href="$1" target="_blank" style="color:var(--c1);text-decoration:none;">$1</a>'
+      );
+      // 해시태그 강조
+      const formattedText=linkedText.replace(
+        /#(\S+)/g,
+        '<span style="color:var(--c3)">#$1</span>'
+      );
+      const isForward=p.is_forward;
       return `<div class="tg-post">
         <div class="tg-post-meta">
-          <span class="tg-post-date">📅 ${date}</span>
-          ${link?`<a class="tg-post-link" href="${link}" target="_blank">텔레그램에서 보기 →</a>`:''}
+          ${isForward?'<span style="font-size:.7rem;color:var(--txt3);font-family:var(--mono)">📢 채널 포스트</span>':''}
+          <span class="tg-post-date">🕐 ${date}</span>
         </div>
-        <div class="tg-post-text">${displayText}</div>
-        ${imgHtml}
+        <div class="tg-post-text">${formattedText}</div>
       </div>`;
     }).join('');
 
   }catch(e){
-    // RSS 실패시 Bot API 폴백
-    try{
-      const r2=await fetch('/api/telegram?limit=10');
-      if(!r2.ok)throw new Error(r2.status);
-      const data=await r2.json();
-      const posts=data.posts||[];
-      if(!posts.length)throw new Error('empty');
-
-      el.innerHTML=posts.map(p=>{
-        const date=new Date(p.date*1000).toLocaleDateString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-        const text=(p.text||p.caption||'').slice(0,500);
-        const msgUrl=`https://t.me/assets_x2/${p.message_id}`;
-        return `<div class="tg-post">
-          <div class="tg-post-meta">
-            <span class="tg-post-date">📅 ${date}</span>
-            <a class="tg-post-link" href="${msgUrl}" target="_blank">텔레그램에서 보기 →</a>
-          </div>
-          <div class="tg-post-text">${text}</div>
-        </div>`;
-      }).join('');
-    }catch(e2){
-      el.innerHTML=`<div class="tg-empty">채널 글을 불러오지 못했어요.<br><a href="https://t.me/assets_x2" target="_blank" style="color:var(--c1)">텔레그램에서 직접 보기 →</a></div>`;
-    }
+    el.innerHTML=`<div class="tg-empty">
+      <div style="margin-bottom:.5rem">불러오기 실패: ${e.message}</div>
+      <a href="https://t.me/assets_x2" target="_blank" style="color:var(--c1)">텔레그램 채널 바로가기 →</a>
+    </div>`;
   }
 }
 
