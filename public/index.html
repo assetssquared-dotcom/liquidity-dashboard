@@ -675,11 +675,10 @@ async function loadHero(){
 // 리테일 = 전체 - 기관형
 async function renderMmf(days){
   try{
-    // WRMFNS=리테일, WRMFSL=기관형 — 각각 독립 로드 후 합산
-    const [ret, inst] = await Promise.all([
-      apiFetch('WRMFNS', days),
-      apiFetch('WRMFSL', days)
-    ]);
+    // 순차 로드로 429 방지
+    const ret = await apiFetch('WRMFNS', days);
+    await new Promise(r=>setTimeout(r,400));
+    const inst = await apiFetch('WRMFSL', days);
     // 두 시리즈 모두 정상인지 확인
     if(!ret.dates.length && !inst.dates.length) throw new Error('MMF 데이터 없음');
 
@@ -741,24 +740,17 @@ async function renderMmfRrp(days){
 // ⑨ MMF 주간 증감폭
 async function renderMmfWeekly(){
   try{
-    const [ret, inst] = await Promise.all([
-      apiFetch('WRMFNS', 365*2),
-      apiFetch('WRMFSL', 365*2)
-    ]);
-    if(!ret.dates.length && !inst.dates.length) throw new Error('MMF 데이터 없음');
+    const ret = await apiFetch('WRMFNS', 365*2);
+    await new Promise(r=>setTimeout(r,400));
+    const inst = await apiFetch('WRMFSL', 365*2);
 
-    const rMap = Object.fromEntries(ret.dates.map((d,i)=>[d,ret.vals[i]]));
-    const iMap = Object.fromEntries(inst.dates.map((d,i)=>[d,inst.vals[i]]));
-    // 두 시리즈 공통 날짜만
-    const dates = ret.dates.filter(d=>iMap[d]!==undefined);
-    if(!dates.length) throw new Error('날짜 매칭 실패');
+    // 각각 독립적으로 주간 증감 계산 (날짜 매칭 불필요)
+    const rd = ret.vals.map((v,i)=>i===0?0:+(v-ret.vals[i-1]).toFixed(1));
+    const id = inst.vals.map((v,i)=>i===0?0:+(v-inst.vals[i-1]).toFixed(1));
 
-    const rv = dates.map(d=>rMap[d]); // 리테일
-    const iv = dates.map(d=>iMap[d]); // 기관형
-    const rd = rv.map((v,i)=>i===0?0:+(v-rv[i-1]).toFixed(1));
-    const id = iv.map((v,i)=>i===0?0:+(v-iv[i-1]).toFixed(1));
-    const {dates:labs, vals:rdv} = thin(dates.slice(1), rd.slice(1), 80);
-    const {vals:idv} = thin(dates.slice(1), id.slice(1), 80);
+    const {dates:labs, vals:rdv} = thin(ret.dates.slice(1), rd.slice(1), 80);
+    const {dates:labs2, vals:idv} = thin(inst.dates.slice(1), id.slice(1), 80);
+
     const cv=cvs('w-mmfwk','c-mmfwk'); kill('mmfwk');
     const ctx=cv.getContext('2d');
     CHARTS['mmfwk']=new Chart(ctx,{
@@ -774,6 +766,7 @@ async function renderMmfWeekly(){
     });
   }catch(e){showErr('w-mmfwk',e.message);}
 }
+
 
 
 // 뷰포트 진입 시 로드 (lazy loading)
