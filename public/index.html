@@ -375,7 +375,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- 공포탐욕지수 -->
   <div class="section">
-    <div class="sh"><div class="sn n2">FG</div><div class="st">공포 & 탐욕 지수</div><div class="stag">CNN FEAR & GREED</div></div>
+    <div class="sh"><div class="sn n2">1</div><div class="st">공포 & 탐욕 지수</div><div class="stag">CNN FEAR & GREED</div></div>
 
     <!-- 현재 지수 게이지 -->
     <div class="fg-wrap">
@@ -416,7 +416,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- VIX 지수 -->
   <div class="section">
-    <div class="sh"><div class="sn n4">VIX</div><div class="st">VIX 변동성 지수</div><div class="stag">VIXCLS · CBOE</div></div>
+    <div class="sh"><div class="sn n4">2</div><div class="st">VIX 변동성 지수</div><div class="stag">VIXCLS · CBOE</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">VIX 공포지수 추이</div><div class="cc-s">단위: 포인트 · 일간 · 20 이상 = 경계</div></div>
@@ -654,7 +654,7 @@ footer a:hover { color: var(--txt); }
 
 <!-- ① SOFR/EFFR -->
   <div class="section">
-    <div class="sh"><div class="sn n1">13</div><div class="st">SOFR / EFFR 스프레드</div><div class="stag">SECURED vs UNSECURED</div></div>
+    <div class="sh"><div class="sn n1">14</div><div class="st">SOFR / EFFR 스프레드</div><div class="stag">SECURED vs UNSECURED</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">SOFR · EFFR 금리 및 스프레드 추이</div><div class="cc-s">단위: % · 일간</div></div>
@@ -677,7 +677,7 @@ footer a:hover { color: var(--txt); }
 
   <!-- ② SOFR/IORB -->
   <div class="section">
-    <div class="sh"><div class="sn n2">14</div><div class="st">SOFR / IORB 스프레드</div><div class="stag">MARKET RATE vs FED RATE</div></div>
+    <div class="sh"><div class="sn n2">15</div><div class="st">SOFR / IORB 스프레드</div><div class="stag">MARKET RATE vs FED RATE</div></div>
     <div class="cc">
       <div class="cc-h">
         <div><div class="cc-t">SOFR · IORB 금리 및 스프레드 추이</div><div class="cc-s">단위: % · 일간</div></div>
@@ -845,74 +845,55 @@ async function renderWeekly(){
 
 // Hero 수치
 async function loadHero(){
-  // 1. 공포탐욕지수 (CNN API)
-  try{
-    const r = await fetch('/api/fng');
-    if(r.ok){
-      const j = await r.json();
-      if(!j.error && j.current){
-        const v = j.current.score;
-        setH(1, v, v<=44?'dn':v<=55?'':'up', j.current.rating);
+  // 캐시된 데이터 있으면 즉시 표시, 없으면 병렬 로드
+  const tasks = [
+    // 1. 공포탐욕지수
+    fetch('/api/fng').then(r=>r.ok?r.json():null).then(j=>{
+      if(j&&!j.error&&j.current){
+        const v=j.current.score;
+        setH(1,v,v<=44?'dn':v<=55?'':'up',j.current.rating);
       }
-    }
-  }catch(e){}
+    }).catch(()=>{}),
 
-  // 2. VIX
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('VIXCLS', 14);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(2);
-    setH(2, lv.toFixed(2), dv<=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
-  }catch(e){}
+    // 2~8. FRED 병렬
+    apiFetch('VIXCLS',14).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);
+      setH(2,lv.toFixed(2),dv<=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
+    }).catch(()=>{}),
 
-  // 3. 장단기 금리차
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('T10Y2Y', 14);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(3);
-    setH(3, lv.toFixed(2)+'%', lv>=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
-  }catch(e){}
+    apiFetch('T10Y2Y',14).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(3);
+      setH(3,lv.toFixed(2)+'%',lv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
+    }).catch(()=>{}),
 
-  // 4. 연준 총자산
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('WALCL', 14);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(0);
-    setH(4, fmtT(lv), dv>=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
-  }catch(e){}
+    apiFetch('WALCL',14).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
+      setH(4,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
+    }).catch(()=>{}),
 
-  // 5. 지급준비금
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('WRESBAL', 60);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(0);
-    setH(5, fmtT(lv), dv>=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
-    document.getElementById('stTxt').textContent='FRED 데이터 연결됨';
-  }catch(e){}
+    apiFetch('WRESBAL',60).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
+      setH(5,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
+      document.getElementById('stTxt').textContent='FRED 데이터 연결됨';
+    }).catch(()=>{}),
 
-  // 6. 역레포
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('RRPONTSYD', 30);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(0);
-    setH(6, fmtT(lv), dv>=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전일 대비');
-  }catch(e){}
+    apiFetch('RRPONTSYD',30).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
+      setH(6,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전일 대비');
+    }).catch(()=>{}),
 
-  // 7. 하이일드 스프레드
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('BAMLH0A0HYM2', 14);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(2);
-    setH(7, lv.toFixed(2)+'%', dv<=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
-  }catch(e){}
+    apiFetch('BAMLH0A0HYM2',14).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(2);
+      setH(7,lv.toFixed(2)+'%',dv<=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+Math.abs(dv)+' 전일 대비');
+    }).catch(()=>{}),
 
-  // 8. TGA
-  try{
-    await new Promise(r=>setTimeout(r,200));
-    const d = await apiFetch('WTREGEN', 60);
-    const lv=d.vals.at(-1), pv=d.vals.at(-2)||lv, dv=(lv-pv).toFixed(0);
-    setH(8, fmtT(lv), dv>=0?'up':'dn', (dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
-  }catch(e){}
+    apiFetch('WTREGEN',60).then(d=>{
+      const lv=d.vals.at(-1),pv=d.vals.at(-2)||lv,dv=(lv-pv).toFixed(0);
+      setH(8,fmtT(lv),dv>=0?'up':'dn',(dv>=0?'▲ ':'▼ ')+fmtB(dv)+' 전주 대비');
+    }).catch(()=>{}),
+  ];
+
+  await Promise.allSettled(tasks);
 }
 
 
