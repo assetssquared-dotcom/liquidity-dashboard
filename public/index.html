@@ -527,11 +527,22 @@ function mkLine(id,labels,datasets,yOpts){
   CHARTS[id]=new Chart(el.querySelector('canvas').getContext('2d'),{type:'line',data:{labels,datasets},options:mkOpts(yOpts)});
 }
 function showSpin(id){const el=document.getElementById(id);if(el)el.innerHTML='<div class="lw"><div class="sp"></div></div>';}
-function setH(id,val,cls,chg,chgCls){
+function setH(id,val,cls,chg,chgCol){
   const el=document.getElementById('h'+id);
-  if(el){el.innerHTML='';el.textContent=val;el.className='hcard-val '+(cls||'');}
+  if(el){
+    el.innerHTML='';
+    el.textContent=val;
+    el.className='hcard-val';
+    if(typeof chgCol==='string'&&chgCol.startsWith('#')) el.style.color='';
+    else el.className='hcard-val '+(cls||'');
+  }
   const ec=document.getElementById('h'+id+'c');
-  if(ec&&chg){ec.textContent=chg;ec.className='hcard-chg '+(chgCls||cls||'');}
+  if(ec&&chg){
+    ec.textContent=chg;
+    ec.className='hcard-chg';
+    if(typeof chgCol==='string'&&chgCol.startsWith('#')) ec.style.color=chgCol;
+    else ec.style.color='';
+  }
 }
 
 // ── 24시간 localStorage 캐시 ──
@@ -552,6 +563,113 @@ async function apiFetch(series,days){
   cSet(series,days,j);
   return j;
 }
+
+// ── 색상 헬퍼 ──
+function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';}
+function fgTxt(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
+
+// ── 공포탐욕 ──
+function drawGauge(score){
+  const canvas=document.getElementById('fg-gauge-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),cx=110,cy=105,r=85;
+  ctx.clearRect(0,0,220,120);
+  [{f:Math.PI,t:Math.PI*1.2,c:'#7f1d1d'},{f:Math.PI*1.2,t:Math.PI*1.4,c:'#ef4444'},
+   {f:Math.PI*1.4,t:Math.PI*1.6,c:'#64748b'},{f:Math.PI*1.6,t:Math.PI*1.8,c:'#34d399'},
+   {f:Math.PI*1.8,t:Math.PI*2,c:'#10b981'}].forEach(s=>{
+    ctx.beginPath();ctx.arc(cx,cy,r,s.f,s.t);ctx.arc(cx,cy,r-16,s.t,s.f,true);
+    ctx.fillStyle=s.c+'44';ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,r,s.f,s.t);ctx.strokeStyle=s.c;ctx.lineWidth=3;ctx.stroke();
+  });
+  const a=Math.PI+(score/100)*Math.PI;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-8)*Math.cos(a),cy+(r-8)*Math.sin(a));
+  ctx.strokeStyle=fgCol(score);ctx.lineWidth=2.5;ctx.lineCap='round';ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle=fgCol(score);ctx.fill();
+  ctx.fillStyle='#475569';ctx.font='9px IBM Plex Mono,monospace';ctx.textAlign='center';
+  ctx.fillText('공포',cx-60,cy+12);ctx.fillText('탐욕',cx+60,cy+12);
+}
+
+async function loadFng(){
+  try{
+    const r=await fetch('/api/fng');
+    if(!r.ok)throw new Error(r.status);
+    const j=await r.json();
+    if(!j.current)throw new Error('no data');
+    {
+    const v=j.current.score,len=j.vals.length;
+    const w1=j.vals[Math.max(0,len-8)]??v,m1=j.vals[Math.max(0,len-31)]??v,y1=j.vals[Math.max(0,len-252)]??v;
+    const col=fgCol(v);
+    document.getElementById('fg-score').textContent=v;
+    document.getElementById('fg-score').style.color=col;
+    document.getElementById('fg-label').textContent=fgTxt(v)+' · '+j.current.rating;
+    document.getElementById('fg-label').style.color=col;
+    ['fg-1w','fg-1m','fg-1y'].forEach((id,i)=>{
+      const val=[w1,m1,y1][i];
+      const el=document.getElementById(id);
+      if(el){el.textContent=val;el.style.color=fgCol(val);}
+    });
+    setH(1,v,v<=24?'dn':v<=44?'neu':v<=55?'neu':v<=74?'up':'up',j.current.rating,'neu');
+    drawGauge(v);
+    const{dates:td,vals:tv}=thin(j.dates,j.vals,150);
+    const wrap=document.getElementById('w-fng');
+    wrap.innerHTML='<canvas></canvas>';
+    CHARTS['fng']=new Chart(wrap.querySelector('canvas').getContext('2d'),{
+      type:'line',
+      data:{labels:td,datasets:[{data:tv,borderWidth:1.5,pointRadius:0,fill:false,tension:.3,
+        segment:{borderColor:c=>fgCol(c.p1.parsed.y)}}]},
+      options:mkOpts({min:0,max:100,ticks:{color:'#475569'}})
+    });
+  }catch(e){console.warn('FNG:',e.message);}
+}
+
+// ── Hero 수치 ──
+async function loadHero(){
+  const delay = ms => new Promise(r=>setTimeout(r,ms));
+
+  // 공포탐욕 - FNG API
+  fetch('/api/fng').then(r=>r.json()).then(j=>{
+    if(!j||!j.current) return;
+    const v=j.current.score;
+    const col=v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';
+    const hv=document.getElementById('h1');if(hv){hv.textContent=v;hv.style.color=col;hv.className='hcard-val';}
+    // FNG 게이지도 업데이트
+    const fs=document.getElementById('fg-score');
+    const fl=document.getElementById('fg-label');
+    if(fs){fs.textContent=v;fs.style.color=col;}
+    if(fl){fl.textContent=fgTxt(v)+' · '+j.current.rating;fl.style.color=col;}
+    drawGauge(v);
+  }).catch(()=>{});
+
+  const jobs = [
+    // [series, days, heroIdx, format, 상승이좋음?]
+    ['VIXCLS',       5,  2, v=>v.toFixed(2),          false],  // VIX: 상승=나쁨
+    ['T10Y2Y',       5,  3, v=>v.toFixed(2)+'%',       true ],  // 금리차: 상승=좋음
+    ['WALCL',        14, 4, v=>fmtT(v),                null ],  // 중립
+    ['WRESBAL',      14, 5, v=>fmtT(v),                true ],  // 준비금: 상승=좋음
+    ['RRPONTSYD',    5,  6, v=>fmtT(v),                null ],  // 중립
+    ['BAMLH0A0HYM2', 5,  7, v=>v.toFixed(2)+'%',       false],  // HY: 상승=나쁨
+    ['WTREGEN',      14, 8, v=>fmtT(v),                null ],  // 중립
+  ];
+
+  for(const [series, days, idx, fmt, positive] of jobs){
+    try{
+      const d = await apiFetch(series, days);
+      const lv = d.vals.at(-1), pv = d.vals.at(-2)||lv, dv = lv-pv;
+      const isUp = dv > 0;
+      // 변동 색상
+      let chgCol = '#888';
+      if(positive === true)  chgCol = isUp ? '#34d399' : '#f87171';
+      if(positive === false) chgCol = isUp ? '#f87171' : '#34d399';
+      const arrow = isUp ? '▲' : '▼';
+      const dvStr = series==='WALCL'||series==='WRESBAL'||series==='RRPONTSYD'||series==='WTREGEN'
+        ? '$'+fmtB(Math.abs(dv)) : Math.abs(dv).toFixed(series==='T10Y2Y'?3:2);
+      const period = series==='WALCL'||series==='WRESBAL'||series==='WTREGEN' ? '전주 대비' : '전일 대비';
+      setH(idx, fmt(lv), '', `${arrow} ${dvStr} ${period}`, chgCol);
+    }catch(e){}
+    await delay(150);
+  }
+  setTimeout(updateSummary, 300);
+}
+
 
 // ── 색상 헬퍼 ──
 function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'#34d399':'#10b981';}
