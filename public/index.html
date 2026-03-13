@@ -189,11 +189,17 @@ footer a{color:var(--txt3);}
 .hmap-val{font-size:1.05rem;font-weight:700;font-family:var(--mono);}
 .hmap-ticker{font-size:.62rem;color:rgba(255,255,255,.45);margin-top:.2rem;font-family:var(--mono);}
 /* 상관관계 */
-.corr-wrap{overflow-x:auto;}
-.corr-table{border-collapse:collapse;width:100%;min-width:400px;}
-.corr-table th{font-size:.68rem;color:var(--txt3);font-family:var(--mono);padding:.4rem .5rem;text-align:center;white-space:nowrap;}
-.corr-table td{padding:.35rem .4rem;text-align:center;font-size:.75rem;font-family:var(--mono);font-weight:600;border-radius:3px;}
-.corr-table .row-label{text-align:left;color:var(--txt2);font-size:.72rem;white-space:nowrap;padding-right:.75rem;}
+.corr-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.corr-table{border-collapse:collapse;width:100%;min-width:340px;}
+.corr-table th{font-size:.65rem;color:var(--txt3);font-family:var(--mono);padding:.35rem .4rem;text-align:center;white-space:nowrap;}
+.corr-table td{padding:.3rem .35rem;text-align:center;font-size:.72rem;font-family:var(--mono);font-weight:600;border-radius:3px;}
+.corr-table .row-label{text-align:left;color:var(--txt2);font-size:.68rem;white-space:nowrap;padding-right:.5rem;}
+@media(max-width:600px){
+  .corr-table{min-width:0;width:100%;}
+  .corr-table th{font-size:.55rem;padding:.25rem .2rem;}
+  .corr-table td{font-size:.6rem;padding:.22rem .18rem;}
+  .corr-table .row-label{font-size:.55rem;padding-right:.3rem;max-width:60px;overflow:hidden;text-overflow:ellipsis;}
+}
 @media(max-width:600px){.heatmap-grid{grid-template-columns:repeat(3,1fr);}
   .hmap-cell{padding:.7rem .5rem;}
   .hmap-val{font-size:.9rem;}}
@@ -2064,8 +2070,12 @@ async function renderCorr(){
     const r=await fetch('/api/yahoo?type=correlation');
     if(!r.ok)throw new Error(r.status);
     const d=await r.json();
-    const {names,matrix}=d;
-    if(!names||!matrix)throw new Error('no data');
+    const rawNames=d.names||[];
+    const matrix=d.matrix;
+    if(!rawNames.length||!matrix)throw new Error('no data');
+    // 모바일을 위해 짧은 이름 사용
+    const SHORT={'S&P500':'S&P','미국채(20Y)':'미국채','달러(DXY)':'DXY','WTI 원유':'WTI','비트코인':'BTC','금':'금'};
+    const names=rawNames.map(n=>SHORT[n]||n);
 
     function corrColor(v){
       if(v===null)return'#1a1a1a';
