@@ -1406,9 +1406,11 @@ async function apiFetch(series,days){
 function scrollToChart(id){
   const el = document.getElementById(id);
   if(!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - 80;
+  // 가장 가까운 .sec 섹션 상단으로 스크롤
+  const sec = el.closest('.sec') || el;
+  const top = sec.getBoundingClientRect().top + window.scrollY - 72;
   window.scrollTo({top, behavior:'smooth'});
-  // 살짝 하이라이트
+  // 차트 영역 하이라이트
   el.style.transition='box-shadow .3s';
   el.style.boxShadow='0 0 0 2px #5b9cf6';
   setTimeout(()=>{ el.style.boxShadow=''; }, 1200);
