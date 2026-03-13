@@ -304,14 +304,8 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-t10y2y')"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-hys')"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스</div></div>
   </div>
-  <!-- 옵션 심리 -->
-  <div class="hero-label" style="margin-top:1.1rem;">🎯 옵션</div>
-  <div class="hero-row" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);">
-    <div class="hcard clickable" onclick="scrollToChart('w-skew')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">SKEW 지수</div><div class="hcard-val" id="h26"><div class="skel"></div></div><div class="hcard-chg" id="h26c">—</div><div class="hcard-desc">블랙스완 우려</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-vvix')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">VVIX</div><div class="hcard-val" id="h27"><div class="skel"></div></div><div class="hcard-chg" id="h27c">—</div><div class="hcard-desc">공포의 변동성</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-ovx')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">OVX</div><div class="hcard-val" id="h28"><div class="skel"></div></div><div class="hcard-chg" id="h28c">—</div><div class="hcard-desc">원유 변동성</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-gvz')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">GVZ</div><div class="hcard-val" id="h29"><div class="skel"></div></div><div class="hcard-chg" id="h29c">—</div><div class="hcard-desc">금 변동성</div></div>
-  </div>
+
+
   <!-- 매크로 -->
   <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
   <div class="hero-row macro">
@@ -327,6 +321,14 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-res')"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-rrp')"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-tga')"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
+  </div>
+  <!-- 옵션 -->
+  <div class="hero-label" style="margin-top:1.1rem;">🎯 옵션</div>
+  <div class="hero-row" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);">
+    <div class="hcard clickable" onclick="scrollToChart('w-skew')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">SKEW</div><div class="hcard-val" id="h26"><div class="skel"></div></div><div class="hcard-chg" id="h26c">—</div><div class="hcard-desc">블랙스완 우려</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-vvix')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">VVIX</div><div class="hcard-val" id="h27"><div class="skel"></div></div><div class="hcard-chg" id="h27c">—</div><div class="hcard-desc">변동성의 변동성</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-ovx')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">OVX</div><div class="hcard-val" id="h28"><div class="skel"></div></div><div class="hcard-chg" id="h28c">—</div><div class="hcard-desc">원유 변동성</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-gvz')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">GVZ</div><div class="hcard-val" id="h29"><div class="skel"></div></div><div class="hcard-chg" id="h29c">—</div><div class="hcard-desc">금 변동성</div></div>
   </div>
 </div><!-- SEC 1: 텔레그램 채널 -->
 <div class="sec">
@@ -1090,29 +1092,67 @@ footer a{color:var(--txt3);}
 
 
 
-<!-- SEC 31: SKEW -->
+<!-- SEC 31: 옵션 변동성 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">CBOE SKEW 지수</div><div class="sec-tag">^SKEW · YAHOO</div></div>
-  <div class="cards-full"><div class="card">
-    <div class="card-title">CBOE SKEW 지수 추이</div>
-    <div class="card-sub">블랙스완 우려 지수 · 일간 · 100 기준</div>
-    <div class="tbtn-wrap">
-      <button class="tbtn active" onclick="renderSkew(365,this)">1Y</button>
-      <button class="tbtn" onclick="renderSkew(365*2,this)">2Y</button>
-      <button class="tbtn" onclick="renderSkew(365*3,this)">3Y</button>
-    </div>
-    <div class="chart-wrap" id="w-skew"><div class="lw"><div class="sp"></div></div></div>
-    <div class="now-panel" id="now-skew"></div>
-    <div class="insight">
-      <div class="insight-title">📌 CBOE SKEW 지수란?</div>
-      <div class="insight-body">S&amp;P500 옵션 시장에서 <strong>블랙스완(급격한 폭락)</strong> 가능성을 시장이 얼마나 두려워하는지 보여줘요. 100이 기준값이며 높을수록 꼬리 위험에 높은 프리미엄이 붙고 있다는 뜻이에요. VIX가 평균적인 변동성이라면 SKEW는 <strong>극단적 하락에 대한 보험료</strong>예요.</div>
-      <div class="signal-grid signal-grid-3">
-        <div class="signal green"><div class="signal-icon">😌</div><div class="signal-body"><strong>100~120</strong>정상 구간 · 꼬리 위험 우려 낮음</div></div>
-        <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>120~140</strong>경계 구간 · 하락 헤지 수요 증가</div></div>
-        <div class="signal red"><div class="signal-icon">🦢</div><div class="signal-body"><strong>140 이상</strong>블랙스완 우려 고조 · 꼬리 위험 프리미엄 급등</div></div>
+  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">옵션 &amp; 변동성 지수</div><div class="sec-tag">^SKEW · ^VVIX · ^OVX · ^GVZ · YAHOO</div></div>
+  <div class="cards-half">
+    <div class="card">
+      <div class="card-title">CBOE SKEW 지수</div>
+      <div class="card-sub">블랙스완 우려 · 100 기준</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderSkew(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderSkew(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderSkew(365*3,this)">3Y</button>
       </div>
+      <div class="chart-wrap" id="w-skew"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-skew"></div>
     </div>
-  </div></div>
+    <div class="card">
+      <div class="card-title">VVIX — VIX의 VIX</div>
+      <div class="card-sub">변동성의 변동성 · 공포의 불안정성</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderVvix(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderVvix(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderVvix(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-vvix"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-vvix"></div>
+    </div>
+  </div>
+  <div class="cards-half" style="margin-top:.85rem;">
+    <div class="card">
+      <div class="card-title">OVX — 원유 변동성</div>
+      <div class="card-sub">유가 불확실성 · 에너지 시장 공포</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderOvx(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderOvx(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderOvx(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-ovx"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-ovx"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">GVZ — 금 변동성</div>
+      <div class="card-sub">금 가격 불확실성 · 안전자산 수요 불안</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderGvz(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderGvz(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderGvz(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-gvz"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-gvz"></div>
+    </div>
+  </div>
+  <div class="insight" style="margin-top:.85rem;">
+    <div class="insight-title">📌 옵션 시장이 말하는 공포의 온도</div>
+    <div class="insight-body">각 자산군의 옵션 시장에서 측정한 변동성 지수예요. <strong>SKEW</strong>는 블랙스완 우려, <strong>VVIX</strong>는 공포 자체가 얼마나 불안정한지, <strong>OVX</strong>는 에너지 시장, <strong>GVZ</strong>는 안전자산인 금 시장의 불확실성을 나타내요. 동시에 오를 때 시장 전반의 공포가 확산되고 있다는 신호예요.</div>
+    <div class="signal-grid">
+      <div class="signal red"><div class="signal-icon">🦢</div><div class="signal-body"><strong>SKEW 140↑</strong>블랙스완 우려 고조 · 꼬리 위험 프리미엄 급등</div></div>
+      <div class="signal yellow"><div class="signal-icon">🌀</div><div class="signal-body"><strong>VVIX 120↑</strong>공포 자체가 불안정 · VIX 급등 가능성 높음</div></div>
+      <div class="signal red"><div class="signal-icon">🛢️</div><div class="signal-body"><strong>OVX 60↑</strong>유가 불확실성 극심 · 에너지 시장 혼란</div></div>
+      <div class="signal yellow"><div class="signal-icon">🥇</div><div class="signal-body"><strong>GVZ 25↑</strong>금 변동성 증가 · 안전자산도 흔들리는 상황</div></div>
+    </div>
+  </div>
 </div>
 <!-- SEC 32: 섹터 히트맵 (트레이딩뷰) -->
 <div class="sec">
@@ -1673,14 +1713,14 @@ async function loadHero(){
         const col=v>140?'#f87171':v>120?'#f97316':'#34d399';
         setH(26,v.toFixed(1),'',v>140?'블랙스완 경계':v>120?'꼬리위험 주시':'안정',col);
       } else if(res.ticker==='^VVIX'){
-        const col=v>120?'#f87171':v>100?'#f97316':'#34d399';
-        setH(27,v.toFixed(1),'',arrow+' '+Math.abs(dv).toFixed(1)+' 전일',col);
+        const col=v>130?'#f87171':v>110?'#f97316':'#34d399';
+        setH(27,v.toFixed(1),'',v>130?'공포 불안정':v>110?'주의':'안정',col);
       } else if(res.ticker==='^OVX'){
         const col=v>60?'#f87171':v>40?'#f97316':'#34d399';
-        setH(28,v.toFixed(1),'',arrow+' '+Math.abs(dv).toFixed(1)+' 전일',col);
+        setH(28,v.toFixed(1),'',v>60?'유가 혼란':v>40?'불안 확대':'보통',col);
       } else if(res.ticker==='^GVZ'){
         const col=v>25?'#f87171':v>15?'#f97316':'#34d399';
-        setH(29,v.toFixed(1),'',arrow+' '+Math.abs(dv).toFixed(1)+' 전일',col);
+        setH(29,v.toFixed(1),'',v>25?'금 불안정':v>15?'주의':'안정',col);
       }
     });
   }).catch(()=>{});
@@ -2646,6 +2686,55 @@ async function renderGvz(days,btn){
   }catch(e){showSpin('w-gvz');}
 }
 
+
+// ── VVIX (변동성의 변동성) ──
+async function renderVvix(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-vvix');
+  try{
+    const d=await fetchYahoo('^VVIX',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-vvix',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const badge=v>130?'red':v>110?'yellow':'green';
+    const label=v>130?'공포 불안정':v>110?'주의':'안정';
+    const desc=v>130?'VIX 자체가 크게 출렁이고 있어요. 시장 공포가 매우 불안정한 상태예요.':v>110?'변동성 시장이 다소 불안정해요. VIX 급등 가능성을 주시해야 해요.':'변동성 시장이 안정적이에요.';
+    showNow('vvix',v.toFixed(1),badge,label,'VVIX <strong>'+v.toFixed(1)+'</strong> — '+desc,periodLabel(days));
+  }catch(e){showSpin('w-vvix');}
+}
+
+// ── OVX (원유 변동성) ──
+async function renderOvx(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-ovx');
+  try{
+    const d=await fetchYahoo('^OVX',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-ovx',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const badge=v>60?'red':v>40?'yellow':'green';
+    const label=v>60?'유가 혼란':v>40?'불안 확대':'보통';
+    const desc=v>60?'원유 시장 변동성이 극심해요. 공급 충격이나 지정학적 리스크가 반영되고 있어요.':v>40?'원유 가격 불확실성이 높아요. 에너지 시장을 주시해야 해요.':'원유 시장이 비교적 안정적이에요.';
+    showNow('ovx',v.toFixed(1),badge,label,'OVX <strong>'+v.toFixed(1)+'</strong> — '+desc,periodLabel(days));
+  }catch(e){showSpin('w-ovx');}
+}
+
+// ── GVZ (금 변동성) ──
+async function renderGvz(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-gvz');
+  try{
+    const d=await fetchYahoo('^GVZ',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-gvz',dates,[{data:vals,borderColor:'#fbbf24',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(251,191,36,0.08)',tension:.3}],{ticks:{color:'#475569'}});
+    const v=vals.at(-1);if(v==null)return;
+    const badge=v>25?'red':v>15?'yellow':'green';
+    const label=v>25?'금 불안정':v>15?'주의':'안정';
+    const desc=v>25?'금 가격 변동성이 높아요. 안전자산인 금도 흔들리는 상황이에요.':v>15?'금 시장에 다소 불확실성이 있어요.':'금 시장이 안정적이에요. 안전자산 수요가 고요한 상태예요.';
+    showNow('gvz',v.toFixed(1),badge,label,'GVZ <strong>'+v.toFixed(1)+'</strong> — '+desc,periodLabel(days));
+  }catch(e){showSpin('w-gvz');}
+}
+
 // ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
 async function loadTelegram(){
   const el=document.getElementById('tg-posts');
@@ -2744,6 +2833,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-vvix',   ()=>renderVvix(365));
   observeLazy('w-ovx',    ()=>renderOvx(365));
   observeLazy('w-gvz',    ()=>renderGvz(365));
+  observeLazy('w-vvix',   ()=>renderVvix(365));
+  observeLazy('w-ovx',    ()=>renderOvx(365));
+  observeLazy('w-gvz',    ()=>renderGvz(365));
   observeLazy('w-em',     ()=>renderEm(365));
   observeLazy('w-kospi',  ()=>renderKospi(365));
   observeLazy('w-kosdaq', ()=>renderKosdaq(365));
@@ -2759,3 +2851,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 </button>
 </body>
 </html>
+  <!-- 옵션 심리 -->
+  <div class="hero-label" style="margin-top:1.1rem;">🎯 옵션</div>
+  <div class="hero-row" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);">
+    <div class="hcard clickable" onclick="scrollToChart('w-skew')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">SKEW 지수</div><div class="hcard-val" id="h26"><div class="skel"></div></div><div class="hcard-chg" id="h26c">—</div><div class="hcard-desc">블랙스완 우려</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-vvix')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">VVIX</div><div class="hcard-val" id="h27"><div class="skel"></div></div><div class="hcard-chg" id="h27c">—</div><div class="hcard-desc">공포의 변동성</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-ovx')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">OVX</div><div class="hcard-val" id="h28"><div class="skel"></div></div><div class="hcard-chg" id="h28c">—</div><div class="hcard-desc">원유 변동성</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-gvz')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">GVZ</div><div class="hcard-val" id="h29"><div class="skel"></div></div><div class="hcard-chg" id="h29c">—</div><div class="hcard-desc">금 변동성</div></div>
+  </div>
