@@ -277,6 +277,14 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-samsung')"><div class="hcard-title">삼성전자</div><div class="hcard-val" id="h19"><div class="skel"></div></div><div class="hcard-chg" id="h19c">—</div><div class="hcard-desc">코스피 비중 20%+</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-krw')"><div class="hcard-title">원달러 환율</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">KRW/USD</div></div>
   </div>
+  <!-- 신흥국 -->
+  <div class="hero-label" style="margin-top:1.1rem;">🌏 신흥국</div>
+  <div class="hero-row" style="border-color:rgba(52,211,153,.12);background:rgba(52,211,153,.02);">
+    <div class="hcard clickable" onclick="scrollToChart('w-em1')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">브라질 EWZ</div><div class="hcard-val" id="h21"><div class="skel"></div></div><div class="hcard-chg" id="h21c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em1')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">인도 INDA</div><div class="hcard-val" id="h22"><div class="skel"></div></div><div class="hcard-chg" id="h22c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em2')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">베트남 VNM</div><div class="hcard-val" id="h23"><div class="skel"></div></div><div class="hcard-chg" id="h23c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em2')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">일본 EWJ</div><div class="hcard-val" id="h24"><div class="skel"></div></div><div class="hcard-chg" id="h24c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+  </div>
   <!-- 시장 심리 -->
   <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
   <div class="hero-row market">
@@ -433,7 +441,7 @@ footer a{color:var(--txt3);}
   <div class="insight" style="margin-top:.85rem;">
     <div class="insight-title">📌 코스피 &amp; 코스닥 Drawdown</div>
     <div class="insight-body">S&amp;P500과 나란히 보면 글로벌 증시 대비 한국 증시의 상대적 강약을 파악할 수 있어요. 코스닥은 성장주 비중이 높아 유동성 민감도가 더 높아요.</div>
-    <div class="signal-grid">
+    <div class="signal-grid" style="grid-template-columns:1fr 1fr 1fr;">
       <div class="signal green"><div class="signal-icon">🏔️</div><div class="signal-body"><strong>-5% 이내</strong>강세장 · ATH 근접</div></div>
       <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>-10~20%</strong>조정 구간</div></div>
       <div class="signal red"><div class="signal-icon">🐻</div><div class="signal-body"><strong>-20% 이상</strong>약세장 · 리스크 관리</div></div>
@@ -487,9 +495,47 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 8: 공포탐욕 -->
+<!-- SEC 8: 신흥국 ETF -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">공포 &amp; 탐욕 지수</div><div class="sec-tag">CNN FEAR &amp; GREED</div></div>
+  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">신흥국 ETF</div><div class="sec-tag">EWZ · INDA · VNM · EWJ · YAHOO</div></div>
+  <div class="cards-half">
+    <div class="card">
+      <div class="card-title">브라질 (EWZ) · 인도 (INDA)</div>
+      <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderEm1(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderEm1(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderEm1(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-em1"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-em1"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">베트남 (VNM) · 일본 (EWJ)</div>
+      <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderEm2(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderEm2(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderEm2(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-em2"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-em2"></div>
+    </div>
+  </div>
+  <div class="insight" style="margin-top:.85rem;">
+    <div class="insight-title">📌 신흥국 ETF란?</div>
+    <div class="insight-body">글로벌 유동성이 확대될 때 신흥국으로 자금이 유입돼요. <strong>달러 약세</strong> 구간에서 신흥국 ETF가 강세를 보이는 경향이 있어요. 한국 투자자라면 브라질·인도·베트남·일본 흐름을 코스피와 함께 보면 유용해요.</div>
+    <div class="signal-grid">
+      <div class="signal green"><div class="signal-icon">🌏</div><div class="signal-body"><strong>신흥국 강세</strong>달러 약세·글로벌 유동성 확대·위험선호 환경</div></div>
+      <div class="signal red"><div class="signal-icon">💸</div><div class="signal-body"><strong>신흥국 약세</strong>달러 강세·미국 금리 상승·자금 이탈 압력</div></div>
+      <div class="signal blue"><div class="signal-icon">🇮🇳</div><div class="signal-body"><strong>인도</strong>내수 중심 고성장 · 달러 영향 상대적으로 낮음</div></div>
+      <div class="signal yellow"><div class="signal-icon">🇯🇵</div><div class="signal-body"><strong>일본</strong>엔화 약세 시 수출기업 수혜 · 한국과 경쟁 관계</div></div>
+    </div>
+  </div>
+</div>
+<!-- SEC 9: 공포탐욕 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">공포 &amp; 탐욕 지수</div><div class="sec-tag">CNN FEAR &amp; GREED</div></div>
   <div class="cards">
     <div class="card">
       <div class="card-title">현재</div>
@@ -513,9 +559,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 9: VIX -->
+<!-- SEC 10: VIX -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">VIX 변동성 지수</div><div class="sec-tag">VIXCLS · CBOE</div></div>
+  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">VIX 변동성 지수</div><div class="sec-tag">VIXCLS · CBOE</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">VIX 공포지수 추이</div>
@@ -541,9 +587,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 10: 금리차 -->
+<!-- SEC 11: 금리차 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">미국 장단기 금리차 (10Y-2Y)</div><div class="sec-tag">T10Y2Y</div></div>
+  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">미국 장단기 금리차 (10Y-2Y)</div><div class="sec-tag">T10Y2Y</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">10년물 - 2년물 국채 스프레드</div>
@@ -569,9 +615,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 11: 하이일드 -->
+<!-- SEC 12: 하이일드 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
+  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">하이일드 채권 스프레드</div>
@@ -597,9 +643,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 12: MMF -->
+<!-- SEC 13: MMF -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
+  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">금융스트레스지수 (STLFSI)</div>
@@ -624,9 +670,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 13: 달러인덱스 -->
+<!-- SEC 14: 달러인덱스 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">달러인덱스 (DXY)</div><div class="sec-tag">DTWEXBGS</div></div>
+  <div class="sec-hdr"><div class="sec-num">14</div><div class="sec-title">달러인덱스 (DXY)</div><div class="sec-tag">DTWEXBGS</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">달러인덱스 추이</div>
     <div class="card-sub">단위: 지수 · 일간 · 100 기준</div>
@@ -648,9 +694,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 14: 달러/엔 환율 -->
+<!-- SEC 15: 달러/엔 환율 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">14</div><div class="sec-title">달러/엔 환율</div><div class="sec-tag">JPY=X · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">15</div><div class="sec-title">달러/엔 환율</div><div class="sec-tag">JPY=X · YAHOO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">달러/엔 환율 추이</div>
     <div class="card-sub">단위: 엔/달러 · 일간</div>
@@ -671,9 +717,9 @@ footer a{color:var(--txt3);}
     </div>
   </div></div>
 </div>
-<!-- SEC 15: 10년물 국채금리 -->
+<!-- SEC 16: 10년물 국채금리 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">15</div><div class="sec-title">미국 10년물 국채금리</div><div class="sec-tag">DGS10</div></div>
+  <div class="sec-hdr"><div class="sec-num">16</div><div class="sec-title">미국 10년물 국채금리</div><div class="sec-tag">DGS10</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">10년물 국채금리 추이</div>
     <div class="card-sub">단위: % · 일간</div>
@@ -695,9 +741,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 16: WTI 원유 -->
+<!-- SEC 17: WTI 원유 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">16</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
+  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">WTI 원유가격 추이</div>
     <div class="card-sub">단위: USD/배럴 · 일간</div>
@@ -719,9 +765,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 17: 구리 -->
+<!-- SEC 18: 구리 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-title">구리 (Copper)</div><div class="sec-tag">HG=F · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-title">구리 (Copper)</div><div class="sec-tag">HG=F · YAHOO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">구리 가격 추이</div>
     <div class="card-sub">단위: USD/파운드 · 일간</div>
@@ -742,9 +788,9 @@ footer a{color:var(--txt3);}
     </div>
   </div></div>
 </div>
-<!-- SEC 18: M2 통화량 -->
+<!-- SEC 19: M2 통화량 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-title">미국 M2 통화량</div><div class="sec-tag">M2SL</div></div>
+  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-title">미국 M2 통화량</div><div class="sec-tag">M2SL</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">M2 통화량 추이</div>
     <div class="card-sub">단위: $B · 월간</div>
@@ -766,9 +812,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 19: 실업률 & 신규실업수당 -->
+<!-- SEC 20: 실업률 & 신규실업수당 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-title">실업률 &amp; 신규실업수당</div><div class="sec-tag">UNRATE · ICSA</div></div>
+  <div class="sec-hdr"><div class="sec-num">20</div><div class="sec-title">실업률 &amp; 신규실업수당</div><div class="sec-tag">UNRATE · ICSA</div></div>
   <div class="cards-half">
     <div class="card">
       <div class="card-title">미국 실업률</div>
@@ -802,9 +848,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 20: 연준 총자산 -->
+<!-- SEC 21: 연준 총자산 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">20</div><div class="sec-title">연준 대차대조표 (총자산)</div><div class="sec-tag">WALCL</div></div>
+  <div class="sec-hdr"><div class="sec-num">21</div><div class="sec-title">연준 대차대조표 (총자산)</div><div class="sec-tag">WALCL</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">연준 총자산 추이</div>
@@ -830,9 +876,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 21: 지급준비금 -->
+<!-- SEC 22: 지급준비금 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">21</div><div class="sec-title">연준 지급준비금 잔액</div><div class="sec-tag">WRESBAL</div></div>
+  <div class="sec-hdr"><div class="sec-num">22</div><div class="sec-title">연준 지급준비금 잔액</div><div class="sec-tag">WRESBAL</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">총 지급준비금 잔액</div>
@@ -858,9 +904,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 22: RRP -->
+<!-- SEC 23: RRP -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">22</div><div class="sec-title">연준 역레포(RRP) 잔액</div><div class="sec-tag">RRPONTSYD</div></div>
+  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">연준 역레포(RRP) 잔액</div><div class="sec-tag">RRPONTSYD</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">역레포 잔액 추이</div>
@@ -886,9 +932,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 23: TGA -->
+<!-- SEC 24: TGA -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">미국 재무부 TGA 잔액</div><div class="sec-tag">WTREGEN</div></div>
+  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">미국 재무부 TGA 잔액</div><div class="sec-tag">WTREGEN</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">재무부 일반계정(TGA) 잔액</div>
@@ -915,9 +961,9 @@ footer a{color:var(--txt3);}
 </div>
 
 
-<!-- SEC 24: 주간증감 -->
+<!-- SEC 25: 주간증감 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">지급준비금 &amp; TGA — 전주 대비 증감</div><div class="sec-tag">WEEKLY CHANGE</div></div>
+  <div class="sec-hdr"><div class="sec-num">25</div><div class="sec-title">지급준비금 &amp; TGA — 전주 대비 증감</div><div class="sec-tag">WEEKLY CHANGE</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">주간 변동폭 (지급준비금 vs TGA)</div>
@@ -928,9 +974,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 25: MMF 총 잔액 -->
+<!-- SEC 26: MMF 총 잔액 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">25</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS</div></div>
+  <div class="sec-hdr"><div class="sec-num">26</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">MMF 총잔액 추이</div>
     <div class="card-sub">단위: $B · 주간</div>
@@ -954,9 +1000,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 26: MMF vs RRP -->
+<!-- SEC 27: MMF vs RRP -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">26</div><div class="sec-title">MMF vs 역레포(RRP) 비교</div><div class="sec-tag">CORRELATION</div></div>
+  <div class="sec-hdr"><div class="sec-num">27</div><div class="sec-title">MMF vs 역레포(RRP) 비교</div><div class="sec-tag">CORRELATION</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">MMF 잔액 vs 역레포 잔액</div>
@@ -971,9 +1017,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 27: MMF 주간증감 -->
+<!-- SEC 28: MMF 주간증감 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">27</div><div class="sec-title">MMF 전주 대비 증감폭</div><div class="sec-tag">WEEKLY FLOW</div></div>
+  <div class="sec-hdr"><div class="sec-num">28</div><div class="sec-title">MMF 전주 대비 증감폭</div><div class="sec-tag">WEEKLY FLOW</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">MMF 주간 자금 유출입</div>
@@ -984,9 +1030,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 28: SOFR/EFFR -->
+<!-- SEC 29: SOFR/EFFR -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">28</div><div class="sec-title">SOFR / EFFR 스프레드</div><div class="sec-tag">SECURED vs UNSECURED</div></div>
+  <div class="sec-hdr"><div class="sec-num">29</div><div class="sec-title">SOFR / EFFR 스프레드</div><div class="sec-tag">SECURED vs UNSECURED</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">SOFR · EFFR 금리 및 스프레드 추이</div>
@@ -1010,9 +1056,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 29: SOFR/IORB -->
+<!-- SEC 30: SOFR/IORB -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">29</div><div class="sec-title">SOFR / IORB 스프레드</div><div class="sec-tag">MARKET RATE vs FED RATE</div></div>
+  <div class="sec-hdr"><div class="sec-num">30</div><div class="sec-title">SOFR / IORB 스프레드</div><div class="sec-tag">MARKET RATE vs FED RATE</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">SOFR · IORB 금리 및 스프레드 추이</div>
@@ -1038,9 +1084,9 @@ footer a{color:var(--txt3);}
 
 
 
-<!-- SEC 30: 섹터 히트맵 (트레이딩뷰) -->
+<!-- SEC 31: 섹터 히트맵 (트레이딩뷰) -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">30</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">TRADINGVIEW · 실시간</div></div>
+  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">TRADINGVIEW · 실시간</div></div>
   <div class="cards-full"><div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
     <div class="tradingview-widget-container" style="height:500px;">
       <div class="tradingview-widget-container__widget" style="height:100%;"></div>
@@ -1068,9 +1114,9 @@ footer a{color:var(--txt3);}
 </div>
 
 
-<!-- SEC 31: 상관관계 히트맵 -->
+<!-- SEC 32: 상관관계 히트맵 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
+  <div class="sec-hdr"><div class="sec-num">32</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">주요 자산 상관관계</div>
     <div class="card-sub">S&amp;P500 · 미국채 · 금 · 달러 · 원유 · 비트코인 · 90일</div>
@@ -1082,9 +1128,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 32: 최근 시장 분석 리포트 -->
+<!-- SEC 33: 최근 시장 분석 리포트 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">32</div><div class="sec-title">최근 시장 분석 리포트</div><div class="sec-tag">자산제곱</div></div>
+  <div class="sec-hdr"><div class="sec-num">33</div><div class="sec-title">최근 시장 분석 리포트</div><div class="sec-tag">자산제곱</div></div>
   <div class="cards-full"><div class="card">
     <div id="naver-posts">
       <div style="margin-bottom:.75rem;">
@@ -1116,8 +1162,7 @@ footer a{color:var(--txt3);}
       </div>
     </div>
   </div></div>
-</div>
-</div><!-- /wrap --></div><!-- /wrap -->
+</div></div><!-- /wrap --></div><!-- /wrap -->
 
 <div class="cta-bar">
   <div class="cta-inner">
@@ -2367,6 +2412,75 @@ async function loadKrHero(){
   }catch(e){console.warn('KR hero:',e.message);}
 }
 
+
+// ── 신흥국 ETF ──
+async function renderEm1(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-em1');
+  try{
+    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent('EWZ,INDA')+'&days='+days);
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json();
+    const ewz=(d.results||[]).find(r=>r.ticker==='EWZ');
+    const inda=(d.results||[]).find(r=>r.ticker==='INDA');
+    if(!ewz||!inda)throw new Error('no data');
+    // 브라질 drawdown
+    let pk1=ewz.vals[0];
+    const dd1=ewz.vals.map(v=>{pk1=Math.max(pk1,v);return +((v-pk1)/pk1*100).toFixed(2);});
+    // 인도 drawdown
+    let pk2=inda.vals[0];
+    const dd2=inda.vals.map(v=>{pk2=Math.max(pk2,v);return +((v-pk2)/pk2*100).toFixed(2);});
+    const{dates,vals:d1}=thin(ewz.dates,dd1,200);
+    const d2=thin(inda.dates,dd2,200).vals;
+    mkLine('w-em1',dates,[
+      {label:'브라질(EWZ)',data:d1,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'인도(INDA)',data:d2,borderColor:'#f59e0b',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+    ],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    const cur1=ewz.vals.at(-1), pk_all1=Math.max(...ewz.vals);
+    const dd_cur1=((cur1-pk_all1)/pk_all1*100).toFixed(1);
+    const cur2=inda.vals.at(-1), pk_all2=Math.max(...inda.vals);
+    const dd_cur2=((cur2-pk_all2)/pk_all2*100).toFixed(1);
+    showNow('em1','EWZ '+dd_cur1+'%','neu','브라질·인도','브라질 EWZ <strong>'+dd_cur1+'%</strong> · 인도 INDA <strong>'+dd_cur2+'%</strong> (ATH 대비 낙폭)',periodLabel(days));
+    // 히어로 업데이트
+    const c1=Math.abs(parseFloat(dd_cur1))<5?'#34d399':Math.abs(parseFloat(dd_cur1))<15?'#f97316':'#f87171';
+    const c2=Math.abs(parseFloat(dd_cur2))<5?'#34d399':Math.abs(parseFloat(dd_cur2))<15?'#f97316':'#f87171';
+    setH(21,dd_cur1+'%','','ATH 대비 낙폭',c1);
+    setH(22,dd_cur2+'%','','ATH 대비 낙폭',c2);
+  }catch(e){showSpin('w-em1');}
+}
+
+async function renderEm2(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-em2');
+  try{
+    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent('VNM,EWJ')+'&days='+days);
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json();
+    const vnm=(d.results||[]).find(r=>r.ticker==='VNM');
+    const ewj=(d.results||[]).find(r=>r.ticker==='EWJ');
+    if(!vnm||!ewj)throw new Error('no data');
+    let pk1=vnm.vals[0];
+    const dd1=vnm.vals.map(v=>{pk1=Math.max(pk1,v);return +((v-pk1)/pk1*100).toFixed(2);});
+    let pk2=ewj.vals[0];
+    const dd2=ewj.vals.map(v=>{pk2=Math.max(pk2,v);return +((v-pk2)/pk2*100).toFixed(2);});
+    const{dates,vals:d1}=thin(vnm.dates,dd1,200);
+    const d2=thin(ewj.dates,dd2,200).vals;
+    mkLine('w-em2',dates,[
+      {label:'베트남(VNM)',data:d1,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
+      {label:'일본(EWJ)',data:d2,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
+    ],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    const cur1=vnm.vals.at(-1), pk_all1=Math.max(...vnm.vals);
+    const dd_cur1=((cur1-pk_all1)/pk_all1*100).toFixed(1);
+    const cur2=ewj.vals.at(-1), pk_all2=Math.max(...ewj.vals);
+    const dd_cur2=((cur2-pk_all2)/pk_all2*100).toFixed(1);
+    showNow('em2','VNM '+dd_cur1+'%','neu','베트남·일본','베트남 VNM <strong>'+dd_cur1+'%</strong> · 일본 EWJ <strong>'+dd_cur2+'%</strong> (ATH 대비 낙폭)',periodLabel(days));
+    const c1=Math.abs(parseFloat(dd_cur1))<5?'#34d399':Math.abs(parseFloat(dd_cur1))<15?'#f97316':'#f87171';
+    const c2=Math.abs(parseFloat(dd_cur2))<5?'#34d399':Math.abs(parseFloat(dd_cur2))<15?'#f97316':'#f87171';
+    setH(23,dd_cur1+'%','','ATH 대비 낙폭',c1);
+    setH(24,dd_cur2+'%','','ATH 대비 낙폭',c2);
+  }catch(e){showSpin('w-em2');}
+}
+
 // ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
 async function loadTelegram(){
   const el=document.getElementById('tg-posts');
@@ -2456,6 +2570,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-nasdaq', ()=>renderNasdaq(365));
   observeLazy('w-gold',   ()=>renderGold(365));
   observeLazy('w-btc',    ()=>renderBtc(365));
+  observeLazy('w-em1',    ()=>renderEm1(365));
+  observeLazy('w-em2',    ()=>renderEm2(365));
   observeLazy('w-kospi',  ()=>renderKospi(365));
   observeLazy('w-kosdaq', ()=>renderKosdaq(365));
   observeLazy('w-samsung',()=>renderSamsung(365));
