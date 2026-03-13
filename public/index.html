@@ -47,6 +47,9 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 .hcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;transition:border-color .2s;}
 .hcard:hover{border-color:#444;}
 /* 유동성 섹션 */
+.hero-row.asset .hcard{border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);}
+.hero-row.asset .hcard:hover{border-color:rgba(251,191,36,.45);}
+.hero-row.asset .hcard-title{color:#fbbf24;opacity:.85;}
 .hero-row.liquidity .hcard{border-color:rgba(91,156,246,.18);background:rgba(91,156,246,.03);}
 .hero-row.liquidity .hcard:hover{border-color:rgba(91,156,246,.45);}
 .hero-row.liquidity .hcard-title{color:#5b9cf6;opacity:.85;}
@@ -246,15 +249,15 @@ footer a{color:var(--txt3);}
 
 <!-- HERO -->
 <div class="hero" style="display:block;">
-  <!-- 1줄: 유동성 지표 -->
-  <div class="hero-label">💧 유동성</div>
-  <div class="hero-row liquidity">
-    <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard-val" id="h4"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 · QE/QT</div></div>
-    <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금</div></div>
-    <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
-    <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
+  <!-- 1줄: 자산 -->
+  <div class="hero-label">📊 자산</div>
+  <div class="hero-row asset">
+    <div class="hcard"><div class="hcard-title">S&amp;P500</div><div class="hcard-val" id="h13"><div class="skel"></div></div><div class="hcard-chg" id="h13c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
+    <div class="hcard"><div class="hcard-title">나스닥</div><div class="hcard-val" id="h14"><div class="skel"></div></div><div class="hcard-chg" id="h14c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
+    <div class="hcard"><div class="hcard-title">금</div><div class="hcard-val" id="h15"><div class="skel"></div></div><div class="hcard-chg" id="h15c">—</div><div class="hcard-desc">USD/온스 · 안전자산</div></div>
+    <div class="hcard"><div class="hcard-title">비트코인</div><div class="hcard-val" id="h16"><div class="skel"></div></div><div class="hcard-chg" id="h16c">—</div><div class="hcard-desc">BTC/USD · 위험선호</div></div>
   </div>
-  <!-- 2줄: 시장 지표 -->
+  <!-- 2줄: 시장 -->
   <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
   <div class="hero-row market">
     <div class="hcard"><div class="hcard-title">공포탐욕지수</div><div class="hcard-val" id="h1"><div class="skel"></div></div><div class="hcard-chg" id="h1c">—</div><div class="hcard-desc">CNN Fear &amp; Greed</div></div>
@@ -262,7 +265,7 @@ footer a{color:var(--txt3);}
     <div class="hcard"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
     <div class="hcard"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스</div></div>
   </div>
-  <!-- 3줄: 매크로 지표 -->
+  <!-- 3줄: 매크로 -->
   <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
   <div class="hero-row macro">
     <div class="hcard"><div class="hcard-title">달러인덱스</div><div class="hcard-val" id="h9"><div class="skel"></div></div><div class="hcard-chg" id="h9c">—</div><div class="hcard-desc">DXY · ICE 달러인덱스</div></div>
@@ -270,13 +273,13 @@ footer a{color:var(--txt3);}
     <div class="hcard"><div class="hcard-title">10년물 금리</div><div class="hcard-val" id="h11"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
     <div class="hcard"><div class="hcard-title">WTI 원유</div><div class="hcard-val" id="h12"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">USD/배럴</div></div>
   </div>
-  <!-- 4줄: 위험자산 -->
-  <div class="hero-label" style="margin-top:1.1rem;">🔥 위험자산</div>
-  <div class="hero-row" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);">
-    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">S&amp;P500</div><div class="hcard-val" id="h13"><div class="skel"></div></div><div class="hcard-chg" id="h13c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
-    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">나스닥</div><div class="hcard-val" id="h14"><div class="skel"></div></div><div class="hcard-chg" id="h14c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
-    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">금</div><div class="hcard-val" id="h15"><div class="skel"></div></div><div class="hcard-chg" id="h15c">—</div><div class="hcard-desc">USD/온스 · 안전자산</div></div>
-    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">비트코인</div><div class="hcard-val" id="h16"><div class="skel"></div></div><div class="hcard-chg" id="h16c">—</div><div class="hcard-desc">BTC/USD · 위험선호</div></div>
+  <!-- 4줄: 유동성 -->
+  <div class="hero-label" style="margin-top:1.1rem;">💧 유동성</div>
+  <div class="hero-row liquidity">
+    <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard-val" id="h4"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 · QE/QT</div></div>
+    <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금</div></div>
+    <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
+    <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
   </div>
 </div>
 
@@ -378,9 +381,64 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 5: 연준 총자산 -->
+<!-- SEC 5: 하이일드 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">5</div><div class="sec-title">연준 대차대조표 (총자산)</div><div class="sec-tag">WALCL</div></div>
+  <div class="sec-hdr"><div class="sec-num">5</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">하이일드 채권 스프레드</div>
+      <div class="card-sub">단위: % · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderHys(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderHys(365*5,this)">5Y</button>
+        <button class="tbtn" onclick="renderHys(365*10,this)">10Y</button>
+      </div>
+      <div class="chart-wrap" id="w-hys"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-hys"></div>
+    <div class="insight">
+  <div class="insight-title">📌 하이일드 스프레드란?</div>
+  <div class="insight-body"><strong>정크본드(고위험 회사채)와 국채 금리의 차이</strong>예요. 기업이 도산할 위험이 높아질수록 이 차이(스프레드)가 벌어져요. 신용시장의 스트레스를 가장 빠르게 감지하는 지표 중 하나예요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>3~4% — 정상</strong>기업 부도 우려가 낮고 신용시장이 건강한 상태. 경기 확장기에 주로 나타나요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>4~6% — 주의</strong>경기 둔화 우려가 생기는 구간. 투자자들이 위험을 회피하기 시작해요.</div></div>
+    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-body"><strong>8% 이상 — 위기</strong>신용경색 수준. 기업들이 자금 조달에 어려움을 겪어요. 2008년엔 20%까지 치솟았어요.</div></div>
+    <div class="signal blue"><div class="signal-icon">🔮</div><div class="signal-body"><strong>선행지표</strong>주식시장보다 먼저 위험 신호를 보내는 경향이 있어요. 스프레드 급등에 주목하세요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 6: MMF -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">6</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
+  <div class="cards-full">
+    <div class="card">
+      <div class="card-title">금융스트레스지수 (STLFSI)</div>
+      <div class="card-sub">단위: 표준편차 · 주간 · 0 이상 = 스트레스</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderStlfsi(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderStlfsi(365*5,this)">5Y</button>
+      </div>
+      <div class="chart-wrap" id="w-stlfsi"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-stlfsi"></div>
+      <div class="insight">
+  <div class="insight-title">📌 금융스트레스지수란?</div>
+  <div class="insight-body">세인트루이스 연준이 만든 지수로, <strong>금리·신용·주식 등 18개 지표를 종합</strong>해 금융시스템 전체의 스트레스를 하나의 숫자로 보여줘요. 0이 역사적 평균이에요.</div>
+  <div class="signal-grid">
+    <div class="signal green"><div class="signal-icon">😊</div><div class="signal-body"><strong>0 미만 — 낮은 스트레스</strong>평균보다 금융시장이 안정적인 상태. 대부분의 평상시가 이 구간이에요.</div></div>
+    <div class="signal yellow"><div class="signal-icon">😶</div><div class="signal-body"><strong>0~1 — 보통</strong>약간의 스트레스가 있지만 정상 범위. 지속 관찰이 필요한 구간이에요.</div></div>
+    <div class="signal red"><div class="signal-icon">😰</div><div class="signal-body"><strong>1 이상 — 높은 스트레스</strong>금융시장 전반에 긴장감. 과거 위기 때마다 이 구간을 넘어섰어요.</div></div>
+    <div class="signal red"><div class="signal-icon">🔥</div><div class="signal-body"><strong>3 이상 — 위기</strong>2008년 금융위기, 2020년 코로나 충격 때 이 수준에 도달했어요.</div></div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 7: 연준 총자산 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">7</div><div class="sec-title">연준 대차대조표 (총자산)</div><div class="sec-tag">WALCL</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">연준 총자산 추이</div>
@@ -406,9 +464,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 6: 지급준비금 -->
+<!-- SEC 8: 지급준비금 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">6</div><div class="sec-title">연준 지급준비금 잔액</div><div class="sec-tag">WRESBAL</div></div>
+  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">연준 지급준비금 잔액</div><div class="sec-tag">WRESBAL</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">총 지급준비금 잔액</div>
@@ -434,9 +492,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 7: RRP -->
+<!-- SEC 9: RRP -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">7</div><div class="sec-title">연준 역레포(RRP) 잔액</div><div class="sec-tag">RRPONTSYD</div></div>
+  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">연준 역레포(RRP) 잔액</div><div class="sec-tag">RRPONTSYD</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">역레포 잔액 추이</div>
@@ -462,9 +520,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 8: TGA -->
+<!-- SEC 10: TGA -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">미국 재무부 TGA 잔액</div><div class="sec-tag">WTREGEN</div></div>
+  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">미국 재무부 TGA 잔액</div><div class="sec-tag">WTREGEN</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">재무부 일반계정(TGA) 잔액</div>
@@ -491,9 +549,9 @@ footer a{color:var(--txt3);}
 </div>
 
 
-<!-- SEC 9: 주간증감 -->
+<!-- SEC 11: 주간증감 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">지급준비금 &amp; TGA — 전주 대비 증감</div><div class="sec-tag">WEEKLY CHANGE</div></div>
+  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">지급준비금 &amp; TGA — 전주 대비 증감</div><div class="sec-tag">WEEKLY CHANGE</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">주간 변동폭 (지급준비금 vs TGA)</div>
@@ -504,36 +562,35 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 10: MMF 총잔액 -->
+<!-- SEC 12: MMF 총 잔액 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS</div></div>
-  <div class="cards-full">
-    <div class="card">
-      <div class="card-title">MMF 총 잔액 추이</div>
-      <div class="card-sub">단위: $B · 주간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderMmf(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderMmf(365*5,this)">5Y</button>
-        <button class="tbtn" onclick="renderMmf(365*10,this)">10Y</button>
-      </div>
-      <div class="chart-wrap" id="w-mmf"><div class="lw"><div class="sp"></div></div></div>
-      <div class="insight">
-  <div class="insight-title">📌 MMF(머니마켓펀드)란?</div>
-  <div class="insight-body">단기 안전자산에 투자하는 펀드로, 투자자들이 <strong>"지금은 주식 말고 일단 안전한 곳에 넣자"</strong>고 판단할 때 자금이 몰려요. MMF 잔액이 급증하면 시장 불안이 크다는 신호이고, 반대로 줄면 위험자산으로 자금이 이동한다는 뜻이에요.</div>
-  <div class="signal-grid">
-    <div class="signal red"><div class="signal-icon">🏃</div><div class="signal-body"><strong>잔액 급증</strong>투자자들이 위험자산 피해 안전지대로 대피 중. 불안감이 크거나 금리가 매력적일 때 증가해요.</div></div>
-    <div class="signal green"><div class="signal-icon">🔄</div><div class="signal-body"><strong>잔액 감소</strong>투자자들이 주식·채권으로 복귀 중. MMF에서 빠진 돈이 자산시장으로 유입돼요.</div></div>
-    <div class="signal blue"><div class="signal-icon">📊</div><div class="signal-body"><strong>현재 6조 달러 이상</strong>역사적 최고 수준. 잠재적으로 시장으로 유입될 수 있는 엄청난 대기 자금이에요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">💡</div><div class="signal-body"><strong>기관형 vs 리테일</strong>기관형은 주로 역레포에, 리테일은 단기채권에 투자해요. 성격이 달라요.</div></div>
-  </div>
-</div>
+  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">MMF 총 잔액</div><div class="sec-tag">WRMFNS</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">MMF 총잔액 추이</div>
+    <div class="card-sub">단위: $B · 주간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderMmf(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderMmf(365*5,this)">5Y</button>
+      <button class="tbtn" onclick="renderMmf(365*10,this)">10Y</button>
     </div>
-  </div>
+    <div class="chart-wrap" id="w-mmf"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-mmf"></div>
+    <div class="insight">
+      <div class="insight-title">📌 MMF(머니마켓펀드)란?</div>
+      <div class="insight-body">단기 안전자산에 투자하는 펀드로, 투자자들이 <strong>"지금은 주식 말고 잠깐 안전한 곳에 맡자"</strong>고 판단할 때 자금이 몰려요. MMF 잔액이 급증하면 시장 불안이 크다는 신호이고, 반대로 줄면 돈이 위험자산으로 이동한다는 뜻이에요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">🏦</div><div class="signal-body"><strong>잔액 급증</strong>투자자들이 주식에서 채권이나 MMF로 대피 중. MMF에서 빠진 돈이 주식 새 매수세로 들어올 때 증가가 멈춰요.</div></div>
+        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>잔액 감소</strong>투자자들이 주식 매수에 나서고 있어요. MMF에서 빠진 돈이 증시로 유입돼요.</div></div>
+        <div class="signal blue"><div class="signal-icon">💰</div><div class="signal-body"><strong>현재 5조 달러 이상</strong>역사적 최고 수준. 장기적으로 증시에 유입될 수 있는 자금이에요.</div></div>
+        <div class="signal yellow"><div class="signal-icon">🔀</div><div class="signal-body"><strong>기관형 vs 리테일</strong>기관형은 주로 역레포에, 리테일은 단기채권 CP 등 시장으로 자금을 이동해요.</div></div>
+      </div>
+    </div>
+  </div></div>
 </div>
 
-<!-- SEC 11: MMF vs RRP -->
+<!-- SEC 13: MMF vs RRP -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">MMF vs 역레포(RRP) 비교</div><div class="sec-tag">CORRELATION</div></div>
+  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">MMF vs 역레포(RRP) 비교</div><div class="sec-tag">CORRELATION</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">MMF 잔액 vs 역레포 잔액</div>
@@ -548,70 +605,15 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 12: MMF 주간증감 -->
+<!-- SEC 14: MMF 주간증감 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">MMF 전주 대비 증감폭</div><div class="sec-tag">WEEKLY FLOW</div></div>
+  <div class="sec-hdr"><div class="sec-num">14</div><div class="sec-title">MMF 전주 대비 증감폭</div><div class="sec-tag">WEEKLY FLOW</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">MMF 주간 자금 유출입</div>
       <div class="card-sub">전주 대비 증감 · 단위: $B</div>
       <div class="chart-wrap" id="w-mmfwk"><div class="lw"><div class="sp"></div></div></div>
       <div class="insight"><strong>대규모 유입(+)</strong> → 위험 회피, 안전자산 선호. <strong>대규모 유출(−)</strong> → 투자자들이 주식·채권 등 위험자산으로 이동 중인 신호.</div>
-    </div>
-  </div>
-</div>
-
-<!-- SEC 13: 하이일드 -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
-  <div class="cards-full">
-    <div class="card">
-      <div class="card-title">하이일드 채권 스프레드</div>
-      <div class="card-sub">단위: % · 일간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderHys(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderHys(365*5,this)">5Y</button>
-        <button class="tbtn" onclick="renderHys(365*10,this)">10Y</button>
-      </div>
-      <div class="chart-wrap" id="w-hys"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-hys"></div>
-    <div class="insight">
-  <div class="insight-title">📌 하이일드 스프레드란?</div>
-  <div class="insight-body"><strong>정크본드(고위험 회사채)와 국채 금리의 차이</strong>예요. 기업이 도산할 위험이 높아질수록 이 차이(스프레드)가 벌어져요. 신용시장의 스트레스를 가장 빠르게 감지하는 지표 중 하나예요.</div>
-  <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">✅</div><div class="signal-body"><strong>3~4% — 정상</strong>기업 부도 우려가 낮고 신용시장이 건강한 상태. 경기 확장기에 주로 나타나요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>4~6% — 주의</strong>경기 둔화 우려가 생기는 구간. 투자자들이 위험을 회피하기 시작해요.</div></div>
-    <div class="signal red"><div class="signal-icon">🚨</div><div class="signal-body"><strong>8% 이상 — 위기</strong>신용경색 수준. 기업들이 자금 조달에 어려움을 겪어요. 2008년엔 20%까지 치솟았어요.</div></div>
-    <div class="signal blue"><div class="signal-icon">🔮</div><div class="signal-body"><strong>선행지표</strong>주식시장보다 먼저 위험 신호를 보내는 경향이 있어요. 스프레드 급등에 주목하세요.</div></div>
-  </div>
-</div>
-    </div>
-  </div>
-</div>
-
-<!-- SEC 10: MMF -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">14</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
-  <div class="cards-full">
-    <div class="card">
-      <div class="card-title">금융스트레스지수 (STLFSI)</div>
-      <div class="card-sub">단위: 표준편차 · 주간 · 0 이상 = 스트레스</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderStlfsi(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderStlfsi(365*5,this)">5Y</button>
-      </div>
-      <div class="chart-wrap" id="w-stlfsi"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-stlfsi"></div>
-      <div class="insight">
-  <div class="insight-title">📌 금융스트레스지수란?</div>
-  <div class="insight-body">세인트루이스 연준이 만든 지수로, <strong>금리·신용·주식 등 18개 지표를 종합</strong>해 금융시스템 전체의 스트레스를 하나의 숫자로 보여줘요. 0이 역사적 평균이에요.</div>
-  <div class="signal-grid">
-    <div class="signal green"><div class="signal-icon">😊</div><div class="signal-body"><strong>0 미만 — 낮은 스트레스</strong>평균보다 금융시장이 안정적인 상태. 대부분의 평상시가 이 구간이에요.</div></div>
-    <div class="signal yellow"><div class="signal-icon">😶</div><div class="signal-body"><strong>0~1 — 보통</strong>약간의 스트레스가 있지만 정상 범위. 지속 관찰이 필요한 구간이에요.</div></div>
-    <div class="signal red"><div class="signal-icon">😰</div><div class="signal-body"><strong>1 이상 — 높은 스트레스</strong>금융시장 전반에 긴장감. 과거 위기 때마다 이 구간을 넘어섰어요.</div></div>
-    <div class="signal red"><div class="signal-icon">🔥</div><div class="signal-body"><strong>3 이상 — 위기</strong>2008년 금융위기, 2020년 코로나 충격 때 이 수준에 도달했어요.</div></div>
-  </div>
-</div>
     </div>
   </div>
 </div>
@@ -694,9 +696,33 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 18: 10년물 국채금리 -->
+<!-- SEC 18: 원달러 환율 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-title">미국 10년물 국채금리</div><div class="sec-tag">DGS10</div></div>
+  <div class="sec-hdr"><div class="sec-num">18</div><div class="sec-title">원달러 환율</div><div class="sec-tag">KRW=X · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">원달러 환율 추이</div>
+    <div class="card-sub">단위: 원/달러 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderKrw(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderKrw(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderKrw(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-krw"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-krw"></div>
+    <div class="insight">
+      <div class="insight-title">📌 원달러 환율이란?</div>
+      <div class="insight-body">달러 강세일수록 원화 약세(환율 상승)예요. 환율 급등은 외국인 자금 유출, 수입물가 상승으로 이어져요. 한국 투자자에게 직접적으로 영향을 주는 핵심 지표예요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>환율 급등(원화 약세)</strong>외국인 자금 유출·수입물가 상승·달러 강세 국면</div></div>
+        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>환율 하락(원화 강세)</strong>외국인 자금 유입·달러 약세·위험선호 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 19: 10년물 국채금리 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-title">미국 10년물 국채금리</div><div class="sec-tag">DGS10</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">10년물 국채금리 추이</div>
     <div class="card-sub">단위: % · 일간</div>
@@ -718,9 +744,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 19: WTI 원유 -->
+<!-- SEC 20: WTI 원유 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">19</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
+  <div class="sec-hdr"><div class="sec-num">20</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">WTI 원유가격 추이</div>
     <div class="card-sub">단위: USD/배럴 · 일간</div>
@@ -742,9 +768,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 20: M2 통화량 -->
+<!-- SEC 21: M2 통화량 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">20</div><div class="sec-title">미국 M2 통화량</div><div class="sec-tag">M2SL</div></div>
+  <div class="sec-hdr"><div class="sec-num">21</div><div class="sec-title">미국 M2 통화량</div><div class="sec-tag">M2SL</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">M2 통화량 추이</div>
     <div class="card-sub">단위: $B · 월간</div>
@@ -766,9 +792,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 21: 실업률 & 신규실업수당 -->
+<!-- SEC 22: 실업률 & 신규실업수당 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">21</div><div class="sec-title">실업률 &amp; 신규실업수당</div><div class="sec-tag">UNRATE · ICSA</div></div>
+  <div class="sec-hdr"><div class="sec-num">22</div><div class="sec-title">실업률 &amp; 신규실업수당</div><div class="sec-tag">UNRATE · ICSA</div></div>
   <div class="cards-half">
     <div class="card">
       <div class="card-title">미국 실업률</div>
@@ -802,70 +828,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 22: 네이버 프리미엄 -->
+<!-- SEC 23: S&P500 & 나스닥 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">22</div><div class="sec-title">최근 시장 분석 리포트</div><div class="sec-tag">자산제곱</div></div>
-  <div class="cards-full"><div class="card">
-    <div id="naver-posts">
-      <div style="margin-bottom:.75rem;">
-        <div class="tg-post" style="cursor:pointer;transition:border-color .2s;border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.03);"
-          onmouseover="this.style.borderColor='#03c75a'"
-          onmouseout="this.style.borderColor='rgba(3,199,90,.25)'"
-          onclick="window.open('https://contents.premium.naver.com/assetx2/assetsx2','_blank')">
-          <div class="tg-post-meta">
-            <span style="font-size:.72rem;color:#03c75a;font-family:var(--mono);font-weight:700;background:rgba(3,199,90,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(3,199,90,.3);">N NAVER PREMIUM</span>
-            <span style="font-size:.72rem;color:#aaa;font-family:var(--mono);">주 3회 발행 · 187편+</span>
-            <span class="tg-post-link" style="color:#03c75a;">구독하기 →</span>
-          </div>
-          <div style="font-size:.92rem;font-weight:700;color:#e8e8e8;margin:.6rem 0 .5rem;">자산제곱 구독자료</div>
-          <div style="font-size:.82rem;color:#bbb;line-height:1.85;">핵심 전략으로 귀하게 대접하겠습니다.</div>
-          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
-            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(91,156,246,.12);color:#5b9cf6;border:1px solid rgba(91,156,246,.25);">투자 전략</span>
-            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25);">시나리오</span>
-            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);">시장 리포트</span>
-            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);">기술적 분석</span>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#0d0d0d;border:1px solid var(--line);border-radius:8px;">
-        <span style="font-size:1.1rem;">🏆</span>
-        <div>
-          <div style="font-size:.82rem;color:#e8e8e8;font-weight:600;">미래에셋 VIP+ 서비스 제공 콘텐츠</div>
-          <div style="font-size:.72rem;color:#666;margin-top:2px;">실력으로 검증된 프리미엄 리서치</div>
-        </div>
-      </div>
-    </div>
-  </div></div>
-</div>
-
-
-<!-- SEC 23: 원달러 환율 -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">원달러 환율</div><div class="sec-tag">KRW=X · YAHOO</div></div>
-  <div class="cards-full"><div class="card">
-    <div class="card-title">원달러 환율 추이</div>
-    <div class="card-sub">단위: 원/달러 · 일간</div>
-    <div class="tbtn-wrap">
-      <button class="tbtn active" onclick="renderKrw(365,this)">1Y</button>
-      <button class="tbtn" onclick="renderKrw(365*2,this)">2Y</button>
-      <button class="tbtn" onclick="renderKrw(365*3,this)">3Y</button>
-    </div>
-    <div class="chart-wrap" id="w-krw"><div class="lw"><div class="sp"></div></div></div>
-    <div class="now-panel" id="now-krw"></div>
-    <div class="insight">
-      <div class="insight-title">📌 원달러 환율이란?</div>
-      <div class="insight-body">달러 강세일수록 원화 약세(환율 상승)예요. 환율 급등은 외국인 자금 유출, 수입물가 상승으로 이어져요. 한국 투자자에게 직접적으로 영향을 주는 핵심 지표예요.</div>
-      <div class="signal-grid">
-        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>환율 급등(원화 약세)</strong>외국인 자금 유출·수입물가 상승·달러 강세 국면</div></div>
-        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>환율 하락(원화 강세)</strong>외국인 자금 유입·달러 약세·위험선호 환경</div></div>
-      </div>
-    </div>
-  </div></div>
-</div>
-
-<!-- SEC 24: S&P500 & 나스닥 -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">S&amp;P500 &amp; 나스닥</div><div class="sec-tag">^GSPC · ^IXIC · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">S&amp;P500 &amp; 나스닥</div><div class="sec-tag">^GSPC · ^IXIC · YAHOO</div></div>
   <div class="cards-half">
     <div class="card">
       <div class="card-title">S&amp;P500</div>
@@ -901,9 +866,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 25: 금 -->
+<!-- SEC 24: 금 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">25</div><div class="sec-title">금 (Gold)</div><div class="sec-tag">GC=F · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">금 (Gold)</div><div class="sec-tag">GC=F · YAHOO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">금 가격 추이</div>
     <div class="card-sub">단위: USD/온스 · 일간</div>
@@ -925,9 +890,9 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 26: 비트코인 -->
+<!-- SEC 25: 비트코인 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">26</div><div class="sec-title">비트코인 (BTC)</div><div class="sec-tag">BTC-USD · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">25</div><div class="sec-title">비트코인 (BTC)</div><div class="sec-tag">BTC-USD · YAHOO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">비트코인 가격 추이</div>
     <div class="card-sub">단위: USD · 일간</div>
@@ -949,19 +914,39 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
-<!-- SEC 27: 섹터 히트맵 -->
+<!-- SEC 26: 섹터 히트맵 (트레이딩뷰) -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">27</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">SECTOR ETF · 당일 등락</div></div>
-  <div class="cards-full"><div class="card">
-    <div class="card-title">섹터별 당일 등락률</div>
-    <div class="card-sub">11개 섹터 ETF 기준 · 실시간</div>
-    <div id="w-sectors"><div class="lw" style="height:160px"><div class="sp"></div></div></div>
+  <div class="sec-hdr"><div class="sec-num">26</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">TRADINGVIEW · 실시간</div></div>
+  <div class="cards-full"><div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
+    <div class="tradingview-widget-container" style="height:500px;">
+      <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
+      {
+        "exchanges": [],
+        "dataSource": "SPX500",
+        "grouping": "sector",
+        "blockSize": "market_cap_basic",
+        "blockColor": "change",
+        "locale": "kr",
+        "symbolUrl": "",
+        "colorTheme": "dark",
+        "hasTopBar": false,
+        "isDataSetEnabled": false,
+        "isZoomEnabled": true,
+        "hasSymbolTooltip": true,
+        "isMonoSize": false,
+        "width": "100%",
+        "height": "500"
+      }
+      </script>
+    </div>
   </div></div>
 </div>
 
-<!-- SEC 24: 상관관계 히트맵 -->
+
+<!-- SEC 27: 상관관계 히트맵 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">28</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
+  <div class="sec-hdr"><div class="sec-num">27</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">주요 자산 상관관계</div>
     <div class="card-sub">S&amp;P500 · 미국채 · 금 · 달러 · 원유 · 비트코인 · 90일</div>
@@ -973,6 +958,41 @@ footer a{color:var(--txt3);}
   </div></div>
 </div>
 
+<!-- SEC 28: 최근 시장 분석 리포트 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">28</div><div class="sec-title">최근 시장 분석 리포트</div><div class="sec-tag">자산제곱</div></div>
+  <div class="cards-full"><div class="card">
+    <div id="naver-posts">
+      <div style="margin-bottom:.75rem;">
+        <div class="tg-post" style="cursor:pointer;transition:border-color .2s;border-color:rgba(3,199,90,.25);background:rgba(3,199,90,.03);"
+          onmouseover="this.style.borderColor='#03c75a'"
+          onmouseout="this.style.borderColor='rgba(3,199,90,.25)'"
+          onclick="window.open('https://contents.premium.naver.com/assetx2/assetsx2','_blank')">
+          <div class="tg-post-meta">
+            <span style="font-size:.72rem;color:#03c75a;font-family:var(--mono);font-weight:700;background:rgba(3,199,90,.12);padding:2px 8px;border-radius:3px;border:1px solid rgba(3,199,90,.3);">N NAVER PREMIUM</span>
+            <span style="font-size:.72rem;color:#aaa;font-family:var(--mono);">주 3회 발행 · 187편+</span>
+            <span class="tg-post-link" style="color:#03c75a;">구독하기 →</span>
+          </div>
+          <div style="font-size:.92rem;font-weight:700;color:#e8e8e8;margin:.6rem 0 .5rem;">자산제곱 구독자료</div>
+          <div style="font-size:.82rem;color:#bbb;line-height:1.85;">핵심 전략으로 귀하게 대접하겠습니다.</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(91,156,246,.12);color:#5b9cf6;border:1px solid rgba(91,156,246,.25);">투자 전략</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25);">시나리오</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25);">시장 리포트</span>
+            <span style="font-size:.72rem;padding:3px 9px;border-radius:4px;background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);">기술적 분석</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#0d0d0d;border:1px solid var(--line);border-radius:8px;">
+        <span style="font-size:1.1rem;">🏆</span>
+        <div>
+          <div style="font-size:.82rem;color:#e8e8e8;font-weight:600;">미래에셋 VIP+ 서비스 제공 콘텐츠</div>
+          <div style="font-size:.72rem;color:#666;margin-top:2px;">실력으로 검증된 프리미엄 리서치</div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
 </div><!-- /wrap --></div><!-- /wrap -->
 
 <div class="cta-bar">
