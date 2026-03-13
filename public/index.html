@@ -304,6 +304,13 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-t10y2y')"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-hys')"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스</div></div>
   </div>
+  <!-- 옵션 심리 -->
+  <div class="hero-label" style="margin-top:1.1rem;">🎯 옵션</div>
+  <div class="hero-row" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);grid-template-columns:1fr 1fr 1fr 1fr;">
+    <div class="hcard clickable" onclick="scrollToChart('w-skew')" style="grid-column:span 2;border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">SKEW 지수</div><div class="hcard-val" id="h26"><div class="skel"></div></div><div class="hcard-chg" id="h26c">—</div><div class="hcard-desc">블랙스완 우려 · 140↑ 경계</div></div>
+    <div class="hcard" style="border:none;background:transparent;cursor:default;"></div>
+    <div class="hcard" style="border:none;background:transparent;cursor:default;"></div>
+  </div>
   <!-- 매크로 -->
   <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
   <div class="hero-row macro">
@@ -587,38 +594,25 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 11: PCR SKEW -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">Put/Call Ratio &amp; SKEW</div><div class="sec-tag">CBOE · 옵션 심리</div></div>
-  <div class="cards-half">
-    <div class="card">
-      <div class="card-title">Put/Call Ratio</div>
-      <div class="card-sub">풋옵션 / 콜옵션 비율 · 일간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderPcr(365,this)">1Y</button>
-        <button class="tbtn" onclick="renderPcr(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderPcr(365*3,this)">3Y</button>
-      </div>
-      <div class="chart-wrap" id="w-pcr"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-pcr"></div>
+  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">CBOE SKEW 지수</div><div class="sec-tag">^SKEW · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">CBOE SKEW 지수 추이</div>
+    <div class="card-sub">블랙스완 우려 지수 · 일간 · 100 기준</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderSkew(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderSkew(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderSkew(365*3,this)">3Y</button>
     </div>
-    <div class="card">
-      <div class="card-title">CBOE SKEW 지수</div>
-      <div class="card-sub">블랙스완 우려 지수 · 일간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderSkew(365,this)">1Y</button>
-        <button class="tbtn" onclick="renderSkew(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderSkew(365*3,this)">3Y</button>
-      </div>
-      <div class="chart-wrap" id="w-skew"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-skew"></div>
-    </div>
-  </div>
+    <div class="chart-wrap" id="w-skew"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-skew"></div>
+  </div></div>
   <div class="insight" style="margin-top:.85rem;">
-    <div class="insight-title">📌 옵션 시장이 말하는 공포</div>
-    <div class="insight-body"><strong>Put/Call Ratio</strong>는 하락 베팅(풋)과 상승 베팅(콜)의 비율이에요. 1을 넘으면 하락 방어 수요가 많다는 뜻으로 시장 불안 신호예요. <strong>SKEW 지수</strong>는 블랙스완(급격한 폭락) 가능성을 시장이 얼마나 두려워하는지 보여줘요. 100이 기준이며 높을수록 꼬리 위험 경계예요.</div>
+    <div class="insight-title">📌 CBOE SKEW 지수란?</div>
+    <div class="insight-body">S&amp;P500 옵션 시장에서 <strong>블랙스완(급격한 폭락)</strong> 가능성을 시장이 얼마나 두려워하는지 보여줘요. 100이 기준값이며 높을수록 꼬리 위험에 높은 프리미엄이 붙고 있다는 뜻이에요. VIX가 평균적인 변동성이라면 SKEW는 <strong>극단적 하락에 대한 보험료</strong>예요.</div>
     <div class="signal-grid signal-grid-3">
-      <div class="signal red"><div class="signal-icon">📊</div><div class="signal-body"><strong>PCR &gt; 1.0</strong>하락 헤지 수요 급증 · 투자자 불안 고조</div></div>
-      <div class="signal green"><div class="signal-icon">📈</div><div class="signal-body"><strong>PCR &lt; 0.7</strong>콜옵션 과열 · 과도한 낙관 경계 필요</div></div>
-      <div class="signal yellow"><div class="signal-icon">🦢</div><div class="signal-body"><strong>SKEW &gt; 140</strong>블랙스완 우려 고조 · 꼬리 위험 프리미엄 높음</div></div>
+      <div class="signal green"><div class="signal-icon">😌</div><div class="signal-body"><strong>100~120</strong>정상 구간 · 꼬리 위험 우려 낮음</div></div>
+      <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>120~140</strong>경계 구간 · 하락 헤지 수요 증가</div></div>
+      <div class="signal red"><div class="signal-icon">🦢</div><div class="signal-body"><strong>140 이상</strong>블랙스완 우려 고조 · 꼬리 위험 프리미엄 급등</div></div>
     </div>
   </div>
 </div>
@@ -1630,6 +1624,7 @@ async function loadHero(){
     ['RRPONTSYD',    14, 6,  v=>fmtRrp(v),          true],
     ['BAMLH0A0HYM2', 5,  7,  v=>v.toFixed(2)+'%',  true],
     ['WTREGEN',      14, 8,  v=>fmtT(v),            true],
+
     // DXY는 별도 loadDxy() 함수로 처리
     ['DGS10',        5,  11, v=>v.toFixed(2)+'%',   false],
     ['DCOILWTICO',   5,  12, v=>'$'+v.toFixed(1),   false],
@@ -1666,6 +1661,14 @@ async function loadHero(){
   loadDxy();
   loadYahooHero();
   loadKrHero();
+  // SKEW 히어로
+  fetchYahoo('^SKEW',14).then(d=>{
+    const v=d.vals.at(-1);if(!v)return;
+    const pv=d.vals.at(-2)||v, dv=v-pv;
+    const col=v>140?'#f87171':v>120?'#f97316':'#34d399';
+    const lbl=v>140?'블랙스완 경계':v>120?'꼬리위험 주시':'안정';
+    setH(26,v.toFixed(1),'',lbl,col);
+  }).catch(()=>{});
 }
 
 // ── DXY 히어로 카드 ──
@@ -2563,7 +2566,7 @@ async function renderSkew(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-skew');
   try{
-    const d=await apiFetch('SKEW',days);
+    const d=await fetchYahoo('^SKEW',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-skew',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,
       fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],
@@ -2676,7 +2679,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-nasdaq', ()=>renderNasdaq(365));
   observeLazy('w-gold',   ()=>renderGold(365));
   observeLazy('w-btc',    ()=>renderBtc(365));
-  observeLazy('w-pcr',    ()=>renderPcr(365));
   observeLazy('w-skew',   ()=>renderSkew(365));
   observeLazy('w-em',     ()=>renderEm(365));
   observeLazy('w-kospi',  ()=>renderKospi(365));
