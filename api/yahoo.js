@@ -89,13 +89,15 @@ module.exports = async function handler(req, res) {
           if (!result) return { ticker, dates: [], vals: [] };
           const ts = result.timestamp || [];
           const cl = result.indicators?.quote?.[0]?.close || [];
-          const dates = [], vals = [];
+          const dateMap = new Map();
           ts.forEach((t, i) => {
             if (cl[i] != null) {
-              dates.push(new Date(t*1000).toISOString().slice(0,10));
-              vals.push(+cl[i].toFixed(4));
+              const date = new Date(t*1000).toISOString().slice(0,10);
+              dateMap.set(date, +cl[i].toFixed(4)); // 중복 날짜 제거
             }
           });
+          const dates = [...dateMap.keys()];
+          const vals = [...dateMap.values()];
           return { ticker, dates, vals };
         } catch {
           return { ticker, dates: [], vals: [] };

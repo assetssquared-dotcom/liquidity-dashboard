@@ -7,7 +7,6 @@ module.exports = async function handler(req, res) {
   const period2 = Math.floor(Date.now() / 1000);
   const period1 = period2 - days * 86400;
 
-  // 순서대로 시도하는 폴백 티커 목록
   const tickers = ['DX-Y.NYB', 'DXY', '^DXY', 'UUP'];
 
   for (const ticker of tickers) {
@@ -17,7 +16,6 @@ module.exports = async function handler(req, res) {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
           'Accept': 'application/json',
-          'Accept-Language': 'en-US,en;q=0.9',
         }
       });
       if (!r.ok) continue;
@@ -28,21 +26,24 @@ module.exports = async function handler(req, res) {
       const timestamps = result.timestamp || [];
       const closes = result.indicators?.quote?.[0]?.close || [];
 
-      const dates = [], vals = [];
+      const dateMap = new Map();
       timestamps.forEach((ts, i) => {
         const v = closes[i];
         if (v != null && !isNaN(v)) {
-          dates.push(new Date(ts * 1000).toISOString().slice(0, 10));
-          vals.push(+v.toFixed(3));
+          const date = new Date(ts * 1000).toISOString().slice(0, 10);
+          dateMap.set(date, +v.toFixed(3)); // 중복 날짜는 마지막 값으로 덮어씀
         }
       });
 
-      if (!dates.length) continue;
+      if (!dateMap.size) continue;
 
-      // UUP는 ETF라 스케일이 달라서 DXY로 변환 (UUP * 3.65 근사)
-      const scaledVals = ticker === 'UUP' ? vals.map(v => +(v * 3.65).toFixed(2)) : vals;
+      const dates = [...dateMap.keys()];
+      let vals = [...dateMap.values()];
 
-      return res.status(200).json({ dates, vals: scaledVals, source: ticker });
+      // UUP는 ETF라 DXY 근사값으로 변환
+      if (ticker === 'UUP') vals = vals.map(v => +(v * 3.65).toFixed(2));
+
+      return res.status(200).json({ dates, vals, source: ticker });
     } catch(e) {
       continue;
     }
