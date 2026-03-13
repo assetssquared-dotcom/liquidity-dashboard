@@ -280,10 +280,10 @@ footer a{color:var(--txt3);}
   <!-- 신흥국 -->
   <div class="hero-label" style="margin-top:1.1rem;">🌏 신흥국</div>
   <div class="hero-row" style="border-color:rgba(52,211,153,.12);background:rgba(52,211,153,.02);">
-    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">브라질 EWZ</div><div class="hcard-val" id="h21"><div class="skel"></div></div><div class="hcard-chg" id="h21c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">인도 INDA</div><div class="hcard-val" id="h22"><div class="skel"></div></div><div class="hcard-chg" id="h22c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">베트남 VNM</div><div class="hcard-val" id="h23"><div class="skel"></div></div><div class="hcard-chg" id="h23c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">일본 EWJ</div><div class="hcard-val" id="h24"><div class="skel"></div></div><div class="hcard-chg" id="h24c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">브라질 EWZ</div><div class="hcard-val" id="h21"><div class="skel"></div></div><div class="hcard-chg" id="h21c">—</div><div class="hcard-desc">EWZ ETF</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">인도 INDA</div><div class="hcard-val" id="h22"><div class="skel"></div></div><div class="hcard-chg" id="h22c">—</div><div class="hcard-desc">ETF 현재가</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">베트남 VNM</div><div class="hcard-val" id="h23"><div class="skel"></div></div><div class="hcard-chg" id="h23c">—</div><div class="hcard-desc">ETF 현재가</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">일본 EWJ</div><div class="hcard-val" id="h24"><div class="skel"></div></div><div class="hcard-chg" id="h24c">—</div><div class="hcard-desc">ETF 현재가</div></div>
   </div>
   <!-- 시장 심리 -->
   <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
@@ -1639,14 +1639,14 @@ async function loadYahooHero(){
     { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
     { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(0), goodUp:true },
     { symbol:'BTC-USD', id:16, fmt:v=>'$'+Math.round(v/1000)+'K', goodUp:true },
-    { symbol:'EWZ',     id:21, fmt:v=>v.toFixed(2), goodUp:true },
-    { symbol:'INDA',    id:22, fmt:v=>v.toFixed(2), goodUp:true },
-    { symbol:'VNM',     id:23, fmt:v=>v.toFixed(2), goodUp:true },
-    { symbol:'EWJ',     id:24, fmt:v=>v.toFixed(2), goodUp:true },
+    { symbol:'EWZ',     id:21, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
+    { symbol:'INDA',    id:22, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
+    { symbol:'VNM',     id:23, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
+    { symbol:'EWJ',     id:24, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
   ];
   try{
     const symbols = items.map(i=>i.symbol).join(',');
-    const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=14');
+    const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=30');
     if(!r.ok) throw new Error(r.status);
     const d = await r.json();
     (d.results||[]).forEach(res=>{
@@ -1672,6 +1672,11 @@ async function loadYahooHero(){
       if(item.symbol==='KRW=X'){
         const chgAbs = Math.round(Math.abs(dv));
         setH(item.id, item.fmt(lv), '', arrow+' '+chgAbs+'원 전일 대비', chgCol);
+        return;
+      }
+      // 신흥국 ETF: 현재가 + 전일 변화폭
+      if(item.em){
+        setH(item.id, item.fmt(lv), '', arrow+' $'+Math.abs(dv).toFixed(2)+' 전일', chgCol);
         return;
       }
       // 금, BTC: 전일 대비 %
@@ -2386,7 +2391,7 @@ async function loadKrHero(){
   ];
   try{
     const symbols=items.map(i=>i.symbol).join(',');
-    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=14');
+    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=30');
     if(!r.ok)throw new Error(r.status);
     const d=await r.json();
     (d.results||[]).forEach(res=>{
