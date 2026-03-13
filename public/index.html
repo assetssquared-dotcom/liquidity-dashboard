@@ -22,7 +22,7 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 .brand{display:flex;align-items:center;gap:10px;}
 .brand-icon{width:32px;height:32px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#000;}
 .brand-name{font-size:.95rem;font-weight:700;letter-spacing:-.02em;}
-.brand-sub{font-size:.7rem;color:var(--txt3);font-family:var(--mono);}
+.brand-sub{font-size:.7rem;color:var(--txt3);font-family:var(--mono);}.brand-short{display:none;}
 .hdr-right{display:flex;align-items:center;gap:.5rem;}
 .badge{display:flex;align-items:center;gap:5px;font-size:.7rem;font-family:var(--mono);color:var(--txt3);}
 .dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:pulse 2s infinite;}
@@ -218,6 +218,9 @@ footer a{color:var(--txt3);}
   .cards-half{grid-template-columns:1fr;}
   .hdr-links .hdr-btn span{display:none;}
   .brand-sub{display:none;}
+  .brand-full{display:none;}
+  .brand-short{display:inline;}
+  .hdr-links .hdr-btn{padding:5px 8px;}
   /* 네이버 프리미엄 모바일 */
   #naver-posts .tg-post-meta{flex-wrap:wrap;gap:.4rem;}
   #naver-posts .tg-post-meta span:last-child{margin-left:0;}
@@ -233,7 +236,7 @@ footer a{color:var(--txt3);}
   <div class="brand">
     <div class="brand-icon">A²</div>
     <div>
-      <div class="brand-name">자산제곱 모니터링 대시보드</div>
+      <div class="brand-name"><span class="brand-full">자산제곱 모니터링 대시보드</span><span class="brand-short">자산제곱</span></div>
       <div class="brand-sub">MARKET MONITOR · FRED REAL-TIME DATA</div>
     </div>
   </div>
