@@ -275,7 +275,7 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-kospi')"><div class="hcard-title">코스피</div><div class="hcard-val" id="h17"><div class="skel"></div></div><div class="hcard-chg" id="h17c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-kosdaq')"><div class="hcard-title">코스닥</div><div class="hcard-val" id="h18"><div class="skel"></div></div><div class="hcard-chg" id="h18c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-samsung')"><div class="hcard-title">삼성전자</div><div class="hcard-val" id="h19"><div class="skel"></div></div><div class="hcard-chg" id="h19c">—</div><div class="hcard-desc">코스피 비중 20%+</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-jpy')"><div class="hcard-title">달러/엔</div><div class="hcard-val" id="h20"><div class="skel"></div></div><div class="hcard-chg" id="h20c">—</div><div class="hcard-desc">엔화 강약세</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-krw')"><div class="hcard-title">원달러 환율</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">KRW/USD</div></div>
   </div>
   <!-- 시장 심리 -->
   <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
@@ -289,7 +289,7 @@ footer a{color:var(--txt3);}
   <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
   <div class="hero-row macro">
     <div class="hcard clickable" onclick="scrollToChart('w-dxy')"><div class="hcard-title">달러인덱스</div><div class="hcard-val" id="h9"><div class="skel"></div></div><div class="hcard-chg" id="h9c">—</div><div class="hcard-desc">DXY · ICE 달러인덱스</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-krw')"><div class="hcard-title">원달러 환율</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">KRW/USD</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-jpy')"><div class="hcard-title">달러/엔</div><div class="hcard-val" id="h20"><div class="skel"></div></div><div class="hcard-chg" id="h20c">—</div><div class="hcard-desc">엔화 강약세</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-dgs10')"><div class="hcard-title">10년물 금리</div><div class="hcard-val" id="h11"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-wti')"><div class="hcard-title">WTI 원유</div><div class="hcard-val" id="h12"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">USD/배럴</div></div>
   </div>
@@ -301,8 +301,7 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-rrp')"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-tga')"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
   </div>
-</div>
-<!-- SEC 1: 텔레그램 채널 -->
+</div><!-- SEC 1: 텔레그램 채널 -->
 <div class="sec">
   <div class="sec-hdr">
     <div class="sec-num">1</div>
@@ -356,9 +355,57 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 3: 코스피 & 코스닥 -->
+<!-- SEC 3: 금 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">3</div><div class="sec-title">코스피 &amp; 코스닥</div><div class="sec-tag">^KS11 · ^KQ11 · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">3</div><div class="sec-title">금 (Gold)</div><div class="sec-tag">GC=F · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">금 가격 추이</div>
+    <div class="card-sub">단위: USD/온스 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderGold(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderGold(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderGold(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-gold"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-gold"></div>
+    <div class="insight">
+      <div class="insight-title">📌 금이란?</div>
+      <div class="insight-body">안전자산의 대표격이에요. 달러·실질금리와 역상관 관계를 가져요. <strong>금 강세</strong>는 불확실성 증가·달러 약세·인플레이션 헤지 수요를 반영해요.</div>
+      <div class="signal-grid">
+        <div class="signal yellow"><div class="signal-icon">📈</div><div class="signal-body"><strong>금 상승</strong>불확실성 증가·달러 약세·실질금리 하락 환경</div></div>
+        <div class="signal blue"><div class="signal-icon">📉</div><div class="signal-body"><strong>금 하락</strong>달러 강세·실질금리 상승·위험선호 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 4: 비트코인 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">4</div><div class="sec-title">비트코인 (BTC)</div><div class="sec-tag">BTC-USD · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">비트코인 가격 추이</div>
+    <div class="card-sub">단위: USD · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderBtc(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderBtc(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderBtc(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-btc"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-btc"></div>
+    <div class="insight">
+      <div class="insight-title">📌 비트코인이란?</div>
+      <div class="insight-body">글로벌 유동성과 높은 상관관계를 보이는 위험자산이에요. 연준의 유동성 공급 확대 시 빠르게 반응하며, 시장 위험선호 심리의 선행지표로 활용돼요.</div>
+      <div class="signal-grid">
+        <div class="signal green"><div class="signal-icon">🚀</div><div class="signal-body"><strong>BTC 강세</strong>위험선호·유동성 확대·기관 수요 증가 신호</div></div>
+        <div class="signal red"><div class="signal-icon">⚡</div><div class="signal-body"><strong>BTC 급락</strong>위험회피·유동성 수축·레버리지 청산 주의</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 5: 코스피 & 코스닥 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">5</div><div class="sec-title">코스피 &amp; 코스닥</div><div class="sec-tag">^KS11 · ^KQ11 · YAHOO</div></div>
   <div class="cards-half">
     <div class="card">
       <div class="card-title">코스피</div>
@@ -393,54 +440,6 @@ footer a{color:var(--txt3);}
     </div>
   </div>
 </div>
-<!-- SEC 4: 금 -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">4</div><div class="sec-title">금 (Gold)</div><div class="sec-tag">GC=F · YAHOO</div></div>
-  <div class="cards-full"><div class="card">
-    <div class="card-title">금 가격 추이</div>
-    <div class="card-sub">단위: USD/온스 · 일간</div>
-    <div class="tbtn-wrap">
-      <button class="tbtn active" onclick="renderGold(365,this)">1Y</button>
-      <button class="tbtn" onclick="renderGold(365*2,this)">2Y</button>
-      <button class="tbtn" onclick="renderGold(365*3,this)">3Y</button>
-    </div>
-    <div class="chart-wrap" id="w-gold"><div class="lw"><div class="sp"></div></div></div>
-    <div class="now-panel" id="now-gold"></div>
-    <div class="insight">
-      <div class="insight-title">📌 금이란?</div>
-      <div class="insight-body">안전자산의 대표격이에요. 달러·실질금리와 역상관 관계를 가져요. <strong>금 강세</strong>는 불확실성 증가·달러 약세·인플레이션 헤지 수요를 반영해요.</div>
-      <div class="signal-grid">
-        <div class="signal yellow"><div class="signal-icon">📈</div><div class="signal-body"><strong>금 상승</strong>불확실성 증가·달러 약세·실질금리 하락 환경</div></div>
-        <div class="signal blue"><div class="signal-icon">📉</div><div class="signal-body"><strong>금 하락</strong>달러 강세·실질금리 상승·위험선호 환경</div></div>
-      </div>
-    </div>
-  </div></div>
-</div>
-
-<!-- SEC 5: 비트코인 -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">5</div><div class="sec-title">비트코인 (BTC)</div><div class="sec-tag">BTC-USD · YAHOO</div></div>
-  <div class="cards-full"><div class="card">
-    <div class="card-title">비트코인 가격 추이</div>
-    <div class="card-sub">단위: USD · 일간</div>
-    <div class="tbtn-wrap">
-      <button class="tbtn active" onclick="renderBtc(365,this)">1Y</button>
-      <button class="tbtn" onclick="renderBtc(365*2,this)">2Y</button>
-      <button class="tbtn" onclick="renderBtc(365*3,this)">3Y</button>
-    </div>
-    <div class="chart-wrap" id="w-btc"><div class="lw"><div class="sp"></div></div></div>
-    <div class="now-panel" id="now-btc"></div>
-    <div class="insight">
-      <div class="insight-title">📌 비트코인이란?</div>
-      <div class="insight-body">글로벌 유동성과 높은 상관관계를 보이는 위험자산이에요. 연준의 유동성 공급 확대 시 빠르게 반응하며, 시장 위험선호 심리의 선행지표로 활용돼요.</div>
-      <div class="signal-grid">
-        <div class="signal green"><div class="signal-icon">🚀</div><div class="signal-body"><strong>BTC 강세</strong>위험선호·유동성 확대·기관 수요 증가 신호</div></div>
-        <div class="signal red"><div class="signal-icon">⚡</div><div class="signal-body"><strong>BTC 급락</strong>위험회피·유동성 수축·레버리지 청산 주의</div></div>
-      </div>
-    </div>
-  </div></div>
-</div>
-
 <!-- SEC 6: 삼성전자 -->
 <div class="sec">
   <div class="sec-hdr"><div class="sec-num">6</div><div class="sec-title">삼성전자</div><div class="sec-tag">005930.KS · YAHOO</div></div>
@@ -464,9 +463,33 @@ footer a{color:var(--txt3);}
     </div>
   </div></div>
 </div>
-<!-- SEC 7: 공포탐욕 -->
+<!-- SEC 7: 원달러 환율 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">7</div><div class="sec-title">공포 &amp; 탐욕 지수</div><div class="sec-tag">CNN FEAR &amp; GREED</div></div>
+  <div class="sec-hdr"><div class="sec-num">7</div><div class="sec-title">원달러 환율</div><div class="sec-tag">KRW=X · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">원달러 환율 추이</div>
+    <div class="card-sub">단위: 원/달러 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderKrw(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderKrw(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderKrw(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-krw"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-krw"></div>
+    <div class="insight">
+      <div class="insight-title">📌 원달러 환율이란?</div>
+      <div class="insight-body">달러 강세일수록 원화 약세(환율 상승)예요. 환율 급등은 외국인 자금 유출, 수입물가 상승으로 이어져요. 한국 투자자에게 직접적으로 영향을 주는 핵심 지표예요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>환율 급등(원화 약세)</strong>외국인 자금 유출·수입물가 상승·달러 강세 국면</div></div>
+        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>환율 하락(원화 강세)</strong>외국인 자금 유입·달러 약세·위험선호 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 8: 공포탐욕 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">공포 &amp; 탐욕 지수</div><div class="sec-tag">CNN FEAR &amp; GREED</div></div>
   <div class="cards">
     <div class="card">
       <div class="card-title">현재</div>
@@ -490,9 +513,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 8: VIX -->
+<!-- SEC 9: VIX -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">VIX 변동성 지수</div><div class="sec-tag">VIXCLS · CBOE</div></div>
+  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">VIX 변동성 지수</div><div class="sec-tag">VIXCLS · CBOE</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">VIX 공포지수 추이</div>
@@ -518,9 +541,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 9: 금리차 -->
+<!-- SEC 10: 금리차 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">9</div><div class="sec-title">미국 장단기 금리차 (10Y-2Y)</div><div class="sec-tag">T10Y2Y</div></div>
+  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">미국 장단기 금리차 (10Y-2Y)</div><div class="sec-tag">T10Y2Y</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">10년물 - 2년물 국채 스프레드</div>
@@ -546,9 +569,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 10: 하이일드 -->
+<!-- SEC 11: 하이일드 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">10</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
+  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">하이일드 스프레드</div><div class="sec-tag">BAMLH0A0HYM2</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">하이일드 채권 스프레드</div>
@@ -574,9 +597,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 11: MMF -->
+<!-- SEC 12: MMF -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">11</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
+  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">세인트루이스 금융스트레스지수</div><div class="sec-tag">STLFSI4</div></div>
   <div class="cards-full">
     <div class="card">
       <div class="card-title">금융스트레스지수 (STLFSI)</div>
@@ -601,9 +624,9 @@ footer a{color:var(--txt3);}
   </div>
 </div>
 
-<!-- SEC 12: 달러인덱스 -->
+<!-- SEC 13: 달러인덱스 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">12</div><div class="sec-title">달러인덱스 (DXY)</div><div class="sec-tag">DTWEXBGS</div></div>
+  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">달러인덱스 (DXY)</div><div class="sec-tag">DTWEXBGS</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">달러인덱스 추이</div>
     <div class="card-sub">단위: 지수 · 일간 · 100 기준</div>
@@ -620,30 +643,6 @@ footer a{color:var(--txt3);}
       <div class="signal-grid">
         <div class="signal red"><div class="signal-icon">💵</div><div class="signal-body"><strong>달러 강세(↑)</strong>신흥국 통화 약세, 원자재 하락, 글로벌 유동성 위축 압력</div></div>
         <div class="signal green"><div class="signal-icon">🌏</div><div class="signal-body"><strong>달러 약세(↓)</strong>위험자산 선호, 신흥국 자금유입, 원자재 상승 환경</div></div>
-      </div>
-    </div>
-  </div></div>
-</div>
-
-<!-- SEC 13: 원달러 환율 -->
-<div class="sec">
-  <div class="sec-hdr"><div class="sec-num">13</div><div class="sec-title">원달러 환율</div><div class="sec-tag">KRW=X · YAHOO</div></div>
-  <div class="cards-full"><div class="card">
-    <div class="card-title">원달러 환율 추이</div>
-    <div class="card-sub">단위: 원/달러 · 일간</div>
-    <div class="tbtn-wrap">
-      <button class="tbtn active" onclick="renderKrw(365,this)">1Y</button>
-      <button class="tbtn" onclick="renderKrw(365*2,this)">2Y</button>
-      <button class="tbtn" onclick="renderKrw(365*3,this)">3Y</button>
-    </div>
-    <div class="chart-wrap" id="w-krw"><div class="lw"><div class="sp"></div></div></div>
-    <div class="now-panel" id="now-krw"></div>
-    <div class="insight">
-      <div class="insight-title">📌 원달러 환율이란?</div>
-      <div class="insight-body">달러 강세일수록 원화 약세(환율 상승)예요. 환율 급등은 외국인 자금 유출, 수입물가 상승으로 이어져요. 한국 투자자에게 직접적으로 영향을 주는 핵심 지표예요.</div>
-      <div class="signal-grid">
-        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>환율 급등(원화 약세)</strong>외국인 자금 유출·수입물가 상승·달러 강세 국면</div></div>
-        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>환율 하락(원화 강세)</strong>외국인 자금 유입·달러 약세·위험선호 환경</div></div>
       </div>
     </div>
   </div></div>
@@ -1591,10 +1590,7 @@ async function loadHero(){
 // ── DXY 히어로 카드 ──
 async function loadDxy(){
   try{
-    const r = await fetch('/api/dxy?days=14');
-    if(!r.ok) throw new Error(r.status);
-    const d = await r.json();
-    if(!d.vals||!d.vals.length) throw new Error('no data');
+    const d = await fetchYahoo('DX-Y.NYB', 14);
     const lv = d.vals.at(-1), pv = d.vals.at(-2)||lv, dv = +(lv-pv).toFixed(3);
     const isUp = dv > 0;
     const arrow = isUp ? '▲' : '▼';
@@ -1917,9 +1913,7 @@ async function renderDxy(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-dxy');
   try{
-    const r=await fetch('/api/dxy?days='+days);
-    if(!r.ok)throw new Error(r.status);
-    const d=await r.json();
+    const d=await fetchYahoo('DX-Y.NYB',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-dxy',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
     const v=vals.at(-1);if(v==null)return;
