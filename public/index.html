@@ -328,7 +328,7 @@ footer a{color:var(--txt3);}
     <div class="hcard clickable" onclick="scrollToChart('w-skew')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">SKEW</div><div class="hcard-val" id="h26"><div class="skel"></div></div><div class="hcard-chg" id="h26c">—</div><div class="hcard-desc">블랙스완 우려</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-vvix')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">VVIX</div><div class="hcard-val" id="h27"><div class="skel"></div></div><div class="hcard-chg" id="h27c">—</div><div class="hcard-desc">변동성의 변동성</div></div>
     <div class="hcard clickable" onclick="scrollToChart('w-ovx')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">OVX</div><div class="hcard-val" id="h28"><div class="skel"></div></div><div class="hcard-chg" id="h28c">—</div><div class="hcard-desc">원유 변동성</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-gvz')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">GVZ</div><div class="hcard-val" id="h29"><div class="skel"></div></div><div class="hcard-chg" id="h29c">—</div><div class="hcard-desc">금 변동성</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-gvz')" style="border-color:rgba(167,139,250,.18);background:rgba(167,139,250,.03);"><div class="hcard-title" style="color:#a78bfa;opacity:.85;">PCR</div><div class="hcard-val" id="h29"><div class="skel"></div></div><div class="hcard-chg" id="h29c">—</div><div class="hcard-desc">풋/콜 비율</div></div>
   </div>
 </div><!-- SEC 1: 텔레그램 채널 -->
 <div class="sec">
@@ -1094,8 +1094,44 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 31: 옵션 변동성 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">옵션 &amp; 변동성 지수</div><div class="sec-tag">^SKEW · ^VVIX · ^OVX · ^GVZ · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">옵션 &amp; 변동성</div><div class="sec-tag">PCC · ^SKEW · ^VVIX · ^OVX · CBOE · YAHOO</div></div>
   <div class="cards-half">
+    <div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
+      <div style="padding:1rem 1rem .5rem;">
+        <div class="card-title">Put/Call Ratio (PCR)</div>
+        <div class="card-sub">풋옵션 / 콜옵션 비율 · CBOE · 실시간</div>
+      </div>
+      <div class="tradingview-widget-container" style="height:280px;">
+        <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
+        {
+          "symbols": [["CBOE:PCC|1D"]],
+          "chartOnly": false,
+          "width": "100%",
+          "height": "280",
+          "locale": "kr",
+          "colorTheme": "dark",
+          "autosize": false,
+          "showVolume": false,
+          "showMA": false,
+          "hideDateRanges": false,
+          "hideMarketStatus": true,
+          "hideSymbolLogo": true,
+          "scalePosition": "right",
+          "scaleMode": "Normal",
+          "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+          "fontSize": "10",
+          "noTimeScale": false,
+          "valuesTracking": "1",
+          "changeMode": "price-and-percent",
+          "chartType": "area",
+          "lineWidth": 2,
+          "lineType": 0,
+          "dateRanges": ["1m|1D","3m|1D","12m|1W","60m|1M"]
+        }
+        </script>
+      </div>
+    </div>
     <div class="card">
       <div class="card-title">CBOE SKEW 지수</div>
       <div class="card-sub">블랙스완 우려 · 100 기준</div>
@@ -1107,6 +1143,8 @@ footer a{color:var(--txt3);}
       <div class="chart-wrap" id="w-skew"><div class="lw"><div class="sp"></div></div></div>
       <div class="now-panel" id="now-skew"></div>
     </div>
+  </div>
+  <div class="cards-half" style="margin-top:.85rem;">
     <div class="card">
       <div class="card-title">VVIX — VIX의 VIX</div>
       <div class="card-sub">변동성의 변동성 · 공포의 불안정성</div>
@@ -1118,8 +1156,6 @@ footer a{color:var(--txt3);}
       <div class="chart-wrap" id="w-vvix"><div class="lw"><div class="sp"></div></div></div>
       <div class="now-panel" id="now-vvix"></div>
     </div>
-  </div>
-  <div class="cards-half" style="margin-top:.85rem;">
     <div class="card">
       <div class="card-title">OVX — 원유 변동성</div>
       <div class="card-sub">유가 불확실성 · 에너지 시장 공포</div>
@@ -1131,26 +1167,15 @@ footer a{color:var(--txt3);}
       <div class="chart-wrap" id="w-ovx"><div class="lw"><div class="sp"></div></div></div>
       <div class="now-panel" id="now-ovx"></div>
     </div>
-    <div class="card">
-      <div class="card-title">GVZ — 금 변동성</div>
-      <div class="card-sub">금 가격 불확실성 · 안전자산 수요 불안</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderGvz(365,this)">1Y</button>
-        <button class="tbtn" onclick="renderGvz(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderGvz(365*3,this)">3Y</button>
-      </div>
-      <div class="chart-wrap" id="w-gvz"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-gvz"></div>
-    </div>
   </div>
   <div class="insight" style="margin-top:.85rem;">
     <div class="insight-title">📌 옵션 시장이 말하는 공포의 온도</div>
-    <div class="insight-body">각 자산군의 옵션 시장에서 측정한 변동성 지수예요. <strong>SKEW</strong>는 블랙스완 우려, <strong>VVIX</strong>는 공포 자체가 얼마나 불안정한지, <strong>OVX</strong>는 에너지 시장, <strong>GVZ</strong>는 안전자산인 금 시장의 불확실성을 나타내요. 동시에 오를 때 시장 전반의 공포가 확산되고 있다는 신호예요.</div>
+    <div class="insight-body">각 자산군의 옵션 시장에서 측정한 변동성 지수예요. <strong>PCR</strong>은 풋/콜 비율로 투자 심리의 가장 직접적인 온도계예요. <strong>SKEW</strong>는 블랙스완 꼬리 위험, <strong>VVIX</strong>는 공포 자체가 얼마나 불안정한지, <strong>OVX</strong>는 에너지 시장의 불확실성을 나타내요. 동시에 오를 때 시장 전반의 공포가 확산되고 있다는 신호예요.</div>
     <div class="signal-grid">
+      <div class="signal red"><div class="signal-icon">📊</div><div class="signal-body"><strong>PCR 1.0↑</strong>하락 베팅 우세 · 공포 고조 · 역발상 반등 신호일 수도</div></div>
       <div class="signal red"><div class="signal-icon">🦢</div><div class="signal-body"><strong>SKEW 140↑</strong>블랙스완 우려 고조 · 꼬리 위험 프리미엄 급등</div></div>
-      <div class="signal yellow"><div class="signal-icon">🌀</div><div class="signal-body"><strong>VVIX 120↑</strong>공포 자체가 불안정 · VIX 급등 가능성 높음</div></div>
+      <div class="signal yellow"><div class="signal-icon">🌀</div><div class="signal-body"><strong>VVIX 130↑</strong>공포 자체가 불안정 · VIX 급등 가능성 높음</div></div>
       <div class="signal red"><div class="signal-icon">🛢️</div><div class="signal-body"><strong>OVX 60↑</strong>유가 불확실성 극심 · 에너지 시장 혼란</div></div>
-      <div class="signal yellow"><div class="signal-icon">🥇</div><div class="signal-body"><strong>GVZ 25↑</strong>금 변동성 증가 · 안전자산도 흔들리는 상황</div></div>
     </div>
   </div>
 </div>
@@ -1703,7 +1728,7 @@ async function loadHero(){
   loadYahooHero();
   loadKrHero();
   // 옵션/변동성 히어로 (SKEW, VVIX, OVX, GVZ)
-  fetch('/api/yahoo?symbols='+encodeURIComponent('^SKEW,^VVIX,^OVX,^GVZ')+'&days=14')
+  fetch('/api/yahoo?symbols='+encodeURIComponent('^SKEW,^VVIX,^OVX')+'&days=14')
     .then(r=>r.json()).then(d=>{
     (d.results||[]).forEach(res=>{
       const v=res.vals.at(-1); if(!v) return;
@@ -1718,9 +1743,6 @@ async function loadHero(){
       } else if(res.ticker==='^OVX'){
         const col=v>60?'#f87171':v>40?'#f97316':'#34d399';
         setH(28,v.toFixed(1),'',v>60?'유가 혼란':v>40?'불안 확대':'보통',col);
-      } else if(res.ticker==='^GVZ'){
-        const col=v>25?'#f87171':v>15?'#f97316':'#34d399';
-        setH(29,v.toFixed(1),'',v>25?'금 불안정':v>15?'주의':'안정',col);
       }
     });
   }).catch(()=>{});
@@ -2832,10 +2854,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-skew',   ()=>renderSkew(365));
   observeLazy('w-vvix',   ()=>renderVvix(365));
   observeLazy('w-ovx',    ()=>renderOvx(365));
-  observeLazy('w-gvz',    ()=>renderGvz(365));
   observeLazy('w-vvix',   ()=>renderVvix(365));
   observeLazy('w-ovx',    ()=>renderOvx(365));
-  observeLazy('w-gvz',    ()=>renderGvz(365));
   observeLazy('w-em',     ()=>renderEm(365));
   observeLazy('w-kospi',  ()=>renderKospi(365));
   observeLazy('w-kosdaq', ()=>renderKosdaq(365));
