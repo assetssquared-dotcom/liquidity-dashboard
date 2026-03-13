@@ -1634,9 +1634,11 @@ async function loadDxy(){
 
 // ── Yahoo Finance 히어로 카드 ──
 async function loadYahooHero(){
-  const items = [
+  const ddItems = [
     { symbol:'^GSPC',   id:13, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
     { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
+  ];
+  const priceItems = [
     { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(0), goodUp:true },
     { symbol:'BTC-USD', id:16, fmt:v=>'$'+Math.round(v/1000)+'K', goodUp:true },
     { symbol:'EWZ',     id:21, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
@@ -1644,11 +1646,16 @@ async function loadYahooHero(){
     { symbol:'VNM',     id:23, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
     { symbol:'EWJ',     id:24, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
   ];
+  const items = [...ddItems, ...priceItems];
   try{
-    const symbols = items.map(i=>i.symbol).join(',');
-    const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=30');
-    if(!r.ok) throw new Error(r.status);
-    const d = await r.json();
+    // drawdown용 3년치 + 가격용 30일치 병렬 fetch
+    const [ddRes, priceRes] = await Promise.all([
+      fetch('/api/yahoo?symbols='+encodeURIComponent(ddItems.map(i=>i.symbol).join(','))+'&days='+(365*3)),
+      fetch('/api/yahoo?symbols='+encodeURIComponent(priceItems.map(i=>i.symbol).join(','))+'&days=30'),
+    ]);
+    const ddData = ddRes.ok ? await ddRes.json() : {results:[]};
+    const priceData = priceRes.ok ? await priceRes.json() : {results:[]};
+    const d = { results: [...(ddData.results||[]), ...(priceData.results||[])] };
     (d.results||[]).forEach(res=>{
       const item = items.find(i=>i.symbol===res.ticker);
       if(!item||!res.vals.length) return;
@@ -1674,9 +1681,14 @@ async function loadYahooHero(){
         setH(item.id, item.fmt(lv), '', arrow+' '+chgAbs+'원 전일 대비', chgCol);
         return;
       }
-      // 신흥국 ETF: 현재가 + 전일 변화폭
+      // 신흥국 ETF: 현재가 + 주간 변화율
       if(item.em){
-        setH(item.id, item.fmt(lv), '', arrow+' $'+Math.abs(dv).toFixed(2)+' 전일', chgCol);
+        const wv = vals.length>5 ? vals.at(-6) : vals[0];
+        const wpct = wv ? ((lv-wv)/wv*100) : 0;
+        const wUp = wpct > 0;
+        const wCol = wUp ? '#34d399' : '#f87171';
+        const wArrow = wUp ? '▲' : '▼';
+        setH(item.id, item.fmt(lv), '', wArrow+' '+Math.abs(wpct).toFixed(2)+'% 주간', wCol);
         return;
       }
       // 금, BTC: 전일 대비 %
@@ -2382,18 +2394,24 @@ async function renderCopper(days,btn){
 
 // ── 한국 히어로 카드 (코스피, 코스닥, 삼성전자, 달러/엔) ──
 async function loadKrHero(){
-  const items=[
-    {symbol:'^KS11',    id:17, drawdown:true},
-    {symbol:'^KQ11',    id:18, drawdown:true},
+  const krDdItems=[
+    {symbol:'^KS11', id:17, drawdown:true},
+    {symbol:'^KQ11', id:18, drawdown:true},
+  ];
+  const krPriceItems=[
     {symbol:'005930.KS',id:19, fmt:v=>v.toLocaleString()+'원', goodUp:true, pctChg:true},
     {symbol:'KRW=X',    id:10, fmt:v=>Math.round(v).toLocaleString()+'원', goodUp:false, absChg:true},
     {symbol:'JPY=X',    id:20, fmt:v=>v.toFixed(1)+'엔', goodUp:false, absChg:true},
   ];
+  const items=[...krDdItems,...krPriceItems];
   try{
-    const symbols=items.map(i=>i.symbol).join(',');
-    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=30');
-    if(!r.ok)throw new Error(r.status);
-    const d=await r.json();
+    const [ddRes, priceRes] = await Promise.all([
+      fetch('/api/yahoo?symbols='+encodeURIComponent(krDdItems.map(i=>i.symbol).join(','))+'&days='+(365*3)),
+      fetch('/api/yahoo?symbols='+encodeURIComponent(krPriceItems.map(i=>i.symbol).join(','))+'&days=30'),
+    ]);
+    const ddData = ddRes.ok ? await ddRes.json() : {results:[]};
+    const priceData = priceRes.ok ? await priceRes.json() : {results:[]};
+    const d = { results: [...(ddData.results||[]), ...(priceData.results||[])] };
     (d.results||[]).forEach(res=>{
       const item=items.find(i=>i.symbol===res.ticker);
       if(!item||!res.vals.length)return;
