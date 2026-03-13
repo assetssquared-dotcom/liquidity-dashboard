@@ -1798,6 +1798,9 @@ async function loadYahooHero(){
     (d.results||[]).forEach(res=>{
       const item = items.find(i=>i.symbol===res.ticker);
       if(!item||!res.vals.length) return;
+      // 중복 날짜 제거
+      const dm=new Map(); res.dates.forEach((dt,i)=>dm.set(dt,res.vals[i]));
+      res.vals=[...dm.values()]; res.dates=[...dm.keys()];
       const vals = res.vals;
       const lv = vals.at(-1), pv = vals.at(-2)||lv;
       const dv = lv - pv;
@@ -2244,6 +2247,11 @@ async function fetchYahoo(symbol, days){
   const d = await r.json();
   const res = (d.results||[]).find(r=>r.ticker===symbol);
   if(!res||!res.vals.length) throw new Error('no data');
+  // 중복 날짜 제거
+  const map = new Map();
+  res.dates.forEach((dt,i)=>map.set(dt,res.vals[i]));
+  res.dates = [...map.keys()];
+  res.vals = [...map.values()];
   return res;
 }
 
@@ -2556,6 +2564,9 @@ async function loadKrHero(){
     (d.results||[]).forEach(res=>{
       const item=items.find(i=>i.symbol===res.ticker);
       if(!item||!res.vals.length)return;
+      // 중복 날짜 제거
+      const dm=new Map(); res.dates.forEach((dt,i)=>dm.set(dt,res.vals[i]));
+      res.vals=[...dm.values()];
       const vals=res.vals, lv=vals.at(-1), pv=vals.at(-2)||lv, dv=lv-pv;
       const isUp=dv>0;
       const arrow=isUp?'▲':'▼';
