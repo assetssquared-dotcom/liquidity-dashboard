@@ -1635,15 +1635,18 @@ async function loadDxy(){
 // ── Yahoo Finance 히어로 카드 ──
 async function loadYahooHero(){
   const items = [
-    { symbol:'KRW=X',   id:10, fmt:v=>Math.round(v).toLocaleString()+'원', goodUp:false },
     { symbol:'^GSPC',   id:13, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
     { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
     { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(0), goodUp:true },
     { symbol:'BTC-USD', id:16, fmt:v=>'$'+Math.round(v/1000)+'K', goodUp:true },
+    { symbol:'EWZ',     id:21, fmt:v=>v.toFixed(2), goodUp:true },
+    { symbol:'INDA',    id:22, fmt:v=>v.toFixed(2), goodUp:true },
+    { symbol:'VNM',     id:23, fmt:v=>v.toFixed(2), goodUp:true },
+    { symbol:'EWJ',     id:24, fmt:v=>v.toFixed(2), goodUp:true },
   ];
   try{
     const symbols = items.map(i=>i.symbol).join(',');
-    const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=270');
+    const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=14');
     if(!r.ok) throw new Error(r.status);
     const d = await r.json();
     (d.results||[]).forEach(res=>{
@@ -2379,10 +2382,11 @@ async function loadKrHero(){
     {symbol:'^KQ11',    id:18, drawdown:true},
     {symbol:'005930.KS',id:19, fmt:v=>v.toLocaleString()+'원', goodUp:true, pctChg:true},
     {symbol:'KRW=X',    id:10, fmt:v=>Math.round(v).toLocaleString()+'원', goodUp:false, absChg:true},
+    {symbol:'JPY=X',    id:20, fmt:v=>v.toFixed(1)+'엔', goodUp:false, absChg:true},
   ];
   try{
     const symbols=items.map(i=>i.symbol).join(',');
-    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=270');
+    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=14');
     if(!r.ok)throw new Error(r.status);
     const d=await r.json();
     (d.results||[]).forEach(res=>{
