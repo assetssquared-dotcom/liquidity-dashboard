@@ -266,9 +266,17 @@ footer a{color:var(--txt3);}
   <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
   <div class="hero-row macro">
     <div class="hcard"><div class="hcard-title">달러인덱스</div><div class="hcard-val" id="h9"><div class="skel"></div></div><div class="hcard-chg" id="h9c">—</div><div class="hcard-desc">DXY · ICE 달러인덱스</div></div>
-    <div class="hcard"><div class="hcard-title">10년물 금리</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
-    <div class="hcard"><div class="hcard-title">WTI 원유</div><div class="hcard-val" id="h11"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">USD/배럴</div></div>
-    <div class="hcard"><div class="hcard-title">M2 통화량</div><div class="hcard-val" id="h12"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">미국 광의통화</div></div>
+    <div class="hcard"><div class="hcard-title">원달러 환율</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">KRW/USD</div></div>
+    <div class="hcard"><div class="hcard-title">10년물 금리</div><div class="hcard-val" id="h11"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
+    <div class="hcard"><div class="hcard-title">WTI 원유</div><div class="hcard-val" id="h12"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">USD/배럴</div></div>
+  </div>
+  <!-- 4줄: 위험자산 -->
+  <div class="hero-label" style="margin-top:1.1rem;">🔥 위험자산</div>
+  <div class="hero-row" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);">
+    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">S&amp;P500</div><div class="hcard-val" id="h13"><div class="skel"></div></div><div class="hcard-chg" id="h13c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
+    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">나스닥</div><div class="hcard-val" id="h14"><div class="skel"></div></div><div class="hcard-chg" id="h14c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
+    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">금</div><div class="hcard-val" id="h15"><div class="skel"></div></div><div class="hcard-chg" id="h15c">—</div><div class="hcard-desc">USD/온스 · 안전자산</div></div>
+    <div class="hcard" style="border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);"><div class="hcard-title" style="color:#fbbf24;opacity:.85;">비트코인</div><div class="hcard-val" id="h16"><div class="skel"></div></div><div class="hcard-chg" id="h16c">—</div><div class="hcard-desc">BTC/USD · 위험선호</div></div>
   </div>
 </div>
 
@@ -831,9 +839,119 @@ footer a{color:var(--txt3);}
 </div>
 
 
-<!-- SEC 23: 섹터 히트맵 -->
+<!-- SEC 23: 원달러 환율 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">SECTOR ETF · 당일 등락</div></div>
+  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">원달러 환율</div><div class="sec-tag">KRW=X · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">원달러 환율 추이</div>
+    <div class="card-sub">단위: 원/달러 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderKrw(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderKrw(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderKrw(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-krw"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-krw"></div>
+    <div class="insight">
+      <div class="insight-title">📌 원달러 환율이란?</div>
+      <div class="insight-body">달러 강세일수록 원화 약세(환율 상승)예요. 환율 급등은 외국인 자금 유출, 수입물가 상승으로 이어져요. 한국 투자자에게 직접적으로 영향을 주는 핵심 지표예요.</div>
+      <div class="signal-grid">
+        <div class="signal red"><div class="signal-icon">📈</div><div class="signal-body"><strong>환율 급등(원화 약세)</strong>외국인 자금 유출·수입물가 상승·달러 강세 국면</div></div>
+        <div class="signal green"><div class="signal-icon">📉</div><div class="signal-body"><strong>환율 하락(원화 강세)</strong>외국인 자금 유입·달러 약세·위험선호 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 24: S&P500 & 나스닥 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">S&amp;P500 &amp; 나스닥</div><div class="sec-tag">^GSPC · ^IXIC · YAHOO</div></div>
+  <div class="cards-half">
+    <div class="card">
+      <div class="card-title">S&amp;P500</div>
+      <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderSp500(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderSp500(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderSp500(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-sp500"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-sp500"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">나스닥</div>
+      <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간</div>
+      <div class="tbtn-wrap">
+        <button class="tbtn active" onclick="renderNasdaq(365,this)">1Y</button>
+        <button class="tbtn" onclick="renderNasdaq(365*2,this)">2Y</button>
+        <button class="tbtn" onclick="renderNasdaq(365*3,this)">3Y</button>
+      </div>
+      <div class="chart-wrap" id="w-nasdaq"><div class="lw"><div class="sp"></div></div></div>
+      <div class="now-panel" id="now-nasdaq"></div>
+    </div>
+  </div>
+  <div class="insight" style="margin-top:.85rem;">
+    <div class="insight-title">📌 전고점 대비 낙폭(Drawdown)이란?</div>
+    <div class="insight-body">현재 가격이 역대 최고점에서 얼마나 내려왔는지를 보여줘요. <strong>-5% 이내</strong>는 강세장, <strong>-10~20%</strong>는 조정, <strong>-20% 이상</strong>은 약세장(Bear Market)이에요.</div>
+    <div class="signal-grid">
+      <div class="signal green"><div class="signal-icon">🏔️</div><div class="signal-body"><strong>-5% 이내</strong>강세장 · ATH 근접 구간</div></div>
+      <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>-10~20%</strong>조정 구간 · 매수 기회 탐색</div></div>
+      <div class="signal red"><div class="signal-icon">🐻</div><div class="signal-body"><strong>-20% 이상</strong>약세장 · 리스크 관리 우선</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEC 25: 금 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">25</div><div class="sec-title">금 (Gold)</div><div class="sec-tag">GC=F · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">금 가격 추이</div>
+    <div class="card-sub">단위: USD/온스 · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderGold(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderGold(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderGold(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-gold"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-gold"></div>
+    <div class="insight">
+      <div class="insight-title">📌 금이란?</div>
+      <div class="insight-body">안전자산의 대표격이에요. 달러·실질금리와 역상관 관계를 가져요. <strong>금 강세</strong>는 불확실성 증가·달러 약세·인플레이션 헤지 수요를 반영해요.</div>
+      <div class="signal-grid">
+        <div class="signal yellow"><div class="signal-icon">📈</div><div class="signal-body"><strong>금 상승</strong>불확실성 증가·달러 약세·실질금리 하락 환경</div></div>
+        <div class="signal blue"><div class="signal-icon">📉</div><div class="signal-body"><strong>금 하락</strong>달러 강세·실질금리 상승·위험선호 환경</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 26: 비트코인 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">26</div><div class="sec-title">비트코인 (BTC)</div><div class="sec-tag">BTC-USD · YAHOO</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">비트코인 가격 추이</div>
+    <div class="card-sub">단위: USD · 일간</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderBtc(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderBtc(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderBtc(365*3,this)">3Y</button>
+    </div>
+    <div class="chart-wrap" id="w-btc"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-btc"></div>
+    <div class="insight">
+      <div class="insight-title">📌 비트코인이란?</div>
+      <div class="insight-body">글로벌 유동성과 높은 상관관계를 보이는 위험자산이에요. 연준의 유동성 공급 확대 시 빠르게 반응하며, 시장 위험선호 심리의 선행지표로 활용돼요.</div>
+      <div class="signal-grid">
+        <div class="signal green"><div class="signal-icon">🚀</div><div class="signal-body"><strong>BTC 강세</strong>위험선호·유동성 확대·기관 수요 증가 신호</div></div>
+        <div class="signal red"><div class="signal-icon">⚡</div><div class="signal-body"><strong>BTC 급락</strong>위험회피·유동성 수축·레버리지 청산 주의</div></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- SEC 27: 섹터 히트맵 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">27</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">SECTOR ETF · 당일 등락</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">섹터별 당일 등락률</div>
     <div class="card-sub">11개 섹터 ETF 기준 · 실시간</div>
@@ -843,7 +961,7 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 24: 상관관계 히트맵 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
+  <div class="sec-hdr"><div class="sec-num">28</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">주요 자산 상관관계</div>
     <div class="card-sub">S&amp;P500 · 미국채 · 금 · 달러 · 원유 · 비트코인 · 90일</div>
@@ -1276,9 +1394,8 @@ async function loadHero(){
     ['BAMLH0A0HYM2', 5,  7,  v=>v.toFixed(2)+'%',  true],
     ['WTREGEN',      14, 8,  v=>fmtT(v),            true],
     // DXY는 별도 loadDxy() 함수로 처리
-    ['DGS10',        5,  10, v=>v.toFixed(2)+'%',   false],
-    ['DCOILWTICO',   5,  11, v=>'$'+v.toFixed(1),   false],
-    ['M2SL',         65, 12, v=>fmtT(v),            true],
+    ['DGS10',        5,  11, v=>v.toFixed(2)+'%',   false],
+    ['DCOILWTICO',   5,  12, v=>'$'+v.toFixed(1),   false],
   ];
 
   // FNG (CNN 공식 API)
@@ -1309,7 +1426,8 @@ async function loadHero(){
       setH(idx, fmt(lv), '', `${arrow} ${dvStr} ${period}`, chgCol);
     }catch(e){}
   }));
-  loadDxy(); // DXY 별도 로드
+  loadDxy();
+  loadYahooHero();
 }
 
 // ── DXY 히어로 카드 ──
@@ -1322,9 +1440,52 @@ async function loadDxy(){
     const lv = d.vals.at(-1), pv = d.vals.at(-2)||lv, dv = +(lv-pv).toFixed(3);
     const isUp = dv > 0;
     const arrow = isUp ? '▲' : '▼';
-    const chgCol = isUp ? '#f87171' : '#34d399'; // 달러강세=빨강, 약세=초록
+    const chgCol = isUp ? '#f87171' : '#34d399';
     setH(9, lv.toFixed(2), '', arrow+' '+Math.abs(dv).toFixed(2)+' 전일 대비', chgCol);
   }catch(e){ console.warn('DXY hero:', e.message); }
+}
+
+// ── Yahoo Finance 히어로 카드 (원달러, S&P500, 나스닥, 금, 비트코인) ──
+async function loadYahooHero(){
+  const items = [
+    { symbol:'KRW=X',   id:10, fmt:v=>Math.round(v).toLocaleString(), unit:'원', goodUp:false },
+    { symbol:'^GSPC',   id:13, fmt:v=>v.toFixed(1), unit:'', goodUp:true, drawdown:true },
+    { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(1), unit:'', goodUp:true, drawdown:true },
+    { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(1), unit:'', goodUp:true },
+    { symbol:'BTC-USD', id:16, fmt:v=>'$'+fmtB(v), unit:'', goodUp:true },
+  ];
+  try{
+    const symbols = items.map(i=>i.symbol).join(',');
+    const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbols)+'&days=270');
+    if(!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    (d.results||[]).forEach(res=>{
+      const item = items.find(i=>i.symbol===res.ticker);
+      if(!item||!res.vals.length) return;
+      const vals = res.vals;
+      const lv = vals.at(-1), pv = vals.at(-2)||lv;
+      const dv = lv - pv;
+      const pct = pv ? (dv/pv*100) : 0;
+      const isUp = dv > 0;
+      const arrow = isUp ? '▲' : '▼';
+      const chgCol = (item.goodUp ? isUp : !isUp) ? '#34d399' : '#f87171';
+
+      let dispVal = item.fmt(lv);
+      let chgStr = arrow+' '+Math.abs(pct).toFixed(2)+'% 전일 대비';
+
+      // 전고점 대비 낙폭
+      if(item.drawdown){
+        const peak = Math.max(...vals);
+        const dd = ((lv-peak)/peak*100).toFixed(1);
+        dispVal = item.fmt(lv);
+        chgStr = dd+'% ATH 대비';
+        const ddColor = Math.abs(parseFloat(dd)) < 5 ? '#34d399' : Math.abs(parseFloat(dd)) < 15 ? '#f97316' : '#f87171';
+        setH(item.id, dispVal, '', chgStr, ddColor);
+        return;
+      }
+      setH(item.id, dispVal, '', chgStr, chgCol);
+    });
+  }catch(e){ console.warn('Yahoo hero:', e.message); }
 }
 
 
@@ -1727,6 +1888,119 @@ async function renderIcsa(days,btn){
 // ── 네이버 프리미엄 ──
 
 
+
+// ── Yahoo Finance 차트 공통 fetch ──
+async function fetchYahoo(symbol, days){
+  const r = await fetch('/api/yahoo?symbols='+encodeURIComponent(symbol)+'&days='+days);
+  if(!r.ok) throw new Error(r.status);
+  const d = await r.json();
+  const res = (d.results||[]).find(r=>r.ticker===symbol);
+  if(!res||!res.vals.length) throw new Error('no data');
+  return res;
+}
+
+// ── 원달러 환율 ──
+async function renderKrw(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-krw');
+  try{
+    const d=await fetchYahoo('KRW=X',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-krw',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(0)}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>6?vals.at(-6):null;
+    const m3=vals.length>65?vals.at(-65):null;
+    const wchg=w1!=null?+(v-w1).toFixed(0):null;
+    let note='';
+    if(wchg!=null) note='<br>1주 전('+w1.toFixed(0)+'원) 대비 <span style="color:'+(wchg>0?'#f87171':'#34d399')+';font-weight:600">'+(wchg>0?'▲':'▼')+Math.abs(wchg)+'원 '+(wchg>0?'원화 약세':'원화 강세')+'</span>'+(m3!=null?' · 3개월 전('+m3.toFixed(0)+'원) 대비 '+(v>m3?'▲상승':'▼하락'):'');
+    const badge=v>1400?'red':v>1300?'yellow':v>1200?'neu':'green';
+    const label=v>1400?'원화 급약세':v>1300?'달러 강세':v>1200?'보통':'원화 강세';
+    const base=v>1400?'환율이 매우 높아요. 수입물가 상승·외국인 자금 유출 압력이 있어요.':v>1300?'달러 강세 구간이에요. 환율 부담이 있어요.':v>1200?'보통 수준이에요.':'원화 강세예요. 외국인 자금 유입·달러 약세 환경이에요.';
+    showNow('krw',Math.round(v).toLocaleString()+'원',badge,label,'원달러 환율 <strong>'+Math.round(v).toLocaleString()+'원</strong> — '+base+note,periodLabel(days));
+  }catch(e){showSpin('w-krw');}
+}
+
+// ── S&P500 Drawdown ──
+async function renderSp500(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-sp500');
+  try{
+    const d=await fetchYahoo('^GSPC',days);
+    const vals=d.vals;
+    let peak=vals[0];
+    const dd=vals.map(v=>{peak=Math.max(peak,v);return +((v-peak)/peak*100).toFixed(2);});
+    const{dates,vals:ddv}=thin(d.dates,dd,200);
+    const peak_all=Math.max(...vals);
+    const cur=vals.at(-1);
+    const curDd=+((cur-peak_all)/peak_all*100).toFixed(2);
+    mkLine('w-sp500',dates,[{data:ddv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    const badge=curDd>-5?'green':curDd>-10?'blue':curDd>-20?'yellow':'red';
+    const label=curDd>-5?'강세장':curDd>-10?'소폭 조정':curDd>-20?'조정장':'약세장';
+    showNow('sp500',curDd.toFixed(1)+'%',badge,label,'S&P500 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+( curDd>-5?'전고점 근처예요. 강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요. 매수 기회를 탐색할 때예요.':'약세장이에요. 리스크 관리가 우선이에요.'),periodLabel(days));
+  }catch(e){showSpin('w-sp500');}
+}
+
+// ── 나스닥 Drawdown ──
+async function renderNasdaq(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-nasdaq');
+  try{
+    const d=await fetchYahoo('^IXIC',days);
+    const vals=d.vals;
+    let peak=vals[0];
+    const dd=vals.map(v=>{peak=Math.max(peak,v);return +((v-peak)/peak*100).toFixed(2);});
+    const{dates,vals:ddv}=thin(d.dates,dd,200);
+    const peak_all=Math.max(...vals);
+    const cur=vals.at(-1);
+    const curDd=+((cur-peak_all)/peak_all*100).toFixed(2);
+    mkLine('w-nasdaq',dates,[{data:ddv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    const badge=curDd>-5?'green':curDd>-10?'blue':curDd>-20?'yellow':'red';
+    const label=curDd>-5?'강세장':curDd>-10?'소폭 조정':curDd>-20?'조정장':'약세장';
+    showNow('nasdaq',curDd.toFixed(1)+'%',badge,label,'나스닥 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'전고점 근처예요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요.':'약세장이에요. 리스크 관리 필요해요.'),periodLabel(days));
+  }catch(e){showSpin('w-nasdaq');}
+}
+
+// ── 금 ──
+async function renderGold(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-gold');
+  try{
+    const d=await fetchYahoo('GC=F',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-gold',dates,[{data:vals,borderColor:'#fbbf24',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(251,191,36,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>'$'+v.toFixed(0)}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>6?vals.at(-6):null;
+    const m3=vals.length>65?vals.at(-65):null;
+    const wchg=w1!=null?+(v-w1).toFixed(1):null;
+    let note='';
+    if(wchg!=null) note='<br>1주 전($'+w1.toFixed(0)+') 대비 <span style="color:'+(wchg>0?'#34d399':'#f87171')+';font-weight:600">'+(wchg>0?'▲':'▼')+'$'+Math.abs(wchg).toFixed(0)+' '+(wchg>0?'상승':'하락')+'</span>'+(m3!=null?' · 3개월 전($'+m3.toFixed(0)+') 대비 '+(v>m3?'▲상승':'▼하락'):'');
+    const badge=v>2500?'green':v>2000?'blue':v>1800?'neu':'yellow';
+    const label=v>2500?'강세 구간':v>2000?'상승 추세':v>1800?'보통':'약세';
+    showNow('gold','$'+v.toFixed(0),badge,label,'금 <strong>$'+v.toFixed(0)+'</strong>/온스 — '+(v>2500?'사상 최고 수준이에요. 강한 안전자산 수요가 있어요.':v>2000?'상승 추세예요. 달러 약세·불확실성 증가가 반영됐어요.':'보통 수준이에요.')+note,periodLabel(days));
+  }catch(e){showSpin('w-gold');}
+}
+
+// ── 비트코인 ──
+async function renderBtc(days,btn){
+  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  showSpin('w-btc');
+  try{
+    const d=await fetchYahoo('BTC-USD',days);
+    const{dates,vals}=thin(d.dates,d.vals,200);
+    mkLine('w-btc',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>'$'+fmtB(v)}});
+    const v=vals.at(-1);if(v==null)return;
+    const w1=vals.length>6?vals.at(-6):null;
+    const m3=vals.length>65?vals.at(-65):null;
+    const wchg=w1!=null?+(v-w1).toFixed(0):null;
+    const pct=w1!=null?+((v-w1)/w1*100).toFixed(1):null;
+    let note='';
+    if(pct!=null) note='<br>1주 전($'+fmtB(w1)+') 대비 <span style="color:'+(pct>0?'#34d399':'#f87171')+';font-weight:600">'+(pct>0?'▲':'▼')+Math.abs(pct)+'% '+(pct>0?'상승':'하락')+'</span>'+(m3!=null?' · 3개월 전($'+fmtB(m3)+') 대비 '+(v>m3?'▲상승':'▼하락'):'');
+    const badge=v>80000?'green':v>50000?'blue':v>30000?'yellow':'red';
+    const label=v>80000?'강세장':v>50000?'상승 구간':v>30000?'중립':'약세장';
+    showNow('btc','$'+fmtB(v),badge,label,'비트코인 <strong>$'+fmtB(v)+'</strong> — '+(v>80000?'강세장이에요. 위험선호 심리가 강해요.':v>50000?'상승 구간이에요. 글로벌 유동성 개선이 반영돼요.':v>30000?'중립 구간이에요.':'약세장이에요. 위험회피 심리가 우세해요.')+note,periodLabel(days));
+  }catch(e){showSpin('w-btc');}
+}
+
 // ── 섹터 히트맵 ──
 async function renderSectors(){
   const el=document.getElementById('w-sectors');
@@ -1890,6 +2164,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-m2',    ()=>renderM2(365*3));
   observeLazy('w-unrate',()=>renderUnrate(365*3));
   observeLazy('w-icsa',  ()=>renderIcsa(365*2));
+  observeLazy('w-krw',    ()=>renderKrw(365));
+  observeLazy('w-sp500',  ()=>renderSp500(365));
+  observeLazy('w-nasdaq', ()=>renderNasdaq(365));
+  observeLazy('w-gold',   ()=>renderGold(365));
+  observeLazy('w-btc',    ()=>renderBtc(365));
   observeLazy('w-sectors',()=>renderSectors());
   observeLazy('w-corr',   ()=>renderCorr());
 });
