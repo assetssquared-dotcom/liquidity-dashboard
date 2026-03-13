@@ -280,10 +280,10 @@ footer a{color:var(--txt3);}
   <!-- 신흥국 -->
   <div class="hero-label" style="margin-top:1.1rem;">🌏 신흥국</div>
   <div class="hero-row" style="border-color:rgba(52,211,153,.12);background:rgba(52,211,153,.02);">
-    <div class="hcard clickable" onclick="scrollToChart('w-em1')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">브라질 EWZ</div><div class="hcard-val" id="h21"><div class="skel"></div></div><div class="hcard-chg" id="h21c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-em1')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">인도 INDA</div><div class="hcard-val" id="h22"><div class="skel"></div></div><div class="hcard-chg" id="h22c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-em2')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">베트남 VNM</div><div class="hcard-val" id="h23"><div class="skel"></div></div><div class="hcard-chg" id="h23c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
-    <div class="hcard clickable" onclick="scrollToChart('w-em2')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">일본 EWJ</div><div class="hcard-val" id="h24"><div class="skel"></div></div><div class="hcard-chg" id="h24c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">브라질 EWZ</div><div class="hcard-val" id="h21"><div class="skel"></div></div><div class="hcard-chg" id="h21c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">인도 INDA</div><div class="hcard-val" id="h22"><div class="skel"></div></div><div class="hcard-chg" id="h22c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">베트남 VNM</div><div class="hcard-val" id="h23"><div class="skel"></div></div><div class="hcard-chg" id="h23c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
+    <div class="hcard clickable" onclick="scrollToChart('w-em')" style="border-color:rgba(52,211,153,.15);background:rgba(52,211,153,.02);"><div class="hcard-title" style="color:#34d399;opacity:.75;">일본 EWJ</div><div class="hcard-val" id="h24"><div class="skel"></div></div><div class="hcard-chg" id="h24c">—</div><div class="hcard-desc">ATH 대비 낙폭</div></div>
   </div>
   <!-- 시장 심리 -->
   <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
@@ -498,30 +498,17 @@ footer a{color:var(--txt3);}
 <!-- SEC 8: 신흥국 ETF -->
 <div class="sec">
   <div class="sec-hdr"><div class="sec-num">8</div><div class="sec-title">신흥국 ETF</div><div class="sec-tag">EWZ · INDA · VNM · EWJ · YAHOO</div></div>
-  <div class="cards-half">
-    <div class="card">
-      <div class="card-title">브라질 (EWZ) · 인도 (INDA)</div>
-      <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderEm1(365,this)">1Y</button>
-        <button class="tbtn" onclick="renderEm1(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderEm1(365*3,this)">3Y</button>
-      </div>
-      <div class="chart-wrap" id="w-em1"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-em1"></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">브라질 · 인도 · 베트남 · 일본</div>
+    <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간 · ETF 기준</div>
+    <div class="tbtn-wrap">
+      <button class="tbtn active" onclick="renderEm(365,this)">1Y</button>
+      <button class="tbtn" onclick="renderEm(365*2,this)">2Y</button>
+      <button class="tbtn" onclick="renderEm(365*3,this)">3Y</button>
     </div>
-    <div class="card">
-      <div class="card-title">베트남 (VNM) · 일본 (EWJ)</div>
-      <div class="card-sub">전고점 대비 낙폭(Drawdown) · 일간</div>
-      <div class="tbtn-wrap">
-        <button class="tbtn active" onclick="renderEm2(365,this)">1Y</button>
-        <button class="tbtn" onclick="renderEm2(365*2,this)">2Y</button>
-        <button class="tbtn" onclick="renderEm2(365*3,this)">3Y</button>
-      </div>
-      <div class="chart-wrap" id="w-em2"><div class="lw"><div class="sp"></div></div></div>
-      <div class="now-panel" id="now-em2"></div>
-    </div>
-  </div>
+    <div class="chart-wrap" id="w-em"><div class="lw"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-em"></div>
+  </div></div>
   <div class="insight" style="margin-top:.85rem;">
     <div class="insight-title">📌 신흥국 ETF란?</div>
     <div class="insight-body">글로벌 유동성이 확대될 때 신흥국으로 자금이 유입돼요. <strong>달러 약세</strong> 구간에서 신흥국 ETF가 강세를 보이는 경향이 있어요. 한국 투자자라면 브라질·인도·베트남·일본 흐름을 코스피와 함께 보면 유용해요.</div>
@@ -1193,6 +1180,7 @@ Chart.defaults.font.size=10.5;
 
 // ── 유틸 ──
 function fmtB(v){const a=Math.abs(+v);if(a>=1000)return (v/1000).toFixed(1)+'T';return (+v).toFixed(0)+'B';}
+function fmtRrp(v){if(v>=1000)return v.toFixed(1)+'B';if(v>=1)return v.toFixed(1)+'B';return v.toFixed(2)+'B';}
 function fmtT(v){if(v>=1e6)return (v/1e6).toFixed(2)+'T';if(v>=1e3)return (v/1e3).toFixed(1)+'B';return v.toFixed(0);}
 function thin(dates,vals,max){
   if(dates.length<=max)return{dates,vals};
@@ -1591,7 +1579,7 @@ async function loadHero(){
     ['T10Y2Y',       5,  3,  v=>v.toFixed(2)+'%',   true],
     ['WALCL',        14, 4,  v=>fmtT(v),            true],
     ['WRESBAL',      14, 5,  v=>fmtT(v),            true],
-    ['RRPONTSYD',    14, 6,  v=>fmtT(v),            true],
+    ['RRPONTSYD',    14, 6,  v=>fmtRrp(v),          true],
     ['BAMLH0A0HYM2', 5,  7,  v=>v.toFixed(2)+'%',  true],
     ['WTREGEN',      14, 8,  v=>fmtT(v),            true],
     // DXY는 별도 loadDxy() 함수로 처리
@@ -1635,7 +1623,7 @@ async function loadHero(){
 // ── DXY 히어로 카드 ──
 async function loadDxy(){
   try{
-    const d = await fetchYahoo('DX-Y.NYB', 14);
+    const d = await apiFetch('DTWEXBGS', 14);
     const lv = d.vals.at(-1), pv = d.vals.at(-2)||lv, dv = +(lv-pv).toFixed(3);
     const isUp = dv > 0;
     const arrow = isUp ? '▲' : '▼';
@@ -1781,10 +1769,10 @@ async function renderRrp(days,btn){
       const _prp=periodLabel(days);
       const _peakRrp=_trp.max;
       const _dropPct=_peakRrp>0?Math.round((_peakRrp-_lrp)/_peakRrp*100):0;
-      const _noteRrp=_dropPct>50?`<br><span style="font-size:.68rem;color:#34d399;display:block;margin-top:.3rem">💧 고점($${fmtT(_peakRrp)}) 대비 ${_dropPct}% 소진 — 초과유동성 대부분 시장으로 유입됐어요</span>`:'';
-      const _txtRrp=rrpText(_lrp, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_prp}: $${fmtT(_trp.first)}→$${fmtT(_trp.last)}, 구간 최고 $${fmtT(_peakRrp)}</span>`+_noteRrp;
-      showNow('rrp','$'+fmtT(_lrp),rrpBadge(_lrp),rrpLabel(_lrp),_txtRrp,_prp);
-      aiInterpret('rrp',`RRP 잔액 현재: $${fmtT(_lrp)}, ${_prp} 고점: $${fmtT(_peakRrp)}, 고점대비 ${_dropPct}% 소진`);
+      const _noteRrp=_dropPct>50?`<br><span style="font-size:.68rem;color:#34d399;display:block;margin-top:.3rem">💧 고점($${fmtRrp(_peakRrp)}) 대비 ${_dropPct}% 소진 — 초과유동성 대부분 시장으로 유입됐어요</span>`:'';
+      const _txtRrp=rrpText(_lrp, d.vals)+`<br><span style="font-size:.68rem;color:var(--txt3);margin-top:.3rem;display:block">📊 ${_prp}: $${fmtT(_trp.first)}→$${fmtT(_trp.last)}, 구간 최고 $${fmtRrp(_peakRrp)}</span>`+_noteRrp;
+      showNow('rrp','$'+fmtRrp(_lrp),rrpBadge(_lrp),rrpLabel(_lrp),_txtRrp,_prp);
+      aiInterpret('rrp',`RRP 잔액 현재: $${fmtRrp(_lrp)}, ${_prp} 고점: $${fmtRrp(_peakRrp)}, 고점대비 ${_dropPct}% 소진`);
     }
   }catch(e){showSpin('w-rrp');}
 }
@@ -1958,7 +1946,7 @@ async function renderDxy(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-dxy');
   try{
-    const d=await fetchYahoo('DX-Y.NYB',days);
+    const d=await apiFetch('DTWEXBGS',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-dxy',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
     const v=vals.at(-1);if(v==null)return;
@@ -2414,72 +2402,46 @@ async function loadKrHero(){
 
 
 // ── 신흥국 ETF ──
-async function renderEm1(days,btn){
+async function renderEm(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-  showSpin('w-em1');
+  showSpin('w-em');
   try{
-    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent('EWZ,INDA')+'&days='+days);
+    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent('EWZ,INDA,VNM,EWJ')+'&days='+days);
     if(!r.ok)throw new Error(r.status);
     const d=await r.json();
-    const ewz=(d.results||[]).find(r=>r.ticker==='EWZ');
-    const inda=(d.results||[]).find(r=>r.ticker==='INDA');
-    if(!ewz||!inda)throw new Error('no data');
-    // 브라질 drawdown
-    let pk1=ewz.vals[0];
-    const dd1=ewz.vals.map(v=>{pk1=Math.max(pk1,v);return +((v-pk1)/pk1*100).toFixed(2);});
-    // 인도 drawdown
-    let pk2=inda.vals[0];
-    const dd2=inda.vals.map(v=>{pk2=Math.max(pk2,v);return +((v-pk2)/pk2*100).toFixed(2);});
-    const{dates,vals:d1}=thin(ewz.dates,dd1,200);
-    const d2=thin(inda.dates,dd2,200).vals;
-    mkLine('w-em1',dates,[
-      {label:'브라질(EWZ)',data:d1,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
-      {label:'인도(INDA)',data:d2,borderColor:'#f59e0b',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
-    ],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
-    const cur1=ewz.vals.at(-1), pk_all1=Math.max(...ewz.vals);
-    const dd_cur1=((cur1-pk_all1)/pk_all1*100).toFixed(1);
-    const cur2=inda.vals.at(-1), pk_all2=Math.max(...inda.vals);
-    const dd_cur2=((cur2-pk_all2)/pk_all2*100).toFixed(1);
-    showNow('em1','EWZ '+dd_cur1+'%','neu','브라질·인도','브라질 EWZ <strong>'+dd_cur1+'%</strong> · 인도 INDA <strong>'+dd_cur2+'%</strong> (ATH 대비 낙폭)',periodLabel(days));
+    const tickers=[
+      {sym:'EWZ',label:'브라질',color:'#f97316'},
+      {sym:'INDA',label:'인도',color:'#fbbf24'},
+      {sym:'VNM',label:'베트남',color:'#34d399'},
+      {sym:'EWJ',label:'일본',color:'#a78bfa'},
+    ];
+    const datasets=[];
+    let refDates=null;
+    tickers.forEach(t=>{
+      const res=(d.results||[]).find(r=>r.ticker===t.sym);
+      if(!res||!res.vals.length)return;
+      let pk=res.vals[0];
+      const dd=res.vals.map(v=>{pk=Math.max(pk,v);return +((v-pk)/pk*100).toFixed(2);});
+      const{dates,vals}=thin(res.dates,dd,200);
+      if(!refDates)refDates=dates;
+      datasets.push({label:t.label+'('+t.sym+')',data:vals,borderColor:t.color,borderWidth:1.5,pointRadius:0,fill:false,tension:.3});
+    });
+    if(!refDates)throw new Error('no data');
+    mkLine('w-em',refDates,datasets,{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
     // 히어로 업데이트
-    const c1=Math.abs(parseFloat(dd_cur1))<5?'#34d399':Math.abs(parseFloat(dd_cur1))<15?'#f97316':'#f87171';
-    const c2=Math.abs(parseFloat(dd_cur2))<5?'#34d399':Math.abs(parseFloat(dd_cur2))<15?'#f97316':'#f87171';
-    setH(21,dd_cur1+'%','','ATH 대비 낙폭',c1);
-    setH(22,dd_cur2+'%','','ATH 대비 낙폭',c2);
-  }catch(e){showSpin('w-em1');}
+    const ids={EWZ:21,INDA:22,VNM:23,EWJ:24};
+    tickers.forEach(t=>{
+      const res=(d.results||[]).find(r=>r.ticker===t.sym);
+      if(!res||!res.vals.length)return;
+      const cur=res.vals.at(-1), peak=Math.max(...res.vals);
+      const dd_cur=((cur-peak)/peak*100).toFixed(1);
+      const col=Math.abs(parseFloat(dd_cur))<5?'#34d399':Math.abs(parseFloat(dd_cur))<15?'#f97316':'#f87171';
+      setH(ids[t.sym],dd_cur+'%','','ATH 대비 낙폭',col);
+    });
+    showNow('em','4개국 비교','neu','신흥국 Drawdown','브라질·인도·베트남·일본 ETF 전고점 대비 낙폭 비교예요.',periodLabel(days));
+  }catch(e){showSpin('w-em');}
 }
 
-async function renderEm2(days,btn){
-  if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-  showSpin('w-em2');
-  try{
-    const r=await fetch('/api/yahoo?symbols='+encodeURIComponent('VNM,EWJ')+'&days='+days);
-    if(!r.ok)throw new Error(r.status);
-    const d=await r.json();
-    const vnm=(d.results||[]).find(r=>r.ticker==='VNM');
-    const ewj=(d.results||[]).find(r=>r.ticker==='EWJ');
-    if(!vnm||!ewj)throw new Error('no data');
-    let pk1=vnm.vals[0];
-    const dd1=vnm.vals.map(v=>{pk1=Math.max(pk1,v);return +((v-pk1)/pk1*100).toFixed(2);});
-    let pk2=ewj.vals[0];
-    const dd2=ewj.vals.map(v=>{pk2=Math.max(pk2,v);return +((v-pk2)/pk2*100).toFixed(2);});
-    const{dates,vals:d1}=thin(vnm.dates,dd1,200);
-    const d2=thin(ewj.dates,dd2,200).vals;
-    mkLine('w-em2',dates,[
-      {label:'베트남(VNM)',data:d1,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
-      {label:'일본(EWJ)',data:d2,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
-    ],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
-    const cur1=vnm.vals.at(-1), pk_all1=Math.max(...vnm.vals);
-    const dd_cur1=((cur1-pk_all1)/pk_all1*100).toFixed(1);
-    const cur2=ewj.vals.at(-1), pk_all2=Math.max(...ewj.vals);
-    const dd_cur2=((cur2-pk_all2)/pk_all2*100).toFixed(1);
-    showNow('em2','VNM '+dd_cur1+'%','neu','베트남·일본','베트남 VNM <strong>'+dd_cur1+'%</strong> · 일본 EWJ <strong>'+dd_cur2+'%</strong> (ATH 대비 낙폭)',periodLabel(days));
-    const c1=Math.abs(parseFloat(dd_cur1))<5?'#34d399':Math.abs(parseFloat(dd_cur1))<15?'#f97316':'#f87171';
-    const c2=Math.abs(parseFloat(dd_cur2))<5?'#34d399':Math.abs(parseFloat(dd_cur2))<15?'#f97316':'#f87171';
-    setH(23,dd_cur1+'%','','ATH 대비 낙폭',c1);
-    setH(24,dd_cur2+'%','','ATH 대비 낙폭',c2);
-  }catch(e){showSpin('w-em2');}
-}
 
 // ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
 async function loadTelegram(){
@@ -2570,8 +2532,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-nasdaq', ()=>renderNasdaq(365));
   observeLazy('w-gold',   ()=>renderGold(365));
   observeLazy('w-btc',    ()=>renderBtc(365));
-  observeLazy('w-em1',    ()=>renderEm1(365));
-  observeLazy('w-em2',    ()=>renderEm2(365));
+  observeLazy('w-em',     ()=>renderEm(365));
   observeLazy('w-kospi',  ()=>renderKospi(365));
   observeLazy('w-kosdaq', ()=>renderKosdaq(365));
   observeLazy('w-samsung',()=>renderSamsung(365));
