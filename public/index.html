@@ -1759,7 +1759,7 @@ async function loadHero(){
 // ── DXY 히어로 카드 ──
 async function loadDxy(){
   try{
-    const d = await apiFetch('DTWEXBGS', 14);
+    const d = await fetchYahoo('DX-Y.NYB', 14);
     const lv = d.vals.at(-1), pv = d.vals.at(-2)||lv, dv = +(lv-pv).toFixed(3);
     const isUp = dv > 0;
     const arrow = isUp ? '▲' : '▼';
@@ -2106,7 +2106,7 @@ async function renderDxy(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-dxy');
   try{
-    const d=await apiFetch('DTWEXBGS',days);
+    const d=await fetchYahoo('DX-Y.NYB',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-dxy',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569'}});
     const v=vals.at(-1);if(v==null)return;
