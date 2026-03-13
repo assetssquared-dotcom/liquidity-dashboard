@@ -133,17 +133,6 @@ canvas#fg-gauge-canvas{width:220px;height:120px;}
 footer{border-top:1px solid var(--line);padding:1rem 1.5rem;text-align:center;font-size:.72rem;color:var(--txt3);font-family:var(--mono);}
 footer a{color:var(--txt3);}
 
-/* SUMMARY BAR */
-.summary-bar{background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:.95rem 1.3rem;margin-bottom:1.6rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
-.summary-title{font-size:.75rem;color:var(--txt3);font-family:var(--mono);white-space:nowrap;margin-right:.25rem;}
-.summary-chips{display:flex;gap:.45rem;flex-wrap:wrap;flex:1;}
-.chip{display:flex;align-items:center;gap:.4rem;padding:4px 11px;border-radius:20px;font-size:.73rem;font-family:var(--mono);border:1px solid var(--line);background:rgba(255,255,255,.03);white-space:nowrap;}
-.chip-label{color:var(--txt3);}
-.chip-val{font-weight:600;}
-.chip.up{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06);}
-.chip.dn{border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06);}
-.chip.neu{border-color:rgba(148,163,184,.2);background:rgba(148,163,184,.04);}
-.summary-time{font-size:.68rem;color:var(--txt3);font-family:var(--mono);white-space:nowrap;margin-left:auto;}
 
 /* 현재수치 해석 패널 */
 .now-panel{background:#0d0d0d;border-left:3px solid var(--c1);border-radius:0 8px 8px 0;padding:1.1rem 1.25rem;margin-top:.85rem;display:none;}
@@ -237,13 +226,6 @@ footer a{color:var(--txt3);}
 </header>
 
 <div class="wrap">
-
-<!-- SUMMARY BAR -->
-<div class="summary-bar" id="summary-bar" style="display:none;">
-  <span class="summary-title">📊 현재 시장</span>
-  <div class="summary-chips" id="summary-chips"></div>
-  <span class="summary-time" id="summary-time"></span>
-</div>
 
 <!-- HERO -->
 <div class="hero" style="display:block;">
@@ -1288,7 +1270,6 @@ async function loadHero(){
     }catch(e){}
   }));
 
-  setTimeout(updateSummary, 200);
 }
 
 
@@ -1547,33 +1528,7 @@ async function renderStlfsi(days,btn){
 
 
 // ── 요약 배너 ──
-function updateSummary(){
-  const items = [
-    {id:'h1', label:'공포탐욕'},
-    {id:'h2', label:'VIX'},
-    {id:'h3', label:'금리차'},
-    {id:'h7', label:'HY 스프레드'},
-    {id:'h9', label:'DXY'},
-    {id:'h10', label:'10년물'},
-    {id:'h11', label:'WTI'},
-    {id:'h12', label:'M2'},
-  ];
-  const chips = document.getElementById('summary-chips');
-  const bar = document.getElementById('summary-bar');
-  if(!chips||!bar) return;
-  const html = items.map(({id,label})=>{
-    const el = document.getElementById(id);
-    if(!el||!el.textContent||el.textContent==='—') return '';
-    const val = el.textContent.trim();
-    const cls = el.className.includes('up')?'up':el.className.includes('dn')?'dn':'neu';
-    return `<span class="chip ${cls}"><span class="chip-label">${label}</span><span class="chip-val">${val}</span></span>`;
-  }).filter(Boolean).join('');
-  if(html){
-    chips.innerHTML = html;
-    bar.style.display = 'flex';
-    document.getElementById('summary-time').textContent = new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' 기준';
-  }
-}
+
 
 // ── lazy loading ──
 function observeLazy(id,fn){
