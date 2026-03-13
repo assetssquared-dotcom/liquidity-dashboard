@@ -1632,14 +1632,14 @@ async function loadDxy(){
   }catch(e){ console.warn('DXY hero:', e.message); }
 }
 
-// ── Yahoo Finance 히어로 카드 (원달러, S&P500, 나스닥, 금, 비트코인) ──
+// ── Yahoo Finance 히어로 카드 ──
 async function loadYahooHero(){
   const items = [
-    { symbol:'KRW=X',   id:10, fmt:v=>Math.round(v).toLocaleString(), unit:'원', goodUp:false },
-    { symbol:'^GSPC',   id:13, fmt:v=>v.toFixed(1), unit:'', goodUp:true, drawdown:true },
-    { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(1), unit:'', goodUp:true, drawdown:true },
-    { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(1), unit:'', goodUp:true },
-    { symbol:'BTC-USD', id:16, fmt:v=>'$'+Math.round(v/1000)+'K', unit:'', goodUp:true },
+    { symbol:'KRW=X',   id:10, fmt:v=>Math.round(v).toLocaleString()+'원', goodUp:false },
+    { symbol:'^GSPC',   id:13, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
+    { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
+    { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(0), goodUp:true },
+    { symbol:'BTC-USD', id:16, fmt:v=>'$'+Math.round(v/1000)+'K', goodUp:true },
   ];
   try{
     const symbols = items.map(i=>i.symbol).join(',');
@@ -1657,18 +1657,22 @@ async function loadYahooHero(){
       const arrow = isUp ? '▲' : '▼';
       const chgCol = (item.goodUp ? isUp : !isUp) ? '#34d399' : '#f87171';
 
-      let dispVal = item.fmt(lv);
-      let chgStr = arrow+' '+Math.abs(pct).toFixed(2)+'% 전일 대비';
-
-      // 전고점 대비 낙폭
+      // S&P500, 나스닥: ATH 대비 낙폭
       if(item.drawdown){
         const peak = Math.max(...vals);
         const dd = ((lv-peak)/peak*100).toFixed(1);
-        const ddColor = Math.abs(parseFloat(dd)) < 5 ? '#34d399' : Math.abs(parseFloat(dd)) < 15 ? '#f97316' : '#f87171';
+        const ddColor = Math.abs(parseFloat(dd))<5?'#34d399':Math.abs(parseFloat(dd))<15?'#f97316':'#f87171';
         setH(item.id, dd+'%', '', 'ATH 대비 낙폭', ddColor);
         return;
       }
-      setH(item.id, dispVal, '', chgStr, chgCol);
+      // 원달러: 절대값 + 전일 변화폭
+      if(item.symbol==='KRW=X'){
+        const chgAbs = Math.round(Math.abs(dv));
+        setH(item.id, item.fmt(lv), '', arrow+' '+chgAbs+'원 전일 대비', chgCol);
+        return;
+      }
+      // 금, BTC: 전일 대비 %
+      setH(item.id, item.fmt(lv), '', arrow+' '+Math.abs(pct).toFixed(2)+'% 전일', chgCol);
     });
   }catch(e){ console.warn('Yahoo hero:', e.message); }
 }
@@ -2371,10 +2375,10 @@ async function renderCopper(days,btn){
 // ── 한국 히어로 카드 (코스피, 코스닥, 삼성전자, 달러/엔) ──
 async function loadKrHero(){
   const items=[
-    {symbol:'^KS11',   id:17, drawdown:true},
-    {symbol:'^KQ11',   id:18, drawdown:true},
-    {symbol:'005930.KS',id:19, fmt:v=>v.toLocaleString()+'원', goodUp:true},
-    {symbol:'JPY=X',   id:20, fmt:v=>v.toFixed(1)+'엔', goodUp:false},
+    {symbol:'^KS11',    id:17, drawdown:true},
+    {symbol:'^KQ11',    id:18, drawdown:true},
+    {symbol:'005930.KS',id:19, fmt:v=>v.toLocaleString()+'원', goodUp:true, pctChg:true},
+    {symbol:'KRW=X',    id:10, fmt:v=>Math.round(v).toLocaleString()+'원', goodUp:false, absChg:true},
   ];
   try{
     const symbols=items.map(i=>i.symbol).join(',');
@@ -2386,15 +2390,24 @@ async function loadKrHero(){
       if(!item||!res.vals.length)return;
       const vals=res.vals, lv=vals.at(-1), pv=vals.at(-2)||lv, dv=lv-pv;
       const isUp=dv>0;
+      const arrow=isUp?'▲':'▼';
+      const pct=(pv?(dv/pv*100):0);
+      // 코스피/코스닥: ATH 대비 낙폭
       if(item.drawdown){
         const peak=Math.max(...vals);
         const dd=((lv-peak)/peak*100).toFixed(1);
         const ddColor=Math.abs(parseFloat(dd))<5?'#34d399':Math.abs(parseFloat(dd))<15?'#f97316':'#f87171';
         setH(item.id, dd+'%', '', 'ATH 대비 낙폭', ddColor);
-      } else {
-        const pct=(dv/pv*100);
-        const chgCol=(item.goodUp?isUp:!isUp)?'#34d399':'#f87171';
-        setH(item.id, item.fmt(lv), '', (isUp?'▲':'▼')+Math.abs(pct).toFixed(2)+'% 전일 대비', chgCol);
+      }
+      // 삼성전자: 전일 대비 %
+      else if(item.pctChg){
+        const chgCol=isUp?'#34d399':'#f87171';
+        setH(item.id, item.fmt(lv), '', arrow+' '+Math.abs(pct).toFixed(2)+'% 전일', chgCol);
+      }
+      // 원달러: 절대값 변화
+      else if(item.absChg){
+        const chgCol=isUp?'#f87171':'#34d399';
+        setH(item.id, item.fmt(lv), '', arrow+' '+Math.round(Math.abs(dv))+'원 전일', chgCol);
       }
     });
   }catch(e){console.warn('KR hero:',e.message);}
@@ -2433,10 +2446,11 @@ async function renderEm(days,btn){
     tickers.forEach(t=>{
       const res=(d.results||[]).find(r=>r.ticker===t.sym);
       if(!res||!res.vals.length)return;
-      const cur=res.vals.at(-1), peak=Math.max(...res.vals);
-      const dd_cur=((cur-peak)/peak*100).toFixed(1);
-      const col=Math.abs(parseFloat(dd_cur))<5?'#34d399':Math.abs(parseFloat(dd_cur))<15?'#f97316':'#f87171';
-      setH(ids[t.sym],dd_cur+'%','','ATH 대비 낙폭',col);
+      const vals=res.vals, lv=vals.at(-1), pv=vals.at(-2)||lv;
+      const pct=pv?(lv-pv)/pv*100:0;
+      const isUp=pct>0;
+      const col=isUp?'#34d399':'#f87171';
+      setH(ids[t.sym],(isUp?'▲':'▼')+Math.abs(pct).toFixed(2)+'%','','전일 대비',col);
     });
     showNow('em','4개국 비교','neu','신흥국 Drawdown','브라질·인도·베트남·일본 ETF 전고점 대비 낙폭 비교예요.',periodLabel(days));
   }catch(e){showSpin('w-em');}
