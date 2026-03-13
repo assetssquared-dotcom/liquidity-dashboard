@@ -210,6 +210,12 @@ footer a{color:var(--txt3);}
   .hmap-cell{padding:.7rem .5rem;}
   .hmap-val{font-size:.9rem;}}
 
+/* SCROLL TO TOP */
+#scrolltop{position:fixed;bottom:1.5rem;right:1.5rem;width:44px;height:44px;border-radius:50%;background:#1a1a1a;border:1px solid #333;color:#aaa;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s,border-color .2s;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+#scrolltop.show{opacity:1;pointer-events:auto;}
+#scrolltop:hover{border-color:#555;color:#fff;transform:translateY(-2px);}
+@media(max-width:600px){#scrolltop{bottom:1.2rem;right:1.2rem;width:40px;height:40px;}}
+
 /* RESPONSIVE */
 @media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.hero-row{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
 @media(max-width:600px){
@@ -236,7 +242,7 @@ footer a{color:var(--txt3);}
   <div class="brand">
     <div class="brand-icon">A²</div>
     <div>
-      <div class="brand-name"><span class="brand-full">자산제곱 모니터링 대시보드</span><span class="brand-short">자산제곱</span></div>
+      <div class="brand-name"><span class="brand-full">자산제곱 모니터링 대시보드</span><span class="brand-short">자산제곱 대시보드</span></div>
       <div class="brand-sub">MARKET MONITOR · FRED REAL-TIME DATA</div>
     </div>
   </div>
@@ -1172,7 +1178,7 @@ footer a{color:var(--txt3);}
     </div>
   </div>
 </div>
-<footer>데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a> · 본 페이지는 정보 제공 목적으로만 제공됩니다.</footer>
+<footer>데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a>, Yahoo Finance · 본 자료는 정보 제공 목적으로만 제공되며, 투자 권유 또는 투자 판단의 근거로 활용될 수 없습니다. 데이터 및 분석 자료의 인용·재배포 시 출처(자산제곱)를 명시하여야 하며, 공유는 자유롭게 하셔도 됩니다. 더 많은 분들께 도움이 되길 바랍니다.</footer>
 
 <script>
 const GRID='rgba(255,255,255,0.05)';
@@ -2548,6 +2554,11 @@ async function loadTelegram(){
 
 // ── 초기화 ──
 document.addEventListener('DOMContentLoaded',()=>{
+  // 스크롤 탑 버튼
+  const _st=document.getElementById('scrolltop');
+  window.addEventListener('scroll',()=>{
+    _st.classList.toggle('show', window.scrollY > 400);
+  },{passive:true});
   observeLazy('tg-posts', ()=>loadTelegram()); // 1번: 텔레그램 포스트
   loadHero();
   loadFng();
@@ -2586,5 +2597,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-corr',   ()=>renderCorr());
 });
 </script>
+<button id="scrolltop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="맨 위로">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 </body>
 </html>
