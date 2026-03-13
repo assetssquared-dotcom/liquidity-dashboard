@@ -46,6 +46,9 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 .hero-label{font-size:.82rem;color:var(--txt2);font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.6rem;padding-left:.2rem;font-weight:600;}
 .hcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;transition:border-color .2s;}
 .hcard:hover{border-color:#444;}
+.hcard.clickable{cursor:pointer;}
+.hcard.clickable:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.hcard.clickable{transition:border-color .2s,transform .2s,box-shadow .2s;}
 /* 유동성 섹션 */
 .hero-row.asset .hcard{border-color:rgba(251,191,36,.18);background:rgba(251,191,36,.03);}
 .hero-row.asset .hcard:hover{border-color:rgba(251,191,36,.45);}
@@ -258,34 +261,34 @@ footer a{color:var(--txt3);}
   <!-- 1줄: 자산 -->
   <div class="hero-label">📊 자산</div>
   <div class="hero-row asset">
-    <div class="hcard"><div class="hcard-title">S&amp;P500</div><div class="hcard-val" id="h13"><div class="skel"></div></div><div class="hcard-chg" id="h13c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
-    <div class="hcard"><div class="hcard-title">나스닥</div><div class="hcard-val" id="h14"><div class="skel"></div></div><div class="hcard-chg" id="h14c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
-    <div class="hcard"><div class="hcard-title">금</div><div class="hcard-val" id="h15"><div class="skel"></div></div><div class="hcard-chg" id="h15c">—</div><div class="hcard-desc">USD/온스 · 안전자산</div></div>
-    <div class="hcard"><div class="hcard-title">비트코인</div><div class="hcard-val" id="h16"><div class="skel"></div></div><div class="hcard-chg" id="h16c">—</div><div class="hcard-desc">BTC/USD · 위험선호</div></div>
+    <div class="hcard"><div class="hcard-title">S&amp;P500</div><div class="hcard clickable" onclick="scrollToChart('w-sp500')"><div class="skel"></div></div><div class="hcard-chg" id="h13c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
+    <div class="hcard"><div class="hcard-title">나스닥</div><div class="hcard clickable" onclick="scrollToChart('w-nasdaq')"><div class="skel"></div></div><div class="hcard-chg" id="h14c">—</div><div class="hcard-desc">전고점 대비 낙폭</div></div>
+    <div class="hcard"><div class="hcard-title">금</div><div class="hcard clickable" onclick="scrollToChart('w-gold')"><div class="skel"></div></div><div class="hcard-chg" id="h15c">—</div><div class="hcard-desc">USD/온스 · 안전자산</div></div>
+    <div class="hcard"><div class="hcard-title">비트코인</div><div class="hcard clickable" onclick="scrollToChart('w-btc')"><div class="skel"></div></div><div class="hcard-chg" id="h16c">—</div><div class="hcard-desc">BTC/USD · 위험선호</div></div>
   </div>
   <!-- 2줄: 시장 -->
   <div class="hero-label" style="margin-top:1.1rem;">📈 시장</div>
   <div class="hero-row market">
-    <div class="hcard"><div class="hcard-title">공포탐욕지수</div><div class="hcard-val" id="h1"><div class="skel"></div></div><div class="hcard-chg" id="h1c">—</div><div class="hcard-desc">CNN Fear &amp; Greed</div></div>
-    <div class="hcard"><div class="hcard-title">VIX 변동성</div><div class="hcard-val" id="h2"><div class="skel"></div></div><div class="hcard-chg" id="h2c">—</div><div class="hcard-desc">20↓ 안정 · 30↑ 경계</div></div>
-    <div class="hcard"><div class="hcard-title">장단기 금리차</div><div class="hcard-val" id="h3"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
-    <div class="hcard"><div class="hcard-title">하이일드 스프레드</div><div class="hcard-val" id="h7"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스</div></div>
+    <div class="hcard"><div class="hcard-title">공포탐욕지수</div><div class="hcard clickable" onclick="scrollToChart('w-fng')"><div class="skel"></div></div><div class="hcard-chg" id="h1c">—</div><div class="hcard-desc">CNN Fear &amp; Greed</div></div>
+    <div class="hcard"><div class="hcard-title">VIX 변동성</div><div class="hcard clickable" onclick="scrollToChart('w-vix')"><div class="skel"></div></div><div class="hcard-chg" id="h2c">—</div><div class="hcard-desc">20↓ 안정 · 30↑ 경계</div></div>
+    <div class="hcard"><div class="hcard-title">장단기 금리차</div><div class="hcard clickable" onclick="scrollToChart('w-t10y2y')"><div class="skel"></div></div><div class="hcard-chg" id="h3c">—</div><div class="hcard-desc">10Y - 2Y · 음수 = 역전</div></div>
+    <div class="hcard"><div class="hcard-title">하이일드 스프레드</div><div class="hcard clickable" onclick="scrollToChart('w-hys')"><div class="skel"></div></div><div class="hcard-chg" id="h7c">—</div><div class="hcard-desc">신용시장 스트레스</div></div>
   </div>
   <!-- 3줄: 매크로 -->
   <div class="hero-label" style="margin-top:1.1rem;">🌐 매크로</div>
   <div class="hero-row macro">
-    <div class="hcard"><div class="hcard-title">달러인덱스</div><div class="hcard-val" id="h9"><div class="skel"></div></div><div class="hcard-chg" id="h9c">—</div><div class="hcard-desc">DXY · ICE 달러인덱스</div></div>
-    <div class="hcard"><div class="hcard-title">원달러 환율</div><div class="hcard-val" id="h10"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">KRW/USD</div></div>
-    <div class="hcard"><div class="hcard-title">10년물 금리</div><div class="hcard-val" id="h11"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
-    <div class="hcard"><div class="hcard-title">WTI 원유</div><div class="hcard-val" id="h12"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">USD/배럴</div></div>
+    <div class="hcard"><div class="hcard-title">달러인덱스</div><div class="hcard clickable" onclick="scrollToChart('w-dxy')"><div class="skel"></div></div><div class="hcard-chg" id="h9c">—</div><div class="hcard-desc">DXY · ICE 달러인덱스</div></div>
+    <div class="hcard"><div class="hcard-title">원달러 환율</div><div class="hcard clickable" onclick="scrollToChart('w-krw')"><div class="skel"></div></div><div class="hcard-chg" id="h10c">—</div><div class="hcard-desc">KRW/USD</div></div>
+    <div class="hcard"><div class="hcard-title">10년물 금리</div><div class="hcard clickable" onclick="scrollToChart('w-dgs10')"><div class="skel"></div></div><div class="hcard-chg" id="h11c">—</div><div class="hcard-desc">미국 장기금리 기준</div></div>
+    <div class="hcard"><div class="hcard-title">WTI 원유</div><div class="hcard clickable" onclick="scrollToChart('w-wti')"><div class="skel"></div></div><div class="hcard-chg" id="h12c">—</div><div class="hcard-desc">USD/배럴</div></div>
   </div>
   <!-- 4줄: 유동성 -->
   <div class="hero-label" style="margin-top:1.1rem;">💧 유동성</div>
   <div class="hero-row liquidity">
-    <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard-val" id="h4"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 · QE/QT</div></div>
-    <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard-val" id="h5"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금</div></div>
-    <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard-val" id="h6"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
-    <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard-val" id="h8"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
+    <div class="hcard"><div class="hcard-title">연준 총자산</div><div class="hcard clickable" onclick="scrollToChart('w-walcl')"><div class="skel"></div></div><div class="hcard-chg" id="h4c">—</div><div class="hcard-desc">연준 대차대조표 · QE/QT</div></div>
+    <div class="hcard"><div class="hcard-title">연준 지급준비금</div><div class="hcard clickable" onclick="scrollToChart('w-res')"><div class="skel"></div></div><div class="hcard-chg" id="h5c">—</div><div class="hcard-desc">은행 시스템 총 준비금</div></div>
+    <div class="hcard"><div class="hcard-title">역레포(RRP) 잔액</div><div class="hcard clickable" onclick="scrollToChart('w-rrp')"><div class="skel"></div></div><div class="hcard-chg" id="h6c">—</div><div class="hcard-desc">연준 초과유동성 흡수액</div></div>
+    <div class="hcard"><div class="hcard-title">TGA 잔액</div><div class="hcard clickable" onclick="scrollToChart('w-tga')"><div class="skel"></div></div><div class="hcard-chg" id="h8c">—</div><div class="hcard-desc">재무부 일반계정 잔고</div></div>
   </div>
 </div>
 
@@ -1133,6 +1136,18 @@ async function apiFetch(series,days){
     }catch(e){lastErr=e;}
   }
   throw lastErr||new Error('all proxies failed');
+}
+
+// ── 히어로 카드 클릭 → 차트로 스크롤 ──
+function scrollToChart(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 80;
+  window.scrollTo({top, behavior:'smooth'});
+  // 살짝 하이라이트
+  el.style.transition='box-shadow .3s';
+  el.style.boxShadow='0 0 0 2px #5b9cf6';
+  setTimeout(()=>{ el.style.boxShadow=''; }, 1200);
 }
 
 // ── now-panel 표시 ──
