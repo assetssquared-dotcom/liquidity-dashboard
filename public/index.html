@@ -178,6 +178,23 @@ footer a{color:var(--txt3);}
 .tg-post-img{margin-top:.75rem;border-radius:6px;max-width:100%;max-height:300px;object-fit:cover;}
 .tg-empty{text-align:center;color:var(--txt3);font-size:.82rem;padding:2rem;}
 
+/* 히트맵 */
+.heatmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;padding:.25rem 0;}
+.hmap-cell{border-radius:8px;padding:.85rem .75rem;text-align:center;transition:transform .15s;}
+.hmap-cell:hover{transform:scale(1.03);}
+.hmap-name{font-size:.72rem;color:rgba(255,255,255,.75);font-family:var(--mono);margin-bottom:.3rem;}
+.hmap-val{font-size:1.05rem;font-weight:700;font-family:var(--mono);}
+.hmap-ticker{font-size:.62rem;color:rgba(255,255,255,.45);margin-top:.2rem;font-family:var(--mono);}
+/* 상관관계 */
+.corr-wrap{overflow-x:auto;}
+.corr-table{border-collapse:collapse;width:100%;min-width:400px;}
+.corr-table th{font-size:.68rem;color:var(--txt3);font-family:var(--mono);padding:.4rem .5rem;text-align:center;white-space:nowrap;}
+.corr-table td{padding:.35rem .4rem;text-align:center;font-size:.75rem;font-family:var(--mono);font-weight:600;border-radius:3px;}
+.corr-table .row-label{text-align:left;color:var(--txt2);font-size:.72rem;white-space:nowrap;padding-right:.75rem;}
+@media(max-width:600px){.heatmap-grid{grid-template-columns:repeat(3,1fr);}
+  .hmap-cell{padding:.7rem .5rem;}
+  .hmap-val{font-size:.9rem;}}
+
 /* RESPONSIVE */
 @media(max-width:900px){.hero{grid-template-columns:repeat(2,1fr);}.hero-row{grid-template-columns:repeat(2,1fr);}.cards{grid-template-columns:1fr;}}
 @media(max-width:600px){
@@ -809,6 +826,31 @@ footer a{color:var(--txt3);}
           <div style="font-size:.72rem;color:#666;margin-top:2px;">실력으로 검증된 프리미엄 리서치</div>
         </div>
       </div>
+    </div>
+  </div></div>
+</div>
+
+
+<!-- SEC 23: 섹터 히트맵 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">23</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">SECTOR ETF · 당일 등락</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">섹터별 당일 등락률</div>
+    <div class="card-sub">11개 섹터 ETF 기준 · 실시간</div>
+    <div id="w-sectors"><div class="lw" style="height:160px"><div class="sp"></div></div></div>
+  </div></div>
+</div>
+
+<!-- SEC 24: 상관관계 히트맵 -->
+<div class="sec">
+  <div class="sec-hdr"><div class="sec-num">24</div><div class="sec-title">자산군 상관관계 히트맵</div><div class="sec-tag">90일 수익률 기준</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">주요 자산 상관관계</div>
+    <div class="card-sub">S&amp;P500 · 미국채 · 금 · 달러 · 원유 · 비트코인 · 90일</div>
+    <div id="w-corr"><div class="lw" style="height:200px"><div class="sp"></div></div></div>
+    <div class="insight" style="margin-top:.85rem;">
+      <div class="insight-title">📌 상관관계 읽는 법</div>
+      <div class="insight-body"><strong>+1.0</strong>에 가까울수록 같이 움직이고, <strong>-1.0</strong>에 가까울수록 반대로 움직여요. 분산투자는 상관관계가 낮은(-0.3 이하) 자산들을 조합하는 거예요.</div>
     </div>
   </div></div>
 </div>
@@ -1684,6 +1726,86 @@ async function renderIcsa(days,btn){
 
 // ── 네이버 프리미엄 ──
 
+
+// ── 섹터 히트맵 ──
+async function renderSectors(){
+  const el=document.getElementById('w-sectors');
+  if(!el)return;
+  try{
+    const r=await fetch('/api/yahoo?type=sectors');
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json();
+    const sectors=d.data||[];
+    if(!sectors.length)throw new Error('no data');
+
+    el.innerHTML='<div class="heatmap-grid">'+sectors.map(s=>{
+      const chg=s.change;
+      if(chg==null)return '';
+      const pct=+chg.toFixed(2);
+      const abs=Math.min(Math.abs(pct),5); // 최대 5%를 100%로
+      const intensity=abs/5;
+      let bg;
+      if(pct>0){
+        const g=Math.round(80+intensity*120);
+        bg='rgba(52,'+g+',80,'+(.25+intensity*.5)+')';
+      } else {
+        const r2=Math.round(100+intensity*130);
+        bg='rgba('+r2+',50,60,'+(.25+intensity*.5)+')';
+      }
+      const col=pct>0?'#34d399':'#f87171';
+      return '<div class="hmap-cell" style="background:'+bg+';border:1px solid '+(pct>0?'rgba(52,211,153,.2)':'rgba(248,113,113,.2)')+'">'+
+        '<div class="hmap-name">'+s.name+'</div>'+
+        '<div class="hmap-val" style="color:'+col+'">'+(pct>0?'+':'')+pct.toFixed(2)+'%</div>'+
+        '<div class="hmap-ticker">'+s.ticker+'</div>'+
+      '</div>';
+    }).filter(Boolean).join('')+'</div>';
+  }catch(e){el.innerHTML='<div class="tg-empty">섹터 데이터를 불러오지 못했어요.</div>';}
+}
+
+// ── 상관관계 히트맵 ──
+async function renderCorr(){
+  const el=document.getElementById('w-corr');
+  if(!el)return;
+  try{
+    const r=await fetch('/api/yahoo?type=correlation');
+    if(!r.ok)throw new Error(r.status);
+    const d=await r.json();
+    const {names,matrix}=d;
+    if(!names||!matrix)throw new Error('no data');
+
+    function corrColor(v){
+      if(v===null)return'#1a1a1a';
+      if(v>=0.7)return'rgba(52,211,153,.55)';
+      if(v>=0.3)return'rgba(52,211,153,.25)';
+      if(v>-0.3)return'rgba(148,163,184,.1)';
+      if(v>-0.7)return'rgba(248,113,113,.25)';
+      return'rgba(248,113,113,.55)';
+    }
+    function corrTextColor(v){
+      if(v===null)return'#444';
+      if(Math.abs(v)>=0.3)return v>0?'#34d399':'#f87171';
+      return'#94a3b8';
+    }
+
+    let html='<div class="corr-wrap"><table class="corr-table"><thead><tr><th></th>';
+    names.forEach(n=>{ html+='<th>'+n+'</th>'; });
+    html+='</tr></thead><tbody>';
+    matrix.forEach((row,i)=>{
+      html+='<tr><td class="row-label">'+names[i]+'</td>';
+      row.forEach((v,j)=>{
+        const diag=i===j;
+        const bg=diag?'rgba(255,255,255,.05)':corrColor(v);
+        const col=diag?'#555':corrTextColor(v);
+        const txt=diag?'—':(v===null?'N/A':v.toFixed(2));
+        html+='<td style="background:'+bg+';color:'+col+'">'+txt+'</td>';
+      });
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div class="tg-empty">상관관계 데이터를 불러오지 못했어요.</div>';}
+}
+
 // ── 텔레그램 채널 로드 (봇 DM 포워드 방식) ──
 async function loadTelegram(){
   const el=document.getElementById('tg-posts');
@@ -1768,6 +1890,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-m2',    ()=>renderM2(365*3));
   observeLazy('w-unrate',()=>renderUnrate(365*3));
   observeLazy('w-icsa',  ()=>renderIcsa(365*2));
+  observeLazy('w-sectors',()=>renderSectors());
+  observeLazy('w-corr',   ()=>renderCorr());
 });
 </script>
 </body>
