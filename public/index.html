@@ -109,6 +109,8 @@ canvas#fg-gauge-canvas{width:220px;height:120px;}
 .insight-title{font-size:.78rem;font-weight:700;color:var(--txt);margin-bottom:.5rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;opacity:.7;}
 .insight-body{margin-bottom:.85rem;}
 .signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.75rem;}
+.signal-grid-3{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:600px){.signal-grid-3{grid-template-columns:1fr;}}
 .signal{display:flex;gap:.85rem;align-items:flex-start;background:#111;border:1px solid var(--line);border-radius:8px;padding:.85rem 1rem;}
 .signal-icon{font-size:1.15rem;flex-shrink:0;margin-top:1px;}
 .signal-body{font-size:.78rem;color:var(--txt2);line-height:1.55;}
@@ -139,7 +141,7 @@ canvas#fg-gauge-canvas{width:220px;height:120px;}
 .cta-btn-tg:hover{border-color:rgba(39,167,214,.5);}
 .cta-btn-nv{color:#03c75a;border-color:rgba(3,199,90,.3);}
 .cta-btn-nv:hover{border-color:rgba(3,199,90,.5);}
-footer{border-top:1px solid var(--line);padding:1rem 1.5rem;text-align:center;font-size:.72rem;color:var(--txt3);font-family:var(--mono);}
+footer{border-top:1px solid var(--line);padding:1.5rem 1.5rem;text-align:center;font-size:.72rem;color:var(--txt3);font-family:var(--mono);line-height:1.9;max-width:860px;margin:0 auto;}
 footer a{color:var(--txt3);}
 
 
@@ -364,7 +366,7 @@ footer a{color:var(--txt3);}
   <div class="insight" style="margin-top:.85rem;">
     <div class="insight-title">📌 전고점 대비 낙폭(Drawdown)이란?</div>
     <div class="insight-body">현재 가격이 역대 최고점에서 얼마나 내려왔는지를 보여줘요. <strong>-5% 이내</strong>는 강세장, <strong>-10~20%</strong>는 조정, <strong>-20% 이상</strong>은 약세장(Bear Market)이에요.</div>
-    <div class="signal-grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="signal-grid signal-grid-3">
       <div class="signal green"><div class="signal-icon">🏔️</div><div class="signal-body"><strong>-5% 이내</strong>강세장 · ATH 근접 구간</div></div>
       <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>-10~20%</strong>조정 구간 · 매수 기회 탐색</div></div>
       <div class="signal red"><div class="signal-icon">🐻</div><div class="signal-body"><strong>-20% 이상</strong>약세장 · 리스크 관리 우선</div></div>
@@ -450,7 +452,7 @@ footer a{color:var(--txt3);}
   <div class="insight" style="margin-top:.85rem;">
     <div class="insight-title">📌 코스피 &amp; 코스닥 Drawdown</div>
     <div class="insight-body">S&amp;P500과 나란히 보면 글로벌 증시 대비 한국 증시의 상대적 강약을 파악할 수 있어요. 코스닥은 성장주 비중이 높아 유동성 민감도가 더 높아요.</div>
-    <div class="signal-grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="signal-grid signal-grid-3">
       <div class="signal green"><div class="signal-icon">🏔️</div><div class="signal-body"><strong>-5% 이내</strong>강세장 · ATH 근접</div></div>
       <div class="signal yellow"><div class="signal-icon">⚠️</div><div class="signal-body"><strong>-10~20%</strong>조정 구간</div></div>
       <div class="signal red"><div class="signal-icon">🐻</div><div class="signal-body"><strong>-20% 이상</strong>약세장 · 리스크 관리</div></div>
@@ -1178,7 +1180,7 @@ footer a{color:var(--txt3);}
     </div>
   </div>
 </div>
-<footer>데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a>, Yahoo Finance · 본 자료는 정보 제공 목적으로만 제공되며, 투자 권유 또는 투자 판단의 근거로 활용될 수 없습니다. 데이터 및 분석 자료의 인용·재배포 시 출처(자산제곱)를 명시하여야 하며, 공유는 자유롭게 하셔도 됩니다. 더 많은 분들께 도움이 되길 바랍니다.</footer>
+<footer><div style="max-width:800px;margin:0 auto;line-height:1.9;">데이터 출처: <a href="https://fred.stlouisfed.org" target="_blank">Federal Reserve Bank of St. Louis (FRED)</a>, Yahoo Finance · 본 자료는 정보 제공 목적으로만 제공되며, 투자 권유 또는 투자 판단의 근거로 활용될 수 없습니다. 데이터 및 분석 자료의 인용·재배포 시 출처(자산제곱)를 명시하여야 하며, 공유는 자유롭게 하셔도 됩니다. 더 많은 분들께 도움이 되길 바랍니다.</div></footer>
 
 <script>
 const GRID='rgba(255,255,255,0.05)';
