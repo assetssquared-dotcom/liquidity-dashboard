@@ -1994,6 +1994,14 @@ async function renderMmf(days,btn){
       {label:'MMF 총잔액',data:vals,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
        backgroundColor:'rgba(91,156,246,0.1)',tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const mv=vals.at(-1); if(mv==null) return;
+    const mpv=vals.length>2?vals.at(-2):mv;
+    const mchg=+(mv-mpv).toFixed(0);
+    const mbadge=mv>6000?'red':mv>5000?'yellow':'green';
+    const mlabel=mv>6000?'역대 최고권':mv>5000?'높은 수준':'보통';
+    const mdesc=mv>6000?'MMF 잔액이 역대 최고 수준이에요. 투자자들이 현금을 쌓고 있어요.':mv>5000?'MMF 잔액이 높아요. 대기 자금이 많다는 신호예요.':'보통 수준이에요.';
+    const mchgStr=mchg>=0?'▲$'+fmtT(mchg)+' 전주 증가':'▼$'+fmtT(Math.abs(mchg))+' 전주 감소';
+    showNow('mmf','$'+fmtT(mv),mbadge,mlabel,'MMF 총잔액 <strong>$'+fmtT(mv)+'</strong> — '+mdesc+'<br>'+mchgStr,periodLabel(days));
   }catch(e){showSpin('w-mmf');}
 }
 
@@ -2010,6 +2018,12 @@ async function renderSofr(days,btn){
       {label:'EFFR',data:ev,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'스프레드',data:sp,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569'}});
+    const lsv=sv.at(-1), lev=ev.at(-1), lsp=sp.at(-1);
+    if(lsv==null) return;
+    const sofrBadge=Math.abs(lsp)<0.05?'green':Math.abs(lsp)<0.1?'yellow':'red';
+    const sofrLabel=Math.abs(lsp)<0.05?'안정':'스프레드 확대';
+    showNow('sofr',lsv.toFixed(3)+'%',sofrBadge,sofrLabel,
+      'SOFR <strong>'+lsv.toFixed(3)+'%</strong> · EFFR <strong>'+lev.toFixed(3)+'%</strong> · 스프레드 <strong>'+lsp.toFixed(3)+'%p</strong> — '+(Math.abs(lsp)<0.05?'스프레드가 안정적이에요. 담보·무담보 금리가 균형을 이루고 있어요.':Math.abs(lsp)<0.1?'스프레드가 다소 벌어졌어요. 단기자금시장을 주시할 필요가 있어요.':'스프레드가 크게 벌어졌어요. 자금시장 스트레스 신호예요.'),periodLabel(days));
   }catch(e){showSpin('w-sofr');}
 }
 
@@ -2026,6 +2040,12 @@ async function renderIorb(days,btn){
       {label:'IORB',data:iv,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'스프레드',data:sp,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569'}});
+    const lsv2=sv.at(-1), liv=iv.at(-1), lsp2=sp.at(-1);
+    if(lsv2==null) return;
+    const iorbBadge=lsp2>0.05?'red':lsp2>-0.05?'green':'yellow';
+    const iorbLabel=lsp2>0.05?'유동성 부족':lsp2>-0.05?'균형':'유동성 풍부';
+    showNow('iorb',lsv2.toFixed(3)+'%',iorbBadge,iorbLabel,
+      'SOFR <strong>'+lsv2.toFixed(3)+'%</strong> · IORB <strong>'+liv.toFixed(3)+'%</strong> · 스프레드 <strong>'+lsp2.toFixed(3)+'%p</strong> — '+(lsp2>0.05?'SOFR가 IORB보다 높아요. 은행들이 시장에서 돈을 빌려줄 유인이 있어 유동성이 빠듯한 신호예요.':lsp2>-0.05?'SOFR와 IORB가 거의 같아요. 유동성이 균형 잡혀 있어요.':'SOFR가 IORB보다 낮아요. 시중 유동성이 풍부한 상태예요.'),periodLabel(days));
   }catch(e){showSpin('w-iorb');}
 }
 
@@ -2043,6 +2063,14 @@ async function renderWeekly(btn){
       {label:'지급준비금 변동',data:rv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'TGA 변동',data:tv,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
+    const lrv=rv.at(-1), ltv=tv.at(-1);
+    if(lrv==null) return;
+    const netFlow=+(lrv+(ltv||0)).toFixed(0);
+    const isPos=netFlow>=0;
+    const wkBadge=isPos?'green':'red';
+    const wkLabel=isPos?'순 유동성 공급':'순 유동성 흡수';
+    showNow('wk',(isPos?'▲':'▼')+'$'+fmtB(Math.abs(netFlow)),wkBadge,wkLabel,
+      '지준 <strong>'+(lrv>=0?'▲':'▼')+'$'+fmtB(Math.abs(lrv))+'</strong> · TGA <strong>'+(ltv>=0?'▲':'▼')+'$'+fmtB(Math.abs(ltv||0))+'</strong> — '+(isPos?'준비금 증가·TGA 감소로 시중 유동성이 공급됐어요.':'준비금 감소·TGA 증가로 시중 유동성이 흡수됐어요.'),'최근 2년');
   }catch(e){showSpin('w-wk');}
 }
 
@@ -2057,6 +2085,12 @@ async function renderMmfRrp(days,btn){
       {label:'MMF 총잔액',data:mv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:false,tension:.3},
       {label:'역레포(RRP)',data:rv,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:false,tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtT(v)}});
+    const lmv=mv.at(-1), lrv=rv.at(-1);
+    if(lmv==null||lrv==null) return;
+    const ratio=lrv>0?(lrv/lmv*100).toFixed(1):0;
+    const badge2=parseFloat(ratio)<5?'green':parseFloat(ratio)<15?'yellow':'red';
+    showNow('mmfrrp','$'+fmtT(lmv),badge2,'MMF '+fmtT(lmv)+' · RRP '+fmtRrp(lrv),
+      'MMF <strong>$'+fmtT(lmv)+'</strong> vs RRP <strong>$'+fmtRrp(lrv)+'</strong> — RRP가 MMF의 '+ratio+'%예요. '+(parseFloat(ratio)<5?'RRP가 거의 소진됐어요. 초과 유동성이 시장으로 재유입 완료됐어요.':parseFloat(ratio)<15?'RRP 잔액이 낮아요. 유동성 버퍼가 거의 없어요.':'아직 RRP에 유동성이 남아있어요.'),periodLabel(days));
   }catch(e){showSpin('w-mmfrrp');}
 }
 
@@ -2070,6 +2104,12 @@ async function renderMmfWeekly(){
       {label:'MMF 주간 증감',data:dv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,
        backgroundColor:'rgba(91,156,246,0.1)',tension:.3}
     ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
+    const lv=dv.at(-1); if(lv==null) return;
+    const isIn=lv>=0;
+    const badge3=isIn?'red':'green';
+    const label3=isIn?'자금 유입':'자금 유출';
+    showNow('mmfwk',(isIn?'▲':'▼')+'$'+fmtB(Math.abs(lv)),badge3,label3,
+      '직전 주 MMF '+(isIn?'<strong>$'+fmtB(lv)+'</strong> 유입됐어요. 투자자들이 안전자산으로 이동 중이에요.':'<strong>$'+fmtB(Math.abs(lv))+'</strong> 유출됐어요. 자금이 위험자산으로 이동하고 있어요.'),'최근 2년');
   }catch(e){showSpin('w-mmfwk');}
 }
 
@@ -2633,7 +2673,18 @@ async function renderEm(days,btn){
       const col=isUp?'#34d399':'#f87171';
       setH(ids[t.sym],(isUp?'▲':'▼')+Math.abs(pct).toFixed(2)+'%','','전일 대비',col);
     });
-    showNow('em','4개국 비교','neu','신흥국 Drawdown','브라질·인도·베트남·일본 ETF 전고점 대비 낙폭 비교예요.',periodLabel(days));
+    // 각국 현재 drawdown 계산
+    const emSummary=[];
+    tickers.forEach(t=>{
+      const res=(d.results||[]).find(r=>r.ticker===t.sym);
+      if(!res||!res.vals.length)return;
+      const cur=res.vals.at(-1), peak=Math.max(...res.vals);
+      const dd=((cur-peak)/peak*100).toFixed(1);
+      emSummary.push(t.label+' <strong>'+dd+'%</strong>');
+    });
+    const allWeak=emSummary.length>0;
+    const emBadge=allWeak?'neu':'green';
+    showNow('em',emSummary.length+'개국',emBadge,'ATH 대비 낙폭',emSummary.join(' · ')+'<br>전고점 대비 낙폭 기준이에요.',periodLabel(days));
   }catch(e){showSpin('w-em');}
 }
 
