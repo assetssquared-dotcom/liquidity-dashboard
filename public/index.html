@@ -1343,7 +1343,7 @@ function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'
 function fgTxt(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
 
 // ── 세션 캐시 (1시간) ──
-const CACHE_TTL = 36e5;
+const CACHE_TTL = 9e5; // 15분
 function cKey(s,d){return`aq2_${s}_${d}`;}
 function cGet(s,d){try{const r=sessionStorage.getItem(cKey(s,d));if(!r)return null;const p=JSON.parse(r);if(Date.now()-p.t>CACHE_TTL)return null;return p.v;}catch(e){return null;}}
 function cSet(s,d,v){try{sessionStorage.setItem(cKey(s,d),JSON.stringify({t:Date.now(),v}));}catch(e){}}
@@ -2895,6 +2895,49 @@ async function loadTelegram(){
 
 // ── 초기화 ──
 document.addEventListener('DOMContentLoaded',()=>{
+  // ── 15분마다 visible 차트 자동 갱신 ──
+  const AUTO_REFRESH_MS = 9e5;
+  const _rendered = new Set();
+  const _renderFns = {};
+
+  function registerRender(id, fn) {
+    _renderFns[id] = fn;
+  }
+
+  // 갱신 대상 등록
+  const _autoTargets = [
+    ['w-vix',    ()=>renderVix(365)],
+    ['w-t10y2y', ()=>renderT10y2y(365*2)],
+    ['w-hys',    ()=>renderHys(365*2)],
+    ['w-dxy',    ()=>renderDxy(365)],
+    ['w-krw',    ()=>renderKrw(365)],
+    ['w-sp500',  ()=>renderSp500(365)],
+    ['w-nasdaq', ()=>renderNasdaq(365)],
+    ['w-gold',   ()=>renderGold(365)],
+    ['w-btc',    ()=>renderBtc(365)],
+    ['w-kospi',  ()=>renderKospi(365)],
+    ['w-kosdaq', ()=>renderKosdaq(365)],
+    ['w-samsung',()=>renderSamsung(365)],
+    ['w-jpy',    ()=>renderJpy(365)],
+    ['w-skew',   ()=>renderSkew(365)],
+    ['w-vvix',   ()=>renderVvix(365)],
+    ['w-ovx',    ()=>renderOvx(365)],
+  ];
+
+  setInterval(()=>{
+    // 세션 캐시 초기화
+    try { sessionStorage.clear(); } catch(e){}
+    // 현재 뷰포트에 보이는 차트만 재렌더
+    _autoTargets.forEach(([id, fn])=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      const rect = el.getBoundingClientRect();
+      if(rect.top < window.innerHeight + 300 && rect.bottom > -300) fn();
+    });
+    // 히어로 카드도 갱신
+    loadHero();
+  }, AUTO_REFRESH_MS);
+
   // 스크롤 탑 버튼
   const _st=document.getElementById('scrolltop');
   window.addEventListener('scroll',()=>{
@@ -2931,8 +2974,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-skew',   ()=>renderSkew(365));
   observeLazy('w-vvix',   ()=>renderVvix(365));
   observeLazy('w-ovx',    ()=>renderOvx(365));
-  observeLazy('w-vvix',   ()=>renderVvix(365));
-  observeLazy('w-ovx',    ()=>renderOvx(365));
+  observeLazy('w-gvz',    ()=>renderGvz(365));
   observeLazy('w-em',     ()=>renderEm(365));
   observeLazy('w-kospi',  ()=>renderKospi(365));
   observeLazy('w-kosdaq', ()=>renderKosdaq(365));
