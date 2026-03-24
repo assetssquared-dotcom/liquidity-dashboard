@@ -751,7 +751,7 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 17: WTI 원유 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">DCOILWTICO</div></div>
+  <div class="sec-hdr"><div class="sec-num">17</div><div class="sec-title">WTI 원유가격</div><div class="sec-tag">CL=F · YAHOO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">WTI 원유가격 추이</div>
     <div class="card-sub">단위: USD/배럴 · 일간</div>
@@ -1703,7 +1703,7 @@ async function loadHero(){
 
     // DXY는 별도 loadDxy() 함수로 처리
     ['DGS10',        5,  11, v=>v.toFixed(2)+'%',   false],
-    ['DCOILWTICO',   5,  12, v=>'$'+v.toFixed(1),   false],
+    // WTI는 loadYahooHero에서 CL=F로 처리
   ];
 
   // FNG (CNN 공식 API)
@@ -1781,6 +1781,7 @@ async function loadYahooHero(){
   ];
   const priceItems = [
     { symbol:'GC=F',    id:15, fmt:v=>'$'+v.toFixed(0), goodUp:true },
+    { symbol:'CL=F',    id:12, fmt:v=>'$'+v.toFixed(1), goodUp:true },
     { symbol:'BTC-USD', id:16, fmt:v=>'$'+Math.round(v/1000)+'K', goodUp:true },
     { symbol:'EWZ',     id:21, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
     { symbol:'INDA',    id:22, fmt:v=>'$'+v.toFixed(2), goodUp:true, em:true },
@@ -2198,7 +2199,7 @@ async function renderWti(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-wti');
   try{
-    const d=await apiFetch('DCOILWTICO',days);
+    const d=await fetchYahoo('CL=F',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-wti',dates,[{data:vals,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(52,211,153,0.08)',tension:.3}],{ticks:{color:'#475569'}});
     const v=vals.at(-1);if(v==null)return;
