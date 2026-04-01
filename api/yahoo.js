@@ -21,17 +21,26 @@ module.exports = async function handler(req, res) {
         { ticker: 'XLB', name: '소재' },
         { ticker: 'XLC', name: '통신서비스' },
       ];
-      const tickers = sectors.map(s => s.ticker).join(',');
-      const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${tickers}&fields=regularMarketPrice,regularMarketChangePercent,regularMarketChange`;
-      const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
-      if (!r.ok) throw new Error(`Yahoo ${r.status}`);
-      const data = await r.json();
-      const quotes = data.quoteResponse?.result || [];
-      const result = sectors.map(s => {
-        const q = quotes.find(q => q.symbol === s.ticker);
-        return { ticker: s.ticker, name: s.name, price: q?.regularMarketPrice ?? null, change: q?.regularMarketChangePercent ?? null };
-      });
-      return res.status(200).json({ ok: true, type: 'sectors', data: result });
+      // v8 chart API로 5일치 가져와서 전일 대비 계산
+      const period2 = Math.floor(Date.now() / 1000);
+      const period1 = period2 - 5 * 86400;
+      const results = await Promise.all(sectors.map(async s => {
+        try {
+          const url = `https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}?interval=1d&period1=${period1}&period2=${period2}`;
+          const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+          const d = await r.json();
+          const result = d.chart?.result?.[0];
+          if (!result) return { ticker: s.ticker, name: s.name, price: null, change: null };
+          const closes = result.indicators?.quote?.[0]?.close || [];
+          const valid = closes.filter(v => v != null);
+          const price = valid.at(-1) ?? null;
+          const prev = valid.at(-2) ?? null;
+          const change = (price != null && prev != null && prev !== 0)
+            ? +((price - prev) / prev * 100).toFixed(2) : null;
+          return { ticker: s.ticker, name: s.name, price: price ? +price.toFixed(2) : null, change };
+        } catch { return { ticker: s.ticker, name: s.name, price: null, change: null }; }
+      }));
+      return res.status(200).json({ ok: true, type: 'sectors', data: results });
 
     } else if (type === 'correlation') {
       const assets = [
