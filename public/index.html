@@ -82,7 +82,7 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 .sec{margin-bottom:2.5rem;}
 .sec-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;}
 .sec-num{width:24px;height:24px;background:var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-family:var(--mono);color:var(--txt3);}
-.sec-title{font-size:1.05rem;font-weight:700;}
+.sec-title{font-size:1.05rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 .sec-tag{margin-left:auto;font-size:.68rem;font-family:var(--mono);color:var(--txt3);border:1px solid var(--line);padding:3px 9px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
 
 /* CARDS */
@@ -1100,7 +1100,7 @@ footer a{color:var(--txt3);}
 
 <!-- SEC 31: 옵션 변동성 -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">옵션 &amp; 변동성</div><div class="sec-tag">PCC · ^SKEW · ^VVIX · ^OVX · CBOE · YAHOO</div></div>
+  <div class="sec-hdr"><div class="sec-num">31</div><div class="sec-title">옵션 &amp; 변동성</div><div class="sec-tag">CBOE · YAHOO</div></div>
   <div class="cards-half">
     <div class="card">
       <div class="card-title">CBOE SKEW 지수</div>
@@ -1199,7 +1199,7 @@ footer a{color:var(--txt3);}
   <div class="cards-full"><div class="card">
     <div class="card-title">섹터별 등락률 — 전일 대비</div>
     <div class="card-sub">11개 섹터 ETF 기준 · 양수 = 자금 유입 · 음수 = 자금 유출</div>
-    <div id="w-sector-flow" style="min-height:320px;width:100%;overflow:hidden;"><div class="lw" style="height:320px"><div class="sp"></div></div></div>
+    <div id="w-sector-flow" style="min-height:280px;width:100%;max-width:100%;overflow:hidden;box-sizing:border-box;"><div class="lw" style="height:320px"><div class="sp"></div></div></div>
     <div class="now-panel" id="now-sector-flow" style="margin-top:.85rem;"></div>
   </div></div>
   <div class="cards-full" style="margin-top:.85rem;"><div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
