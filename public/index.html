@@ -83,7 +83,7 @@ header{background:#0d0d0d;border-bottom:1px solid var(--line);padding:0 1.5rem;h
 .sec-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;}
 .sec-num{width:24px;height:24px;background:var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-family:var(--mono);color:var(--txt3);}
 .sec-title{font-size:1.05rem;font-weight:700;}
-.sec-tag{margin-left:auto;font-size:.68rem;font-family:var(--mono);color:var(--txt3);border:1px solid var(--line);padding:3px 9px;border-radius:3px;}
+.sec-tag{margin-left:auto;font-size:.68rem;font-family:var(--mono);color:var(--txt3);border:1px solid var(--line);padding:3px 9px;border-radius:3px;white-space:nowrap;flex-shrink:0;}
 
 /* CARDS */
 .cards{display:grid;grid-template-columns:1fr 2fr;gap:.85rem;}
@@ -1195,7 +1195,7 @@ footer a{color:var(--txt3);}
 </div>
 <!-- SEC 32: 섹터 히트맵 (트레이딩뷰) -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">32</div><div class="sec-title">S&amp;P500 섹터별 자금 흐름</div><div class="sec-tag">XL ETF · YAHOO · 전일 대비</div></div>
+  <div class="sec-hdr"><div class="sec-num">32</div><div class="sec-title">섹터별 자금 흐름</div><div class="sec-tag">XL ETF · YAHOO</div></div>
   <div class="cards-full"><div class="card">
     <div class="card-title">섹터별 등락률 — 전일 대비</div>
     <div class="card-sub">11개 섹터 ETF 기준 · 양수 = 자금 유입 · 음수 = 자금 유출</div>
@@ -2479,12 +2479,13 @@ async function renderSectors(){
         scales:{
           x:{
             grid:{color:'rgba(255,255,255,.05)'},
-            ticks:{color:'#475569',font:{size:isMobile?9:10},callback:v=>(v>0?'+':'')+v+'%'},
-            border:{color:'rgba(255,255,255,.1)'}
+            ticks:{color:'#475569',font:{size:isMobile?9:10},callback:v=>(v>0?'+':'')+v+'%',maxTicksLimit:6},
+            border:{color:'rgba(255,255,255,.1)'},
+            afterFit(scale){scale.width=scale.width;}
           },
           y:{
             grid:{display:false},
-            ticks:{color:'#94a3b8',font:{size:isMobile?10:11}},
+            ticks:{color:'#94a3b8',font:{size:isMobile?10:11},mirror:false},
             border:{color:'rgba(255,255,255,.1)'}
           }
         }
