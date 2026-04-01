@@ -1195,9 +1195,19 @@ footer a{color:var(--txt3);}
 </div>
 <!-- SEC 32: 섹터 히트맵 (트레이딩뷰) -->
 <div class="sec">
-  <div class="sec-hdr"><div class="sec-num">32</div><div class="sec-title">S&amp;P500 섹터 히트맵</div><div class="sec-tag">TRADINGVIEW · 실시간</div></div>
-  <div class="cards-full"><div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
-    <div class="tradingview-widget-container" style="height:500px;">
+  <div class="sec-hdr"><div class="sec-num">32</div><div class="sec-title">S&amp;P500 섹터별 자금 흐름</div><div class="sec-tag">XL ETF · YAHOO · 전일 대비</div></div>
+  <div class="cards-full"><div class="card">
+    <div class="card-title">섹터별 등락률 — 전일 대비</div>
+    <div class="card-sub">11개 섹터 ETF 기준 · 양수 = 자금 유입 · 음수 = 자금 유출</div>
+    <div id="w-sector-flow" style="min-height:320px;"><div class="lw" style="height:320px"><div class="sp"></div></div></div>
+    <div class="now-panel" id="now-sector-flow" style="margin-top:.85rem;"></div>
+  </div></div>
+  <div class="cards-full" style="margin-top:.85rem;"><div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
+    <div style="padding:1rem 1rem .5rem;">
+      <div class="card-title">S&amp;P500 섹터 히트맵</div>
+      <div class="card-sub">시가총액 가중 · 색상 = 등락률 · TRADINGVIEW</div>
+    </div>
+    <div class="tradingview-widget-container" style="height:460px;">
       <div class="tradingview-widget-container__widget" style="height:100%;"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
       {
@@ -1215,7 +1225,7 @@ footer a{color:var(--txt3);}
         "hasSymbolTooltip": true,
         "isMonoSize": false,
         "width": "100%",
-        "height": "500"
+        "height": "460"
       }
       </script>
     </div>
@@ -2412,38 +2422,77 @@ async function renderBtc(days,btn){
   }catch(e){showSpin('w-btc');}
 }
 
-// ── 섹터 히트맵 ──
+// ── 섹터별 자금 흐름 바 차트 ──
 async function renderSectors(){
-  const el=document.getElementById('w-sectors');
+  const el=document.getElementById('w-sector-flow');
   if(!el)return;
   try{
     const r=await fetch('/api/yahoo?type=sectors');
     if(!r.ok)throw new Error(r.status);
     const d=await r.json();
-    const sectors=d.data||[];
+    const sectors=(d.data||[]).filter(s=>s.change!=null);
     if(!sectors.length)throw new Error('no data');
 
-    el.innerHTML='<div class="heatmap-grid">'+sectors.map(s=>{
-      const chg=s.change;
-      if(chg==null)return '';
-      const pct=+chg.toFixed(2);
-      const abs=Math.min(Math.abs(pct),5); // 최대 5%를 100%로
-      const intensity=abs/5;
-      let bg;
-      if(pct>0){
-        const g=Math.round(80+intensity*120);
-        bg='rgba(52,'+g+',80,'+(.25+intensity*.5)+')';
-      } else {
-        const r2=Math.round(100+intensity*130);
-        bg='rgba('+r2+',50,60,'+(.25+intensity*.5)+')';
+    // 등락률 기준 정렬
+    sectors.sort((a,b)=>b.change-a.change);
+
+    const labels=sectors.map(s=>s.name);
+    const vals=sectors.map(s=>+s.change.toFixed(2));
+    const colors=vals.map(v=>v>=0?'rgba(52,211,153,.75)':'rgba(248,113,113,.75)');
+    const borderColors=vals.map(v=>v>=0?'#34d399':'#f87171');
+
+    // Chart.js 바 차트
+    if(CHARTS['sector-flow']){CHARTS['sector-flow'].destroy();delete CHARTS['sector-flow'];}
+    const canvas=document.createElement('canvas');
+    canvas.style.height='300px';
+    el.innerHTML='';
+    el.appendChild(canvas);
+    CHARTS['sector-flow']=new Chart(canvas,{
+      type:'bar',
+      data:{
+        labels,
+        datasets:[{
+          data:vals,
+          backgroundColor:colors,
+          borderColor:borderColors,
+          borderWidth:1,
+          borderRadius:4,
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>(ctx.raw>0?'+':'')+ctx.raw.toFixed(2)+'%'}}
+        },
+        scales:{
+          x:{
+            grid:{color:'rgba(255,255,255,.05)'},
+            ticks:{color:'#475569',callback:v=>(v>0?'+':'')+v+'%'},
+            border:{color:'rgba(255,255,255,.1)'}
+          },
+          y:{
+            grid:{display:false},
+            ticks:{color:'#94a3b8',font:{size:11}},
+            border:{color:'rgba(255,255,255,.1)'}
+          }
+        }
       }
-      const col=pct>0?'#34d399':'#f87171';
-      return '<div class="hmap-cell" style="background:'+bg+';border:1px solid '+(pct>0?'rgba(52,211,153,.2)':'rgba(248,113,113,.2)')+'">'+
-        '<div class="hmap-name">'+s.name+'</div>'+
-        '<div class="hmap-val" style="color:'+col+'">'+(pct>0?'+':'')+pct.toFixed(2)+'%</div>'+
-        '<div class="hmap-ticker">'+s.ticker+'</div>'+
-      '</div>';
-    }).filter(Boolean).join('')+'</div>';
+    });
+    canvas.style.height='300px';
+
+    // now-panel 업데이트
+    const top=sectors[0], bot=sectors.at(-1);
+    const inflow=sectors.filter(s=>s.change>0).length;
+    const outflow=sectors.filter(s=>s.change<=0).length;
+    const badge=inflow>outflow?'green':inflow<outflow?'red':'neu';
+    const label=inflow>outflow?'유입 우세':inflow<outflow?'유출 우세':'혼조';
+    showNow('sector-flow',inflow+'↑ '+outflow+'↓',badge,label,
+      '유입 섹터 <strong>'+inflow+'개</strong> · 유출 섹터 <strong>'+outflow+'개</strong> — '
+      +'최강 <strong>'+top.name+' +'+(+top.change.toFixed(2))+'%</strong> · '
+      +'최약 <strong>'+bot.name+' '+(+bot.change.toFixed(2))+'%</strong>','당일');
   }catch(e){el.innerHTML='<div class="tg-empty">섹터 데이터를 불러오지 못했어요.</div>';}
 }
 
@@ -2994,7 +3043,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('w-samsung',()=>renderSamsung(365));
   observeLazy('w-jpy',    ()=>renderJpy(365));
   observeLazy('w-copper', ()=>renderCopper(365));
-  observeLazy('w-sectors',()=>renderSectors());
+  observeLazy('w-sector-flow',()=>renderSectors());
   observeLazy('w-corr',   ()=>renderCorr());
 });
 </script>
