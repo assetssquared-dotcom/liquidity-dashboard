@@ -1199,7 +1199,7 @@ footer a{color:var(--txt3);}
   <div class="cards-full"><div class="card">
     <div class="card-title">섹터별 등락률 — 전일 대비</div>
     <div class="card-sub">11개 섹터 ETF 기준 · 양수 = 자금 유입 · 음수 = 자금 유출</div>
-    <div id="w-sector-flow" style="min-height:280px;width:100%;max-width:100%;overflow:hidden;box-sizing:border-box;"><div class="lw" style="height:320px"><div class="sp"></div></div></div>
+    <div class="chart-wrap" id="w-sector-flow" style="height:300px;"><div class="lw"><div class="sp"></div></div></div>
     <div class="now-panel" id="now-sector-flow" style="margin-top:.85rem;"></div>
   </div></div>
   <div class="cards-full" style="margin-top:.85rem;"><div class="card" style="padding:0;overflow:hidden;border-radius:10px;">
@@ -2441,19 +2441,13 @@ async function renderSectors(){
     const colors=vals.map(v=>v>=0?'rgba(52,211,153,.75)':'rgba(248,113,113,.75)');
     const borderColors=vals.map(v=>v>=0?'#34d399':'#f87171');
 
-    // Chart.js 바 차트
+    // Chart.js 바 차트 - chart-wrap 방식으로 통일
     if(CHARTS['sector-flow']){CHARTS['sector-flow'].destroy();delete CHARTS['sector-flow'];}
-    const canvas=document.createElement('canvas');
-    canvas.style.height='300px';
     el.innerHTML='';
+    const canvas=document.createElement('canvas');
+    canvas.style.cssText='width:100%!important;height:100%!important;';
     el.appendChild(canvas);
-    // 모바일 대응: 섹터 수에 따라 높이 동적 조정
     const isMobile = window.innerWidth < 600;
-    const barH = isMobile ? 24 : 26;
-    const chartH = sectors.length * barH + 40;
-    canvas.style.height = chartH + 'px';
-    el.style.minHeight = chartH + 'px';
-
     CHARTS['sector-flow']=new Chart(canvas,{
       type:'bar',
       data:{
