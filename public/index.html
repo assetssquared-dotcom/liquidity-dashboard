@@ -1660,6 +1660,7 @@ function drawGauge(score){
   ctx.fillText('공포',cx-60,cy+12);ctx.fillText('탐욕',cx+60,cy+12);
 }
 
+async function renderFng(){ return loadFng(); }
 async function loadFng(){
   try{
     // CNN 공식 API 직접 호출 (CORS 허용됨)
@@ -2971,22 +2972,52 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // 갱신 대상 등록
   const _autoTargets = [
-    ['w-vix',    ()=>renderVix(365)],
-    ['w-t10y2y', ()=>renderT10y2y(365*2)],
-    ['w-hys',    ()=>renderHys(365*2)],
-    ['w-dxy',    ()=>renderDxy(365)],
-    ['w-krw',    ()=>renderKrw(365)],
-    ['w-sp500',  ()=>renderSp500(365)],
-    ['w-nasdaq', ()=>renderNasdaq(365)],
-    ['w-gold',   ()=>renderGold(365)],
-    ['w-btc',    ()=>renderBtc(365)],
-    ['w-kospi',  ()=>renderKospi(365)],
-    ['w-kosdaq', ()=>renderKosdaq(365)],
-    ['w-samsung',()=>renderSamsung(365)],
-    ['w-jpy',    ()=>renderJpy(365)],
-    ['w-skew',   ()=>renderSkew(365)],
-    ['w-vvix',   ()=>renderVvix(365)],
-    ['w-ovx',    ()=>renderOvx(365)],
+    // 시장 심리
+    ['w-fng',        ()=>renderFng()],
+    ['w-vix',        ()=>renderVix(365)],
+    ['w-t10y2y',     ()=>renderT10y2y(365*2)],
+    ['w-hys',        ()=>renderHys(365*2)],
+    ['w-stlfsi',     ()=>renderStlfsi(365*2)],
+    // 매크로
+    ['w-dxy',        ()=>renderDxy(365)],
+    ['w-krw',        ()=>renderKrw(365)],
+    ['w-jpy',        ()=>renderJpy(365)],
+    ['w-dgs10',      ()=>renderDgs10(365)],
+    ['w-wti',        ()=>renderWti(365)],
+    ['w-copper',     ()=>renderCopper(365)],
+    ['w-m2',         ()=>renderM2(365*3)],
+    ['w-unrate',     ()=>renderUnrate(365*3)],
+    ['w-icsa',       ()=>renderIcsa(365*2)],
+    // 자산가격
+    ['w-sp500',      ()=>renderSp500(365)],
+    ['w-nasdaq',     ()=>renderNasdaq(365)],
+    ['w-gold',       ()=>renderGold(365)],
+    ['w-btc',        ()=>renderBtc(365)],
+    ['w-kospi',      ()=>renderKospi(365)],
+    ['w-kosdaq',     ()=>renderKosdaq(365)],
+    ['w-samsung',    ()=>renderSamsung(365)],
+    ['w-em',         ()=>renderEm(365)],
+    // 연준 유동성
+    ['w-walcl',      ()=>renderWalcl(365*2)],
+    ['w-res',        ()=>renderRes(365*2)],
+    ['w-rrp',        ()=>renderRrp(365*2)],
+    ['w-tga',        ()=>renderTga(365*2)],
+    ['w-wk',         ()=>renderWeekly()],
+    // MMF
+    ['w-mmf',        ()=>renderMmf(365*2)],
+    ['w-mmfrrp',     ()=>renderMmfRrp(365*2)],
+    ['w-mmfwk',      ()=>renderMmfWeekly()],
+    // 금리시장
+    ['w-sofr',       ()=>renderSofr(365)],
+    ['w-iorb',       ()=>renderIorb(365)],
+    // 옵션
+    ['w-skew',       ()=>renderSkew(365)],
+    ['w-vvix',       ()=>renderVvix(365)],
+    ['w-ovx',        ()=>renderOvx(365)],
+    ['w-gvz',        ()=>renderGvz(365)],
+    // 섹터/상관관계
+    ['w-sector-flow',()=>renderSectors()],
+    ['w-corr',       ()=>renderCorr()],
   ];
 
   setInterval(()=>{
@@ -3011,6 +3042,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   observeLazy('tg-posts', ()=>loadTelegram()); // 1번: 텔레그램 포스트
   loadHero();
   loadFng();
+  observeLazy('w-fng',    ()=>renderFng());
   observeLazy('w-vix',   ()=>renderVix(365));
   observeLazy('w-t10y2y',()=>renderT10y2y(365*2));
   observeLazy('w-walcl', ()=>renderWalcl(365*2));
