@@ -1416,10 +1416,17 @@ async function apiFetch(series,days){
         dates=obs.map(o=>o.date);
       }
       if(!dates||!dates.length)throw new Error('no data');
+      if(!vals||!vals.length)throw new Error('no vals');
       const data={dates,vals};
       cSet(series,days,data);
       return data;
-    }catch(e){lastErr=e;}
+    }catch(e){
+      // 429 에러는 캐시하지 않음
+      if(String(e.message).includes('429')||String(e.message).includes('Too Many')){
+        throw e; // 즉시 throw, 다음 proxy로 안 넘김
+      }
+      lastErr=e;
+    }
   }
   throw lastErr||new Error('all proxies failed');
 }
