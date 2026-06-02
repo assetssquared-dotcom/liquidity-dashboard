@@ -1716,16 +1716,14 @@ async function loadFng(){
 async function loadHero(){
   // 7개 히어로 카드 병렬 fetch
   const jobs = [
-    ['VIXCLS',       5,  2,  v=>v.toFixed(2),       true],
+    // FRED 가능한 것들 (429 시 스킵)
     ['T10Y2Y',       5,  3,  v=>v.toFixed(2)+'%',   true],
     ['WALCL',        14, 4,  v=>fmtT(v),            true],
     ['WRESBAL',      14, 5,  v=>fmtT(v),            true],
     ['RRPONTSYD',    14, 6,  v=>fmtRrp(v),          true],
     ['BAMLH0A0HYM2', 5,  7,  v=>v.toFixed(2)+'%',  true],
     ['WTREGEN',      14, 8,  v=>fmtT(v),            true],
-
     // DXY는 별도 loadDxy() 함수로 처리
-    ['DGS10',        5,  11, v=>v.toFixed(2)+'%',   false],
     // WTI는 loadYahooHero에서 CL=F로 처리
   ];
 
@@ -1799,6 +1797,8 @@ async function loadDxy(){
 // ── Yahoo Finance 히어로 카드 ──
 async function loadYahooHero(){
   const ddItems = [
+    { symbol:'^VIX',    id:2,  fmt:v=>v.toFixed(2), goodUp:false },
+    { symbol:'^TNX',    id:11, fmt:v=>v.toFixed(2)+'%', goodUp:false },
     { symbol:'^GSPC',   id:13, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
     { symbol:'^IXIC',   id:14, fmt:v=>v.toFixed(0), goodUp:true, drawdown:true },
   ];
@@ -1871,7 +1871,7 @@ async function renderVix(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-vix');
   try{
-    const d=await apiFetch('VIXCLS',days);
+    const d=await fetchYahoo('^VIX',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-vix',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,
       backgroundColor:'rgba(249,115,22,0.1)',tension:.3}],{ticks:{color:'#475569'}});
@@ -2201,7 +2201,7 @@ async function renderDgs10(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-dgs10');
   try{
-    const d=await apiFetch('DGS10',days);
+    const d=await fetchYahoo('^TNX',days);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-dgs10',dates,[{data:vals,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569'}});
     const v=vals.at(-1);if(v==null)return;
