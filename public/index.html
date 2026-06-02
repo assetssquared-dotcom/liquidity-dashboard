@@ -1365,7 +1365,7 @@ function fgCol(v){return v<=24?'#ef4444':v<=44?'#f87171':v<=55?'#94a3b8':v<=74?'
 function fgTxt(v){return v<=24?'극단적 공포':v<=44?'공포':v<=55?'중립':v<=74?'탐욕':'극단적 탐욕';}
 
 // ── 세션 캐시 (1시간) ──
-const CACHE_TTL = 9e5; // 15분
+const CACHE_TTL = 15e5; // 25분
 function cKey(s,d){return`aq2_${s}_${d}`;}
 function cGet(s,d){try{const r=sessionStorage.getItem(cKey(s,d));if(!r)return null;const p=JSON.parse(r);if(Date.now()-p.t>CACHE_TTL)return null;return p.v;}catch(e){return null;}}
 function cSet(s,d,v){try{sessionStorage.setItem(cKey(s,d),JSON.stringify({t:Date.now(),v}));}catch(e){}}
@@ -2962,7 +2962,7 @@ async function loadTelegram(){
 // ── 초기화 ──
 document.addEventListener('DOMContentLoaded',()=>{
   // ── 15분마다 visible 차트 자동 갱신 ──
-  const AUTO_REFRESH_MS = 9e5;
+  const AUTO_REFRESH_MS = 18e5; // 30분
   const _rendered = new Set();
   const _renderFns = {};
 
@@ -3021,8 +3021,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   ];
 
   setInterval(()=>{
-    // 세션 캐시 초기화
-    try { sessionStorage.clear(); } catch(e){}
+    // 야후/실시간 데이터만 캐시 선택 초기화 (FRED 제외)
+    try {
+      Object.keys(sessionStorage).forEach(k=>{
+        // aq2_ 키 중 yahoo/fng/dxy 관련만 삭제
+        if(k.startsWith('aq2_') && (k.includes('KRW')||k.includes('GSPC')||k.includes('IXIC')||k.includes('GC=')||k.includes('BTC')||k.includes('KS11')||k.includes('KQ11')||k.includes('005930')||k.includes('JPY')||k.includes('HG=')||k.includes('CL=')||k.includes('SKEW')||k.includes('VVIX')||k.includes('OVX')||k.includes('GVZ')||k.includes('EWZ')||k.includes('INDA')||k.includes('VNM')||k.includes('EWJ')||k.includes('DX-Y'))) {
+          sessionStorage.removeItem(k);
+        }
+      });
+    } catch(e){}
     // 현재 뷰포트에 보이는 차트만 재렌더
     _autoTargets.forEach(([id, fn])=>{
       const el = document.getElementById(id);
