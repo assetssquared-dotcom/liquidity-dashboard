@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
   if (!series) return res.status(400).json({ error: 'series 필요' });
 
   // 환경변수 없으면 하드코딩 키 폴백
-  const API_KEY = process.env.FRED_API_KEY || '927ff4821479807b69c36deda5112216';
+  const API_KEY = process.env.FRED_API_KEY || '3a5a2a830da29568d6c1d0a2ab481951';
 
   const start = new Date();
   start.setDate(start.getDate() - (parseInt(days) || 365));
