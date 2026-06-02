@@ -1,6 +1,6 @@
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { series, days } = req.query;
