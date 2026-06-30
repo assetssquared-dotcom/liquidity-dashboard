@@ -1435,15 +1435,66 @@ async function apiFetch(series,days){
 function scrollToChart(id){
   const el = document.getElementById(id);
   if(!el) return;
-  // 가장 가까운 .sec 섹션 상단으로 스크롤
   const sec = el.closest('.sec') || el;
+
+  // 차트가 아직 로드 안 됐으면(스핀 상태) 먼저 렌더 트리거
+  const hasCanvas = el.querySelector('canvas');
+  const hasSpin = el.querySelector('.sp');
+  if(!hasCanvas && hasSpin && _renderFns[id]) {
+    _renderFns[id]();
+  }
+
+  // 스크롤
   const top = sec.getBoundingClientRect().top + window.scrollY - 72;
   window.scrollTo({top, behavior:'smooth'});
-  // 차트 영역 하이라이트
+
+  // 하이라이트
   el.style.transition='box-shadow .3s';
   el.style.boxShadow='0 0 0 2px #5b9cf6';
-  setTimeout(()=>{ el.style.boxShadow=''; }, 1200);
+  setTimeout(()=>{ el.style.boxShadow=''; }, 1400);
 }
+
+// 렌더 함수 등록 맵
+const _renderFns = {
+  'w-fng':      ()=>renderFng(),
+  'w-vix':      ()=>renderVix(365),
+  'w-t10y2y':   ()=>renderT10y2y(365*2),
+  'w-hys':      ()=>renderHys(365*2),
+  'w-stlfsi':   ()=>renderStlfsi(365*2),
+  'w-dxy':      ()=>renderDxy(365),
+  'w-krw':      ()=>renderKrw(365),
+  'w-jpy':      ()=>renderJpy(365),
+  'w-dgs10':    ()=>renderDgs10(365),
+  'w-wti':      ()=>renderWti(365),
+  'w-copper':   ()=>renderCopper(365),
+  'w-m2':       ()=>renderM2(365*3),
+  'w-unrate':   ()=>renderUnrate(365*3),
+  'w-icsa':     ()=>renderIcsa(365*2),
+  'w-sp500':    ()=>renderSp500(365),
+  'w-nasdaq':   ()=>renderNasdaq(365),
+  'w-gold':     ()=>renderGold(365),
+  'w-btc':      ()=>renderBtc(365),
+  'w-kospi':    ()=>renderKospi(365),
+  'w-kosdaq':   ()=>renderKosdaq(365),
+  'w-samsung':  ()=>renderSamsung(365),
+  'w-em':       ()=>renderEm(365),
+  'w-walcl':    ()=>renderWalcl(365*2),
+  'w-res':      ()=>renderRes(365*2),
+  'w-rrp':      ()=>renderRrp(365*2),
+  'w-tga':      ()=>renderTga(365*2),
+  'w-wk':       ()=>renderWeekly(),
+  'w-mmf':      ()=>renderMmf(365*2),
+  'w-mmfrrp':   ()=>renderMmfRrp(365*2),
+  'w-mmfwk':    ()=>renderMmfWeekly(),
+  'w-sofr':     ()=>renderSofr(365),
+  'w-iorb':     ()=>renderIorb(365),
+  'w-skew':     ()=>renderSkew(365),
+  'w-vvix':     ()=>renderVvix(365),
+  'w-ovx':      ()=>renderOvx(365),
+  'w-gvz':      ()=>renderGvz(365),
+  'w-sector-flow':()=>renderSectors(),
+  'w-corr':     ()=>renderCorr(),
+};
 
 // ── now-panel 표시 ──
 function showNow(id,val,badge,label,text,period){
@@ -1822,7 +1873,7 @@ async function loadYahooHero(){
   try{
     // drawdown용 3년치 + 가격용 30일치 병렬 fetch
     const [ddRes, priceRes] = await Promise.all([
-      fetch('/api/yahoo?symbols='+encodeURIComponent(ddItems.map(i=>i.symbol).join(','))+'&days='+(365*3)),
+      fetch('/api/yahoo?symbols='+encodeURIComponent(ddItems.map(i=>i.symbol).join(','))+'&days='+(365*5)),
       fetch('/api/yahoo?symbols='+encodeURIComponent(priceItems.map(i=>i.symbol).join(','))+'&days=30'),
     ]);
     const ddData = ddRes.ok ? await ddRes.json() : {results:[]};
@@ -2096,12 +2147,19 @@ async function renderWeekly(btn){
     ],{ticks:{color:'#475569',callback:v=>fmtB(v)}});
     const lrv=rv.at(-1), ltv=tv.at(-1);
     if(lrv==null) return;
-    const netFlow=+(lrv+(ltv||0)).toFixed(0);
+    // 지준 증가(+) = 유동성 공급, TGA 증가(+) = 유동성 흡수 → 부호 반전해서 합산
+    const netFlow=+(lrv-(ltv||0)).toFixed(0);
     const isPos=netFlow>=0;
     const wkBadge=isPos?'green':'red';
     const wkLabel=isPos?'순 유동성 공급':'순 유동성 흡수';
+    const rUp=lrv>=0, tUp=(ltv||0)>=0;
+    let desc;
+    if(rUp && !tUp) desc='준비금 증가·TGA 감소 — 둘 다 유동성 공급 방향이에요. 명확한 완화 국면이에요.';
+    else if(!rUp && tUp) desc='준비금 감소·TGA 증가 — 둘 다 유동성 흡수 방향이에요. 명확한 긴축 국면이에요.';
+    else if(rUp && tUp) desc='준비금과 TGA 모두 증가했어요. 방향이 엇갈려 순효과는 '+(isPos?'소폭 공급':'소폭 흡수')+' 쪽이에요.';
+    else desc='준비금과 TGA 모두 감소했어요. 방향이 엇갈려 순효과는 '+(isPos?'소폭 공급':'소폭 흡수')+' 쪽이에요.';
     showNow('wk',(isPos?'▲':'▼')+'$'+fmtB(Math.abs(netFlow)),wkBadge,wkLabel,
-      '지준 <strong>'+(lrv>=0?'▲':'▼')+'$'+fmtB(Math.abs(lrv))+'</strong> · TGA <strong>'+(ltv>=0?'▲':'▼')+'$'+fmtB(Math.abs(ltv||0))+'</strong> — '+(isPos?'준비금 증가·TGA 감소로 시중 유동성이 공급됐어요.':'준비금 감소·TGA 증가로 시중 유동성이 흡수됐어요.'),'최근 2년');
+      '지준 <strong>'+(rUp?'▲':'▼')+'$'+fmtB(Math.abs(lrv))+'</strong> · TGA <strong>'+(tUp?'▲':'▼')+'$'+fmtB(Math.abs(ltv||0))+'</strong> — '+desc,'최근 2년');
   }catch(e){showSpin('w-wk');}
 }
 
@@ -2354,18 +2412,22 @@ async function renderSp500(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-sp500');
   try{
-    const d=await fetchYahoo('^GSPC',days);
+    // 표시용(선택 기간) + ATH 계산용(5년) 병렬 fetch
+    const [d, athD] = await Promise.all([
+      fetchYahoo('^GSPC',days),
+      fetchYahoo('^GSPC',365*5)
+    ]);
     const vals=d.vals;
-    let peak=vals[0];
-    const dd=vals.map(v=>{peak=Math.max(peak,v);return +((v-peak)/peak*100).toFixed(2);});
+    const peak_all=Math.max(...athD.vals);
+    let peak=athD.vals[0];
+    const dd=vals.map(v=>{peak=Math.max(peak,v,peak_all);return +((v-peak)/peak*100).toFixed(2);});
     const{dates,vals:ddv}=thin(d.dates,dd,200);
-    const peak_all=Math.max(...vals);
     const cur=vals.at(-1);
     const curDd=+((cur-peak_all)/peak_all*100).toFixed(2);
     mkLine('w-sp500',dates,[{data:ddv,borderColor:'#5b9cf6',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
     const badge=curDd>-5?'green':curDd>-10?'blue':curDd>-20?'yellow':'red';
     const label=curDd>-5?'강세장':curDd>-10?'소폭 조정':curDd>-20?'조정장':'약세장';
-    showNow('sp500',curDd.toFixed(1)+'%',badge,label,'S&P500 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+( curDd>-5?'전고점 근처예요. 강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요. 매수 기회를 탐색할 때예요.':'약세장이에요. 리스크 관리가 우선이에요.'),periodLabel(days));
+    showNow('sp500',curDd.toFixed(1)+'%',badge,label,'S&P500 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'전고점 근처예요. 강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요. 매수 기회를 탐색할 때예요.':'약세장이에요. 리스크 관리가 우선이에요.'),periodLabel(days));
   }catch(e){showSpin('w-sp500');}
 }
 
@@ -2374,18 +2436,22 @@ async function renderNasdaq(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-nasdaq');
   try{
-    const d=await fetchYahoo('^IXIC',days);
+    // 표시용(선택 기간) + ATH 계산용(5년) 병렬 fetch
+    const [d, athD] = await Promise.all([
+      fetchYahoo('^IXIC',days),
+      fetchYahoo('^IXIC',365*5)
+    ]);
     const vals=d.vals;
-    let peak=vals[0];
-    const dd=vals.map(v=>{peak=Math.max(peak,v);return +((v-peak)/peak*100).toFixed(2);});
+    const peak_all=Math.max(...athD.vals);
+    let peak=athD.vals[0];
+    const dd=vals.map(v=>{peak=Math.max(peak,v,peak_all);return +((v-peak)/peak*100).toFixed(2);});
     const{dates,vals:ddv}=thin(d.dates,dd,200);
-    const peak_all=Math.max(...vals);
     const cur=vals.at(-1);
     const curDd=+((cur-peak_all)/peak_all*100).toFixed(2);
-    mkLine('w-nasdaq',dates,[{data:ddv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    mkLine('w-nasdaq',dates,[{data:ddv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
     const badge=curDd>-5?'green':curDd>-10?'blue':curDd>-20?'yellow':'red';
     const label=curDd>-5?'강세장':curDd>-10?'소폭 조정':curDd>-20?'조정장':'약세장';
-    showNow('nasdaq',curDd.toFixed(1)+'%',badge,label,'나스닥 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'전고점 근처예요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요.':'약세장이에요. 리스크 관리 필요해요.'),periodLabel(days));
+    showNow('nasdaq',curDd.toFixed(1)+'%',badge,label,'나스닥 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'전고점 근처예요. 강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요. 매수 기회를 탐색할 때예요.':'약세장이에요. 리스크 관리가 우선이에요.'),periodLabel(days));
   }catch(e){showSpin('w-nasdaq');}
 }
 
@@ -2394,18 +2460,23 @@ async function renderGold(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-gold');
   try{
-    const d=await fetchYahoo('GC=F',days);
+    const [d, athD] = await Promise.all([fetchYahoo('GC=F',days), fetchYahoo('GC=F',365*5)]);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-gold',dates,[{data:vals,borderColor:'#fbbf24',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(251,191,36,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>'$'+v.toFixed(0)}});
-    const v=vals.at(-1);if(v==null)return;
-    const w1=vals.length>6?vals.at(-6):null;
-    const m3=vals.length>65?vals.at(-65):null;
+    const v=d.vals.at(-1);if(v==null)return;
+    const w1=d.vals.length>6?d.vals.at(-6):null;
+    const m3=d.vals.length>65?d.vals.at(-65):null;
     const wchg=w1!=null?+(v-w1).toFixed(1):null;
+    const wpct=w1!=null?+((v-w1)/w1*100).toFixed(1):null;
+    // ATH 대비 낙폭으로 평가 (5년치 데이터 기준 정확한 ATH)
+    const peak=Math.max(...athD.vals);
+    const dd=+((v-peak)/peak*100).toFixed(1);
     let note='';
     if(wchg!=null) note='<br>1주 전($'+w1.toFixed(0)+') 대비 <span style="color:'+(wchg>0?'#34d399':'#f87171')+';font-weight:600">'+(wchg>0?'▲':'▼')+'$'+Math.abs(wchg).toFixed(0)+' '+(wchg>0?'상승':'하락')+'</span>'+(m3!=null?' · 3개월 전($'+m3.toFixed(0)+') 대비 '+(v>m3?'▲상승':'▼하락'):'');
-    const badge=v>2500?'green':v>2000?'blue':v>1800?'neu':'yellow';
-    const label=v>2500?'강세 구간':v>2000?'상승 추세':v>1800?'보통':'약세';
-    showNow('gold','$'+v.toFixed(0),badge,label,'금 <strong>$'+v.toFixed(0)+'</strong>/온스 — '+(v>2500?'사상 최고 수준이에요. 강한 안전자산 수요가 있어요.':v>2000?'상승 추세예요. 달러 약세·불확실성 증가가 반영됐어요.':'보통 수준이에요.')+note,periodLabel(days));
+    const badge=dd>-2?'green':dd>-5?'blue':dd>-10?'yellow':'red';
+    const label=dd>-2?'ATH 근접':dd>-5?'소폭 조정':dd>-10?'조정 구간':'하락 추세';
+    const desc=dd>-2?'전고점 근처예요. 강한 안전자산 수요가 이어지고 있어요.':dd>-5?'전고점 대비 소폭 조정 중이에요.':dd>-10?'전고점 대비 조정 구간이에요.':'전고점 대비 큰 폭 하락했어요. 안전자산 수요가 약해진 상태예요.';
+    showNow('gold','$'+v.toFixed(0),badge,label,'금 <strong>$'+v.toFixed(0)+'</strong>/온스 — ATH 대비 <strong>'+dd+'%</strong>. '+desc+note,periodLabel(days));
   }catch(e){showSpin('w-gold');}
 }
 
@@ -2414,19 +2485,23 @@ async function renderBtc(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-btc');
   try{
-    const d=await fetchYahoo('BTC-USD',days);
+    const [d, athD] = await Promise.all([fetchYahoo('BTC-USD',days), fetchYahoo('BTC-USD',365*5)]);
     const{dates,vals}=thin(d.dates,d.vals,200);
     mkLine('w-btc',dates,[{data:vals,borderColor:'#f97316',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(249,115,22,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>'$'+fmtB(v)}});
-    const v=vals.at(-1);if(v==null)return;
-    const w1=vals.length>6?vals.at(-6):null;
-    const m3=vals.length>65?vals.at(-65):null;
+    const v=d.vals.at(-1);if(v==null)return;
+    const w1=d.vals.length>6?d.vals.at(-6):null;
+    const m3=d.vals.length>65?d.vals.at(-65):null;
     const wchg=w1!=null?+(v-w1).toFixed(0):null;
     const pct=w1!=null?+((v-w1)/w1*100).toFixed(1):null;
+    // ATH 대비 낙폭으로 평가 (5년치 데이터 기준 정확한 ATH)
+    const peak=Math.max(...athD.vals);
+    const dd=+((v-peak)/peak*100).toFixed(1);
     let note='';
     if(pct!=null) note='<br>1주 전($'+fmtB(w1)+') 대비 <span style="color:'+(pct>0?'#34d399':'#f87171')+';font-weight:600">'+(pct>0?'▲':'▼')+Math.abs(pct)+'% '+(pct>0?'상승':'하락')+'</span>'+(m3!=null?' · 3개월 전($'+fmtB(m3)+') 대비 '+(v>m3?'▲상승':'▼하락'):'');
-    const badge=v>80000?'green':v>50000?'blue':v>30000?'yellow':'red';
-    const label=v>80000?'강세장':v>50000?'상승 구간':v>30000?'중립':'약세장';
-    showNow('btc','$'+fmtB(v),badge,label,'비트코인 <strong>$'+fmtB(v)+'</strong> — '+(v>80000?'강세장이에요. 위험선호 심리가 강해요.':v>50000?'상승 구간이에요. 글로벌 유동성 개선이 반영돼요.':v>30000?'중립 구간이에요.':'약세장이에요. 위험회피 심리가 우세해요.')+note,periodLabel(days));
+    const badge=dd>-5?'green':dd>-15?'blue':dd>-30?'yellow':'red';
+    const label=dd>-5?'ATH 근접':dd>-15?'조정 구간':dd>-30?'약세 전환':'베어마켓';
+    const desc=dd>-5?'전고점 근처예요. 위험선호 심리가 강해요.':dd>-15?'전고점 대비 조정 중이에요.':dd>-30?'약세 전환 구간이에요. 위험회피 심리가 커지고 있어요.':'전고점 대비 큰 폭 하락한 베어마켓이에요.';
+    showNow('btc','$'+fmtB(v),badge,label,'비트코인 <strong>$'+fmtB(v)+'</strong> — ATH 대비 <strong>'+dd+'%</strong>. '+desc+note,periodLabel(days));
   }catch(e){showSpin('w-btc');}
 }
 
@@ -2561,17 +2636,22 @@ async function renderKospi(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-kospi');
   try{
-    const d=await fetchYahoo('^KS11',days);
+    // 표시용(선택 기간) + ATH 계산용(5년) 병렬 fetch
+    const [d, athD] = await Promise.all([
+      fetchYahoo('^KS11',days),
+      fetchYahoo('^KS11',365*5)
+    ]);
     const vals=d.vals;
-    let peak=vals[0];
-    const dd=vals.map(v=>{peak=Math.max(peak,v);return +((v-peak)/peak*100).toFixed(2);});
+    const peak_all=Math.max(...athD.vals);
+    let peak=athD.vals[0];
+    const dd=vals.map(v=>{peak=Math.max(peak,v,peak_all);return +((v-peak)/peak*100).toFixed(2);});
     const{dates,vals:ddv}=thin(d.dates,dd,200);
-    const peak_all=Math.max(...vals), cur=vals.at(-1);
+    const cur=vals.at(-1);
     const curDd=+((cur-peak_all)/peak_all*100).toFixed(2);
-    mkLine('w-kospi',dates,[{data:ddv,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(52,211,153,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    mkLine('w-kospi',dates,[{data:ddv,borderColor:'#34d399',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
     const badge=curDd>-5?'green':curDd>-10?'blue':curDd>-20?'yellow':'red';
     const label=curDd>-5?'강세장':curDd>-10?'소폭 조정':curDd>-20?'조정장':'약세장';
-    showNow('kospi',curDd.toFixed(1)+'%',badge,label,'코스피 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요.':'약세장이에요. 리스크 관리 필요해요.'),periodLabel(days));
+    showNow('kospi',curDd.toFixed(1)+'%',badge,label,'코스피 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'전고점 근처예요. 강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요. 매수 기회를 탐색할 때예요.':'약세장이에요. 리스크 관리가 우선이에요.'),periodLabel(days));
   }catch(e){showSpin('w-kospi');}
 }
 
@@ -2580,17 +2660,22 @@ async function renderKosdaq(days,btn){
   if(btn){btn.closest('.tbtn-wrap').querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
   showSpin('w-kosdaq');
   try{
-    const d=await fetchYahoo('^KQ11',days);
+    // 표시용(선택 기간) + ATH 계산용(5년) 병렬 fetch
+    const [d, athD] = await Promise.all([
+      fetchYahoo('^KQ11',days),
+      fetchYahoo('^KQ11',365*5)
+    ]);
     const vals=d.vals;
-    let peak=vals[0];
-    const dd=vals.map(v=>{peak=Math.max(peak,v);return +((v-peak)/peak*100).toFixed(2);});
+    const peak_all=Math.max(...athD.vals);
+    let peak=athD.vals[0];
+    const dd=vals.map(v=>{peak=Math.max(peak,v,peak_all);return +((v-peak)/peak*100).toFixed(2);});
     const{dates,vals:ddv}=thin(d.dates,dd,200);
-    const peak_all=Math.max(...vals), cur=vals.at(-1);
+    const cur=vals.at(-1);
     const curDd=+((cur-peak_all)/peak_all*100).toFixed(2);
-    mkLine('w-kosdaq',dates,[{data:ddv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(167,139,250,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
+    mkLine('w-kosdaq',dates,[{data:ddv,borderColor:'#a78bfa',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(91,156,246,0.08)',tension:.3}],{ticks:{color:'#475569',callback:v=>v.toFixed(1)+'%'}});
     const badge=curDd>-5?'green':curDd>-10?'blue':curDd>-20?'yellow':'red';
     const label=curDd>-5?'강세장':curDd>-10?'소폭 조정':curDd>-20?'조정장':'약세장';
-    showNow('kosdaq',curDd.toFixed(1)+'%',badge,label,'코스닥 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭.',periodLabel(days));
+    showNow('kosdaq',curDd.toFixed(1)+'%',badge,label,'코스닥 <strong>'+cur.toFixed(0)+'pt</strong> — ATH 대비 <strong>'+curDd.toFixed(1)+'%</strong> 낙폭. '+(curDd>-5?'전고점 근처예요. 강세장이에요.':curDd>-10?'소폭 조정 구간이에요.':curDd>-20?'조정장이에요. 매수 기회를 탐색할 때예요.':'약세장이에요. 리스크 관리가 우선이에요.'),periodLabel(days));
   }catch(e){showSpin('w-kosdaq');}
 }
 
@@ -2670,7 +2755,7 @@ async function loadKrHero(){
   const items=[...krDdItems,...krPriceItems];
   try{
     const [ddRes, priceRes] = await Promise.all([
-      fetch('/api/yahoo?symbols='+encodeURIComponent(krDdItems.map(i=>i.symbol).join(','))+'&days='+(365*3)),
+      fetch('/api/yahoo?symbols='+encodeURIComponent(krDdItems.map(i=>i.symbol).join(','))+'&days='+(365*5)),
       fetch('/api/yahoo?symbols='+encodeURIComponent(krPriceItems.map(i=>i.symbol).join(','))+'&days=30'),
     ]);
     const ddData = ddRes.ok ? await ddRes.json() : {results:[]};
@@ -2971,7 +3056,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   // ── 15분마다 visible 차트 자동 갱신 ──
   const AUTO_REFRESH_MS = 18e5; // 30분
   const _rendered = new Set();
-  const _renderFns = {};
 
   function registerRender(id, fn) {
     _renderFns[id] = fn;
